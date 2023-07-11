@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -27,6 +28,13 @@ import androidx.compose.ui.platform.LocalContext
 import coil.request.ImageRequest
 import com.girlsintech.pokemon.data.models.PokemonItem
 import com.girlsintech.pokemon.viewmodel.PokemonListViewModel
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.toArgb
+import com.google.accompanist.coil.CoilImage
 
 
 @Composable
@@ -99,16 +107,16 @@ fun SearchBar(
         }
     }
 }
-/*
+
 @Composable
 fun PokemonEntry(
     entry: PokemonItem,
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: PokemonListViewModel = hiltNavGraphViewModel()
+    viewModel: PokemonListViewModel
 ) {
     val defaultDominantColor = MaterialTheme.colors.surface
-    var dominantColor = remember {
+    var dominantColor by remember {
         mutableStateOf(defaultDominantColor)
     }
 
@@ -129,21 +137,42 @@ fun PokemonEntry(
             .clickable {
                 navController.navigate(
                     "pokemon_detail_screen/${dominantColor.toArgb()}/${entry.pokemonName}"
-                ) {
-                    Column {
-                        CoilImage(
-                            request = ImageRequest.Builder(LocalContext.current)
-                                .data(entry.imageUrl)
-                                .target{
-                                    viewModel.calcDominantColor(it){ color ->
-
-                                    }
-                                }
-                        )
-                    }
-                }
+                )
             }
-    )
+    ) {
+        Column {
+            CoilImage(
+                request = ImageRequest.Builder(LocalContext.current)
+                    .data(entry.imageUrl)
+                    .target {
+                        viewModel.calcDominantColor(it) { color ->
+                            dominantColor = color
+                        }
+                    }
+                    .build(),
+                contentDescription = entry.pokemonName,
+                fadeIn = true,
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(CenterHorizontally)
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier.scale(0.5f)
+                )
+            }
+            Text(
+                text = entry.pokemonName,
+                fontFamily = fontFamily(),
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
 }
 
- */
+
+
+
+

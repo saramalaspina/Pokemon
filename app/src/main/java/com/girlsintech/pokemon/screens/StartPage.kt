@@ -106,11 +106,5 @@ fun Start(onClick: () -> Unit) {
 
 }
 
-@OptIn(ExperimentalTextApi::class)
-@Composable
-fun fontFamily() : FontFamily {
-    val assets = LocalContext.current.assets
-    return FontFamily(
-        Font("Candal-Regular.ttf", assets)
-    )
-}
+
+
