@@ -18,6 +18,7 @@ import com.girlsintech.pokemon.ui.theme.PokemonTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             PokemonTheme {
                 val navController = rememberNavController()
