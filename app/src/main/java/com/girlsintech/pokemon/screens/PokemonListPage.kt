@@ -89,7 +89,7 @@ fun SearchBar(
                     isHintDisplayed = it.isFocused != true
                 }
         )
-        if(isHintDisplayed){
+        if(isHintDisplayed) {
             Text(
                 text = hint,
                 color = Color.LightGray,
