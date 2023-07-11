@@ -22,7 +22,7 @@ import androidx.compose.material.Text
 
 
 @Composable
-fun PokemonListPage(
+fun PokemonListPage (
     navController: NavController
 ) {
     Surface(
