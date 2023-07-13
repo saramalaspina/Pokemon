@@ -5,8 +5,7 @@ data class PokemonItem(
     val imageUrl: String,
     val number: Int,
     val favourite: Boolean,
-    val type: String,
-
+    val type: String?,
 )
 
 class PokemonList {

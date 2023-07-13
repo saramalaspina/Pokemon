@@ -6,7 +6,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.girlsintech.pokedex.util.Constants.BASE_URL
+import com.girlsintech.pokemon.util.Constants.BASE_URL
 import org.json.JSONObject
 
 class APIRequest (context: Context){
@@ -30,7 +30,7 @@ class APIRequest (context: Context){
 
     fun getPokemonList(onSuccess: (JSONObject?) -> Unit,
                     onFail: (VolleyError?) -> Unit, limit: Int, offset:Int ){
-        val url = BASE_URL + "?offset=" + offset + "&limit=" + limit
+        val url = "$BASE_URL?offset=$offset&limit=$limit"
 
         val jsonLoader = JsonObjectRequest(url,
             onSuccess,
@@ -43,7 +43,7 @@ class APIRequest (context: Context){
 
     fun getPokemonInfo(onSuccess: (JSONObject?) -> Unit,
                        onFail: (VolleyError?) -> Unit, pokemonName: String){
-        val url = BASE_URL + "/" + pokemonName
+        val url = "$BASE_URL/$pokemonName"
 
         val jsonLoader = JsonObjectRequest(url,
             onSuccess,
