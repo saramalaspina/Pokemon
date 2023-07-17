@@ -4,11 +4,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,10 +16,7 @@ import androidx.navigation.navArgument
 import com.girlsintech.pokemon.screens.MainView
 import com.girlsintech.pokemon.screens.PokemonListPage
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
-import com.girlsintech.pokemon.viewmodel.MyState
-import com.girlsintech.pokemon.viewmodel.PokemonListViewModel
-import com.girlsintech.pokemon.viewmodel.PokemonViewModelFactory
-import kotlinx.coroutines.channels.Channel
+import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +25,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             PokemonTheme {
                 val navController = rememberNavController()
-                val context = LocalContext.current
-
-                val vm : PokemonListViewModel = viewModel(factory = PokemonViewModelFactory(context.applicationContext as Application))
 
                 NavHost(navController = navController,
                     startDestination = "pokemon_homepage"){
@@ -42,7 +32,7 @@ class MainActivity : ComponentActivity() {
                         MainView { navController.navigate("pokemon_list_screen") }
                     }
                     composable("pokemon_list_screen"){
-                        PokemonListPage(navController = navController, viewModel = vm)
+                        PokemonListPage(navController = navController)
                     }
                     composable(
                         "pokemon_detail_screen/{dominantColor}/{pokemonName}",

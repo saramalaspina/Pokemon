@@ -67,6 +67,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-core:1.4.3"
     implementation "androidx.compose.material:material-icons-extended:1.4.3"
 
+    implementation "androidx.compose.runtime:runtime-livedata:1.4.3"
 
     // ROOM
     implementation "androidx.room:room-runtime:2.5.2"
@@ -86,9 +87,10 @@ dependencies {
 
     // VOLLEY
     implementation 'com.android.volley:volley:1.2.1'
+
     // Coil
-    implementation "io.coil-kt:coil:2.3.0"
-    implementation "com.google.accompanist:accompanist-coil:0.7.0"
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
     // Gson
     implementation 'com.google.code.gson:gson:2.9.1'
     // ViewModel
@@ -98,12 +100,12 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.squareup.okhttp3:okhttp:4.11.0"
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
 
     implementation 'androidx.hilt:hilt-navigation-compose:1.1.0-alpha01'
