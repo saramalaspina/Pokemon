@@ -172,7 +172,7 @@ fun PokemonEntry(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    val defaultDominantColor = Color.Green
+    val defaultDominantColor = Color.Cyan
     var dominantColor by remember {
         mutableStateOf(defaultDominantColor)
     }
@@ -200,22 +200,22 @@ fun PokemonEntry(
                 )
             }
     ) {
-        Row {
-            Column (modifier = modifier.padding(horizontal = 10.dp)){
-                Text(
-                    text = entry.pokemonName,
-                    fontFamily = fontFamily(),
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Start
-                )
 
-                Text(
-                    text = "Tipo",
-                    fontFamily = fontFamily(),
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Start
-                )
-            }
+        Column(modifier = modifier.padding(horizontal = 10.dp)) {
+            Text(
+                text = entry.pokemonName,
+                fontFamily = fontFamily(),
+                fontSize = 20.sp,
+                textAlign = TextAlign.Start
+            )
+
+            Text(
+                text = "Tipo",
+                fontFamily = fontFamily(),
+                fontSize = 15.sp,
+                textAlign = TextAlign.Start
+            )
+        }
 
             /*Column {
                 CoilImage(
@@ -237,15 +237,21 @@ fun PokemonEntry(
                 }
             } */
 
-            Icon(
-                Icons.TwoTone.Favorite, null,
-                modifier = modifier.size(30.dp)
-                    .padding(end = 20.dp),
-                tint = Color(0xFFFF0000)
-            )
+          Column (
+              modifier = modifier.padding(horizontal = 150.dp)
+          ){
+              Icon(
+                  Icons.TwoTone.Favorite, null,
+                  modifier = modifier.size(30.dp)
+                      .clickable {
+
+                      }
+              )
+          }
+
         }
     }
-}
+
 
 
 
