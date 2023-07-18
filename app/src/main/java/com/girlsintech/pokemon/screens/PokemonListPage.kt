@@ -46,9 +46,10 @@ fun PokemonListPage(
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
-    ){
+    ) {
         val context = LocalContext.current
-        val viewModel : PokemonViewModel = viewModel(factory = PokemonViewModel.PokemonViewModelFactory(context.applicationContext as Application))
+        val viewModel: PokemonViewModel =
+            viewModel(factory = PokemonViewModel.PokemonViewModelFactory(context.applicationContext as Application))
 
         var filter by rememberSaveable {
             mutableStateOf("")
@@ -62,27 +63,28 @@ fun PokemonListPage(
             mutableStateOf(false)
         }
 
-        val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0).observeAsState(listOf()).value
+        val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0)
+            .observeAsState(listOf()).value
 
-                Column {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    myImage(R.drawable.pokemon_title)
-                    SearchBar(
-                        hint = "Search...",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
+        Column {
+            Spacer(modifier = Modifier.height(10.dp))
+            myImage(R.drawable.pokemon_title)
+            SearchBar(
+                hint = "Search...",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
 
-                    PokemonList(
-                        list = pokemonList,
-                        refresh = refresh,
-                        viewModel = viewModel,
-                        navController = navController,
-                    ) {
-                        refresh != it
-                    }
-                }
+            PokemonList(
+                list = pokemonList,
+                refresh = refresh,
+                viewModel = viewModel,
+                navController = navController,
+            ) {
+                refresh != it
+            }
+        }
 
     }
 }
@@ -103,7 +105,7 @@ fun PokemonList(
 
     LazyColumn {
         itemsIndexed(list) { index, pokemon ->
-            ListItem (
+            ListItem(
                 modifier = Modifier
                     .padding(start = 20.dp, end = 20.dp, top = 5.dp)
                     .clip(RoundedCornerShape(6.dp))
@@ -114,31 +116,33 @@ fun PokemonList(
                         )
                     }
                     .border(2.dp, BluePokemon),
-                text = { Text(
-                            text = pokemon.name.replaceFirstChar {
-                                if (it.isLowerCase()) it.titlecase(
-                                    Locale.ROOT
-                                ) else it.toString()
-                            },
-                            fontFamily = fontFamily(),
-                            fontSize = 18.sp,
-                            modifier = Modifier.fillMaxSize() ,
-                            textAlign = TextAlign.Center,
-                        )
-                    },
+                text = {
+                    Text(
+                        text = pokemon.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.ROOT
+                            ) else it.toString()
+                        },
+                        fontFamily = fontFamily(),
+                        fontSize = 18.sp,
+                        modifier = Modifier.fillMaxSize(),
+                        textAlign = TextAlign.Center,
+                    )
+                },
 
                 secondaryText = {
                     Text(
                         text = "Type",
                         fontFamily = fontFamily(),
                         fontSize = 12.sp,
-                        modifier = Modifier.fillMaxSize() ,
+                        modifier = Modifier.fillMaxSize(),
                         textAlign = TextAlign.Center
                     )
                 },
 
                 icon = {
-                    AsyncImage(pokemon.img,
+                    AsyncImage(
+                        pokemon.img,
                         contentDescription = null,
                         modifier = Modifier
                             .size(80.dp)
@@ -147,26 +151,28 @@ fun PokemonList(
                 },
 
                 trailing = {
-                    Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                     }
 
                     IconButton(onClick = {
-                            pokemon.favorite = 1- pokemon.favorite
-                            viewModel.update(pokemon)
-                            onRefresh(refresh)
-                        }) {
-                            Icon(
-                                Icons.TwoTone.Favorite,
-                                contentDescription = null,
-                                modifier = Modifier.size(30.dp),
-                                tint = if (pokemon.favorite == 1) Color.Red else Color.White,
-                            )
-                        }
+                        pokemon.favorite = 1 - pokemon.favorite
+                        viewModel.update(pokemon)
+                        onRefresh(refresh)
+                    }) {
+                        Icon(
+                            Icons.TwoTone.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = if (pokemon.favorite == 1) Color.Red else Color.White,
+                        )
+                    }
                 })
         }
     }
 }
-
 
 
 @Composable
@@ -201,7 +207,7 @@ fun SearchBar(
                     isHintDisplayed = it.isFocused != true
                 }
         )
-        if(isHintDisplayed) {
+        if (isHintDisplayed) {
             Text(
                 text = hint,
                 color = Color.LightGray,
