@@ -22,10 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -35,6 +38,7 @@ import coil.compose.AsyncImage
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
+import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.ui.theme.ItemColor
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
@@ -99,19 +103,27 @@ fun PokemonList(
     navController: NavController,
     onRefresh: (Boolean) -> Unit
 ) {
-    LazyColumn {
-        itemsIndexed(list) { index, pokemon ->
-            ListItem(
-                text = {
-                    PokemonItem(
-                        pokemon = pokemon,
-                        navController = navController,
-                        refresh = refresh,
-                        viewModel = viewModel ,
-                        onRefresh = onRefresh
-                    )
-                }
-            )
+    Column(Modifier
+        .padding(start = 15.dp, end = 15.dp)
+        .background(CardBackground, RoundedCornerShape(10.dp))
+    ) {
+        LazyColumn (
+            Modifier
+                .padding(top =5.dp)
+                ) {
+            itemsIndexed(list) { index, pokemon ->
+                ListItem(
+                    text = {
+                        PokemonItem(
+                            pokemon = pokemon,
+                            navController = navController,
+                            refresh = refresh,
+                            viewModel = viewModel,
+                            onRefresh = onRefresh
+                        )
+                    }
+                )
+            }
         }
     }
 }
@@ -131,72 +143,46 @@ fun PokemonItem(
     }
 
     Column {
-        Card(
+        Box(
             modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp, top = 5.dp)
-                .clip(RoundedCornerShape(6.dp))
+                .padding(top = 5.dp)
+                .clip(RoundedCornerShape(20.dp))
                 .background(defaultDominantColor)
                 .clickable {
                     navController.navigate(
                         "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
                     )
                 }
-                .border(2.dp, BluePokemon),
+                .fillMaxWidth()
         ) {
             ConstraintLayout {
-                val (name, type, image, icon) = createRefs()
+                val (description, image, icon) = createRefs()
 
-                Text(
-                    text = pokemon.name.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(
-                            Locale.ROOT
-                        ) else it.toString()
-                    },
+                Column(
                     modifier = Modifier
-                        .constrainAs(name) {
+                        .constrainAs(description) {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }
-                        .padding(8.dp)
-                        .fillMaxSize(),
-                    fontFamily = fontFamily(),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-
-                Text(
-                    text = "type",
-                    modifier = Modifier
-                        .constrainAs(type) {
-                            top.linkTo(name.bottom)
-                            start.linkTo(name.start, 8.dp)
+                            start.linkTo(parent.start, 10.dp)
                             bottom.linkTo(parent.bottom)
                         }
                         .padding(8.dp)
-                        .fillMaxSize(),
-                    fontFamily = fontFamily(),
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center
-                )
+                ) {
+                    Text(
+                        text = pokemon.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.ROOT
+                            ) else it.toString()
+                        },
+                        fontFamily = fontFamily(),
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
 
-
-                IconButton(onClick = {
-                    pokemon.favorite = 1 - pokemon.favorite
-                    viewModel.update(pokemon)
-                    onRefresh(refresh)
-                }) {
-                    Icon(
-                        Icons.TwoTone.Favorite,
-                        modifier = Modifier
-                            .constrainAs(icon) {
-                                top.linkTo(parent.top)
-                                start.linkTo(image.end, 8.dp)
-                                end.linkTo(parent.end, 8.dp)
-                                bottom.linkTo(parent.bottom)
-                            }
-                            .size(30.dp),
-                        contentDescription = null,
-                        tint = if (pokemon.favorite == 1) Color.Red else Color.White,
+                    Text(
+                        text = "type",
+                        fontFamily = fontFamily(),
+                        fontSize = 15.sp,
+                        color = Color.White
                     )
                 }
 
@@ -207,14 +193,33 @@ fun PokemonItem(
                         .constrainAs(image)
                         {
                             top.linkTo(parent.top)
-                            end.linkTo(icon.start, 8.dp)
+                            start.linkTo(parent.start, 190.dp)
+                            end.linkTo(icon.start, 15.dp)
                             bottom.linkTo(parent.bottom)
                         }
-                        .size(80.dp)
-                        .fillMaxSize()
+                        .size(90.dp)
                 )
 
+
+                Icon(
+                    Icons.TwoTone.Favorite,
+                    modifier = Modifier
+                        .constrainAs(icon) {
+                            top.linkTo(parent.top)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .clickable {
+                            pokemon.favorite = 1 - pokemon.favorite
+                            viewModel.update(pokemon)
+                            onRefresh(refresh)
+                        }
+                        .size(30.dp),
+                    contentDescription = null,
+                    tint = if (pokemon.favorite == 1) Color.Red else Color.White,
+                )
             }
+
         }
     }
 }
