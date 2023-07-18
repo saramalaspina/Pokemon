@@ -1,6 +1,7 @@
 package com.girlsintech.pokemon.screens
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -9,22 +10,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.R
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun MainView(
     onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         color = MaterialTheme.colors.background
     ){
         //current rappresenta la configurazione attuale del dispositivo
@@ -32,6 +33,13 @@ fun MainView(
 
         when (configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(id = R.drawable.sfondo),
+                    contentDescription = "background",
+                    contentScale = ContentScale.FillBounds
+                )
+
                 Column {
                     Spacer(modifier = Modifier.height(10.dp))
                     myImage(R.drawable.pokemon_title)

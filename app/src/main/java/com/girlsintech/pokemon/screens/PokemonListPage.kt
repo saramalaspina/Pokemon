@@ -1,8 +1,13 @@
 package com.girlsintech.pokemon.screens
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.Color.parseColor
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,31 +21,35 @@ import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.palette.graphics.Palette
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
-import com.girlsintech.pokemon.ui.theme.ItemColor
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
+import com.squareup.picasso.Picasso
 import java.util.*
 
 
@@ -70,6 +79,13 @@ fun PokemonListPage(
 
         val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0)
             .observeAsState(listOf()).value
+
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.sfondo),
+            contentDescription = "background",
+            contentScale = ContentScale.FillBounds
+        )
 
         Column {
             Spacer(modifier = Modifier.height(10.dp))
@@ -103,9 +119,11 @@ fun PokemonList(
     navController: NavController,
     onRefresh: (Boolean) -> Unit
 ) {
-    Column(Modifier
-        .padding(start = 15.dp, end = 15.dp)
-        .background(CardBackground, RoundedCornerShape(10.dp))
+
+    Column(
+        Modifier
+            .padding(start = 15.dp, end = 15.dp)
+            .background(CardBackground, RoundedCornerShape(10.dp))
     ) {
         LazyColumn (
             Modifier
@@ -137,9 +155,13 @@ fun PokemonItem(
     onRefresh: (Boolean) -> Unit
 ){
 
-    val defaultDominantColor = ItemColor
+    val defaultDominantColor = MaterialTheme.colors.surface
     var dominantColor by remember {
         mutableStateOf(defaultDominantColor)
+    }
+
+    viewModel.calcDominantColor(pokemon.img) { color ->
+        dominantColor = color
     }
 
     Column {
@@ -147,7 +169,7 @@ fun PokemonItem(
             modifier = Modifier
                 .padding(top = 5.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(defaultDominantColor)
+                .background(dominantColor.copy(alpha=0.6f))
                 .clickable {
                     navController.navigate(
                         "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
@@ -266,6 +288,7 @@ fun SearchBar(
         }
     }
 }
+
 
 
 

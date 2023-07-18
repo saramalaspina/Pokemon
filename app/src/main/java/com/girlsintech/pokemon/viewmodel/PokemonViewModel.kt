@@ -1,10 +1,13 @@
 package com.girlsintech.pokemon.viewmodel
 
 import android.app.Application
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.*
+import androidx.palette.graphics.Palette
 import com.girlsintech.pokemon.db.DbPokemon
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.db.Repository
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -34,5 +37,18 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return PokemonViewModel(application) as T
         }
+    }
+
+    fun calcDominantColor(url: String, onFinish: (Color) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val imageBitmap = Picasso.get().load(url).get()
+
+            Palette.from(imageBitmap).generate { palette ->
+                palette?.dominantSwatch?.rgb?.let { colorValue ->
+                    onFinish(Color(colorValue))
+                }
+            }
+        }
+
     }
 }
