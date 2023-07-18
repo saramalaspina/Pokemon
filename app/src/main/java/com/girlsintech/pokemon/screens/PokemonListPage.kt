@@ -28,6 +28,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -98,82 +99,125 @@ fun PokemonList(
     navController: NavController,
     onRefresh: (Boolean) -> Unit
 ) {
+    LazyColumn {
+        itemsIndexed(list) { index, pokemon ->
+            ListItem(
+                text = {
+                    PokemonItem(
+                        pokemon = pokemon,
+                        navController = navController,
+                        refresh = refresh,
+                        viewModel = viewModel ,
+                        onRefresh = onRefresh
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun PokemonItem(
+    pokemon : Pokemon,
+    navController: NavController,
+    refresh: Boolean,
+    viewModel: PokemonViewModel,
+    onRefresh: (Boolean) -> Unit
+){
+
     val defaultDominantColor = ItemColor
     var dominantColor by remember {
         mutableStateOf(defaultDominantColor)
     }
 
-    LazyColumn {
-        itemsIndexed(list) { index, pokemon ->
-            ListItem(
-                modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp, top = 5.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(defaultDominantColor)
-                    .clickable {
-                        navController.navigate(
-                            "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
-                        )
-                    }
-                    .border(2.dp, BluePokemon),
-                text = {
-                    Text(
-                        text = pokemon.name.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString()
-                        },
-                        fontFamily = fontFamily(),
-                        fontSize = 18.sp,
-                        modifier = Modifier.fillMaxSize(),
-                        textAlign = TextAlign.Center,
+    Column {
+        Card(
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp, top = 5.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(defaultDominantColor)
+                .clickable {
+                    navController.navigate(
+                        "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
                     )
-                },
+                }
+                .border(2.dp, BluePokemon),
+        ) {
+            ConstraintLayout {
+                val (name, type, image, icon) = createRefs()
 
-                secondaryText = {
-                    Text(
-                        text = "Type",
-                        fontFamily = fontFamily(),
-                        fontSize = 12.sp,
-                        modifier = Modifier.fillMaxSize(),
-                        textAlign = TextAlign.Center
-                    )
-                },
+                Text(
+                    text = pokemon.name.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.ROOT
+                        ) else it.toString()
+                    },
+                    modifier = Modifier
+                        .constrainAs(name) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        }
+                        .padding(8.dp)
+                        .fillMaxSize(),
+                    fontFamily = fontFamily(),
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center
+                )
 
-                icon = {
-                    AsyncImage(
-                        pokemon.img,
-                        contentDescription = null,
+                Text(
+                    text = "type",
+                    modifier = Modifier
+                        .constrainAs(type) {
+                            top.linkTo(name.bottom)
+                            start.linkTo(name.start, 8.dp)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .padding(8.dp)
+                        .fillMaxSize(),
+                    fontFamily = fontFamily(),
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center
+                )
+
+
+                IconButton(onClick = {
+                    pokemon.favorite = 1 - pokemon.favorite
+                    viewModel.update(pokemon)
+                    onRefresh(refresh)
+                }) {
+                    Icon(
+                        Icons.TwoTone.Favorite,
                         modifier = Modifier
-                            .size(80.dp)
-                            .fillMaxSize()
+                            .constrainAs(icon) {
+                                top.linkTo(parent.top)
+                                start.linkTo(image.end, 8.dp)
+                                end.linkTo(parent.end, 8.dp)
+                                bottom.linkTo(parent.bottom)
+                            }
+                            .size(30.dp),
+                        contentDescription = null,
+                        tint = if (pokemon.favorite == 1) Color.Red else Color.White,
                     )
-                },
+                }
 
-                trailing = {
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                    }
+                AsyncImage(
+                    pokemon.img,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .constrainAs(image)
+                        {
+                            top.linkTo(parent.top)
+                            end.linkTo(icon.start, 8.dp)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .size(80.dp)
+                        .fillMaxSize()
+                )
 
-                    IconButton(onClick = {
-                        pokemon.favorite = 1 - pokemon.favorite
-                        viewModel.update(pokemon)
-                        onRefresh(refresh)
-                    }) {
-                        Icon(
-                            Icons.TwoTone.Favorite,
-                            contentDescription = null,
-                            modifier = Modifier.size(30.dp),
-                            tint = if (pokemon.favorite == 1) Color.Red else Color.White,
-                        )
-                    }
-                })
+            }
         }
     }
 }
-
 
 @Composable
 fun SearchBar(
