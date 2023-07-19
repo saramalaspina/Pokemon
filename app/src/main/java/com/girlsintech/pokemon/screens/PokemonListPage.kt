@@ -1,11 +1,6 @@
 package com.girlsintech.pokemon.screens
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.Color.parseColor
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,9 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -36,20 +29,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.palette.graphics.Palette
-import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.request.SuccessResult
+import coil.compose.SubcomposeAsyncImage
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
-import com.squareup.picasso.Picasso
 import java.util.*
 
 
@@ -169,7 +157,7 @@ fun PokemonItem(
             modifier = Modifier
                 .padding(top = 5.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(dominantColor.copy(alpha=0.6f))
+                .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
                     navController.navigate(
                         "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
@@ -201,16 +189,23 @@ fun PokemonItem(
                     )
 
                     Text(
-                        text = "type",
+                        text = "Tipo",
                         fontFamily = fontFamily(),
                         fontSize = 15.sp,
                         color = Color.White
                     )
                 }
 
-                AsyncImage(
+                SubcomposeAsyncImage(
                     pokemon.img,
                     contentDescription = null,
+                    loading = {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(3.dp),
+                            color = BluePokemon,
+                            strokeWidth = 2.dp
+                        )
+                    },
                     modifier = Modifier
                         .constrainAs(image)
                         {
@@ -221,7 +216,6 @@ fun PokemonItem(
                         }
                         .size(90.dp)
                 )
-
 
                 Icon(
                     Icons.TwoTone.Favorite,

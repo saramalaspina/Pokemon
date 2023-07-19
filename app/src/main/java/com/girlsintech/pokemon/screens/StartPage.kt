@@ -1,7 +1,5 @@
 package com.girlsintech.pokemon.screens
 
-import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -27,33 +25,21 @@ fun MainView(
         modifier = Modifier
             .fillMaxSize(),
         color = MaterialTheme.colors.background
-    ){
-        //current rappresenta la configurazione attuale del dispositivo
-        val configuration = LocalConfiguration.current
+    ) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.sfondo),
+            contentDescription = "background",
+            contentScale = ContentScale.FillBounds
+        )
 
-        when (configuration.orientation) {
-            Configuration.ORIENTATION_PORTRAIT -> {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(id = R.drawable.sfondo),
-                    contentDescription = "background",
-                    contentScale = ContentScale.FillBounds
-                )
-
-                Column {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    myImage(R.drawable.pokemon_title)
-                    Spacer(modifier = Modifier.height(40.dp))
-                    myImage(R.drawable.pokemon)
-                    Spacer(modifier = Modifier.height(80.dp))
-                    Start(onClick)
-                }
-            }
-            else -> {
-                Row {
-
-                }
-            }
+        Column {
+            Spacer(modifier = Modifier.height(10.dp))
+            myImage(R.drawable.pokemon_title)
+            Spacer(modifier = Modifier.height(40.dp))
+            myImage(R.drawable.pokemon)
+            Spacer(modifier = Modifier.height(80.dp))
+            Start(onClick)
         }
     }
 }

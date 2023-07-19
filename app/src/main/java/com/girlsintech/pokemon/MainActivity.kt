@@ -1,13 +1,10 @@
 package com.girlsintech.pokemon
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,7 +13,6 @@ import androidx.navigation.navArgument
 import com.girlsintech.pokemon.screens.MainView
 import com.girlsintech.pokemon.screens.PokemonListPage
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
-import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
