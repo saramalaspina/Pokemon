@@ -189,7 +189,7 @@ fun PokemonItem(
                     )
 
                     Text(
-                        text = "Tipo",
+                        text = pokemon.type,
                         fontFamily = fontFamily(),
                         fontSize = 15.sp,
                         color = Color.White
