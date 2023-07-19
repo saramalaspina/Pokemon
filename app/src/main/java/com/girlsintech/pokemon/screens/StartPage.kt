@@ -1,21 +1,21 @@
 package com.girlsintech.pokemon.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.R
-import androidx.compose.foundation.Image
-import androidx.compose.ui.layout.ContentScale
+import com.girlsintech.pokemon.ui.theme.BluePokemon
 
 @Composable
 fun MainView(
@@ -40,6 +40,19 @@ fun MainView(
             myImage(R.drawable.pokemon)
             Spacer(modifier = Modifier.height(80.dp))
             Start(onClick)
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 25.dp, bottom = 25.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Bottom
+        ) {
+            Image(painter = painterResource(id = R.drawable.pokeball),
+                contentDescription = "pokeball",
+                modifier = Modifier.requiredSize(60.dp)
+            )
         }
     }
 }
@@ -83,18 +96,26 @@ fun Start(onClick: () -> Unit) {
             shape = RoundedCornerShape(30),
             colors = ButtonDefaults.buttonColors(BluePokemon)
         ) {
-            Text(
-                text = "Pokedex",
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(8.dp),
-                color = Color.White,
-                fontSize = 25.sp,
-                textAlign = TextAlign.Center,
-                fontFamily = fontFamily()
-            )
+            Row {
+                Text(
+                    text = "Pokedex",
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(8.dp),
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontFamily()
+                )
+
+                Image(painter = painterResource(id = R.drawable.grey_pokeball),
+                    contentDescription = "pokeball",
+                    modifier = Modifier.requiredSize(45.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
         }
     }
 

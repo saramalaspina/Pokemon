@@ -107,11 +107,18 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
-
+    //Navigation
     implementation 'androidx.hilt:hilt-navigation-compose:1.1.0-alpha01'
 
+    //Palette
     implementation 'androidx.palette:palette:1.0.0'
 
+    //Picasso
     implementation 'com.squareup.picasso:picasso:2.8'
+
+    //Lottie animations
+    implementation "com.airbnb.android:lottie-compose:6.0.0"
+
+
 
 }

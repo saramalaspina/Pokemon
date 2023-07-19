@@ -1,6 +1,7 @@
 package com.girlsintech.pokemon.screens
 
 import android.app.Application
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -142,6 +143,9 @@ fun PokemonItem(
     viewModel: PokemonViewModel,
     onRefresh: (Boolean) -> Unit
 ){
+    var fav by remember {
+        mutableStateOf(pokemon.favorite)
+    }
 
     val defaultDominantColor = MaterialTheme.colors.surface
     var dominantColor by remember {
@@ -202,7 +206,7 @@ fun PokemonItem(
                     loading = {
                         CircularProgressIndicator(
                             modifier = Modifier.size(3.dp),
-                            color = BluePokemon,
+                            color = dominantColor,
                             strokeWidth = 2.dp
                         )
                     },
@@ -210,7 +214,7 @@ fun PokemonItem(
                         .constrainAs(image)
                         {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 190.dp)
+                            start.linkTo(parent.start, 185.dp)
                             end.linkTo(icon.start, 15.dp)
                             bottom.linkTo(parent.bottom)
                         }
@@ -227,12 +231,13 @@ fun PokemonItem(
                         }
                         .clickable {
                             pokemon.favorite = 1 - pokemon.favorite
+                            fav = 1 - fav
                             viewModel.update(pokemon)
                             onRefresh(refresh)
                         }
-                        .size(30.dp),
+                        .size(35.dp),
                     contentDescription = null,
-                    tint = if (pokemon.favorite == 1) Color.Red else Color.White,
+                    tint = if (fav == 1) Color.Red else Color.White,
                 )
             }
 
