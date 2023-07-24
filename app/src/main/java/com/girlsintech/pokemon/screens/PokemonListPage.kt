@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -27,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -39,6 +42,7 @@ import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.util.*
 
 
@@ -79,6 +83,31 @@ fun PokemonListPage(
         Column {
             Spacer(modifier = Modifier.height(10.dp))
             myImage(R.drawable.pokemon_title)
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding( start = 20.dp)
+            ){
+                Icon(
+                    Icons.TwoTone.Favorite,
+                    modifier = Modifier
+                        .clickable {
+                            onlyFavorite = !onlyFavorite
+                        }
+                        .size(40.dp),
+                    contentDescription = null,
+                    tint = if (onlyFavorite) Color.Red else Color.LightGray,
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = "Favorite",
+                    color = Color.Black,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                )
+            }
+
             SearchBar(
                 hint = "Search...",
                 modifier = Modifier
@@ -244,6 +273,39 @@ fun PokemonItem(
         }
     }
 }
+
+@Composable
+fun FilterRow(
+    onlyFavorite: Boolean,
+    refresh: Boolean,
+    onClick: () -> Unit,
+    onRefresh: (Boolean) -> Unit
+){
+    var fav by remember {
+        mutableStateOf(onlyFavorite)
+    }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(10.dp)
+        ){
+            Icon(
+                Icons.TwoTone.Favorite,
+                modifier = Modifier
+                    .clickable {
+                        fav = !fav
+                        onClick
+                        onRefresh(refresh)
+                    }
+                    .size(35.dp),
+                contentDescription = null,
+                tint = if (fav) Color.Red else Color.LightGray,
+            )
+            Text(text = "Favorite",
+                color = Color.Black
+            )
+        }
+    }
 
 @Composable
 fun SearchBar(
