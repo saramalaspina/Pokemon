@@ -1,6 +1,7 @@
 package com.girlsintech.pokemon.screens
 
 import android.app.Application
+import android.text.BoringLayout
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Favorite
+import androidx.compose.material.icons.twotone.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -96,15 +98,17 @@ fun PokemonListPage(
                         .clickable {
                             onlyFavorite = !onlyFavorite
                         }
-                        .size(40.dp),
+                        .size(35.dp),
                     contentDescription = null,
                     tint = if (onlyFavorite) Color.Red else Color.LightGray,
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = "Favorite",
+                Text(
+                    text = "Favorites",
                     color = Color.Black,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
+                    fontFamily = newFont(),
+                    textAlign = TextAlign . Center,
                 )
             }
 
@@ -121,7 +125,7 @@ fun PokemonListPage(
                 viewModel = viewModel,
                 navController = navController,
             ) {
-                refresh != it
+                refresh = !it
             }
         }
 
@@ -148,164 +152,108 @@ fun PokemonList(
                 .padding(top =5.dp)
                 ) {
             itemsIndexed(list) { index, pokemon ->
-                ListItem(
-                    text = {
-                        PokemonItem(
-                            pokemon = pokemon,
-                            navController = navController,
-                            refresh = refresh,
-                            viewModel = viewModel,
-                            onRefresh = onRefresh
-                        )
+
+                val defaultDominantColor = MaterialTheme.colors.surface
+                var dominantColor by remember {
+                    mutableStateOf(defaultDominantColor)
+                }
+
+                viewModel.calcDominantColor(pokemon.img) { color ->
+                    dominantColor = color
+                }
+
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 5.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(dominantColor.copy(alpha = 0.6f))
+                            .clickable {
+                                navController.navigate(
+                                    "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
+                                )
+                            }
+                            .fillMaxWidth()
+                    ) {
+                        ConstraintLayout {
+                            val (description, image, icon) = createRefs()
+
+                            Column(
+                                modifier = Modifier
+                                    .constrainAs(description) {
+                                        top.linkTo(parent.top)
+                                        start.linkTo(parent.start, 10.dp)
+                                        bottom.linkTo(parent.bottom)
+                                    }
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = pokemon.name.replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.ROOT
+                                        ) else it.toString()
+                                    },
+                                    fontFamily = fontFamily(),
+                                    fontSize = 20.sp,
+                                    color = Color.White
+                                )
+
+                                Text(
+                                    text = pokemon.type,
+                                    fontFamily = fontFamily(),
+                                    fontSize = 15.sp,
+                                    color = Color.White
+                                )
+                            }
+
+                            SubcomposeAsyncImage(
+                                pokemon.img,
+                                contentDescription = null,
+                                loading = {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(3.dp),
+                                        color = dominantColor,
+                                        strokeWidth = 2.dp
+                                    )
+                                },
+                                modifier = Modifier
+                                    .constrainAs(image)
+                                    {
+                                        top.linkTo(parent.top)
+                                        start.linkTo(parent.start, 185.dp)
+                                        end.linkTo(icon.start, 15.dp)
+                                        bottom.linkTo(parent.bottom)
+                                    }
+                                    .size(90.dp)
+                            )
+
+                            Icon(
+                                Icons.TwoTone.Favorite,
+                                modifier = Modifier
+                                    .constrainAs(icon) {
+                                        top.linkTo(parent.top)
+                                        end.linkTo(parent.end)
+                                        bottom.linkTo(parent.bottom)
+                                    }
+                                    .clickable {
+                                        pokemon.favorite = 1 - pokemon.favorite
+                                        viewModel.update(pokemon)
+                                        onRefresh(refresh)
+                                    }
+                                    .size(35.dp),
+                                contentDescription = null,
+                                tint = if (pokemon.favorite == 1) Color.Red else Color.White
+                            )
+                        }
+
                     }
-                )
+                }
             }
         }
     }
 }
 
-@Composable
-fun PokemonItem(
-    pokemon : Pokemon,
-    navController: NavController,
-    refresh: Boolean,
-    viewModel: PokemonViewModel,
-    onRefresh: (Boolean) -> Unit
-){
-    var fav by remember {
-        mutableStateOf(pokemon.favorite)
-    }
 
-    val defaultDominantColor = MaterialTheme.colors.surface
-    var dominantColor by remember {
-        mutableStateOf(defaultDominantColor)
-    }
-
-    viewModel.calcDominantColor(pokemon.img) { color ->
-        dominantColor = color
-    }
-
-    Column {
-        Box(
-            modifier = Modifier
-                .padding(top = 5.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(dominantColor.copy(alpha = 0.6f))
-                .clickable {
-                    navController.navigate(
-                        "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
-                    )
-                }
-                .fillMaxWidth()
-        ) {
-            ConstraintLayout {
-                val (description, image, icon) = createRefs()
-
-                Column(
-                    modifier = Modifier
-                        .constrainAs(description) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start, 10.dp)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .padding(8.dp)
-                ) {
-                    Text(
-                        text = pokemon.name.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString()
-                        },
-                        fontFamily = fontFamily(),
-                        fontSize = 20.sp,
-                        color = Color.White
-                    )
-
-                    Text(
-                        text = pokemon.type,
-                        fontFamily = fontFamily(),
-                        fontSize = 15.sp,
-                        color = Color.White
-                    )
-                }
-
-                SubcomposeAsyncImage(
-                    pokemon.img,
-                    contentDescription = null,
-                    loading = {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(3.dp),
-                            color = dominantColor,
-                            strokeWidth = 2.dp
-                        )
-                    },
-                    modifier = Modifier
-                        .constrainAs(image)
-                        {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start, 185.dp)
-                            end.linkTo(icon.start, 15.dp)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .size(90.dp)
-                )
-
-                Icon(
-                    Icons.TwoTone.Favorite,
-                    modifier = Modifier
-                        .constrainAs(icon) {
-                            top.linkTo(parent.top)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .clickable {
-                            pokemon.favorite = 1 - pokemon.favorite
-                            fav = 1 - fav
-                            viewModel.update(pokemon)
-                            onRefresh(refresh)
-                        }
-                        .size(35.dp),
-                    contentDescription = null,
-                    tint = if (fav == 1) Color.Red else Color.White,
-                )
-            }
-
-        }
-    }
-}
-
-@Composable
-fun FilterRow(
-    onlyFavorite: Boolean,
-    refresh: Boolean,
-    onClick: () -> Unit,
-    onRefresh: (Boolean) -> Unit
-){
-    var fav by remember {
-        mutableStateOf(onlyFavorite)
-    }
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(10.dp)
-        ){
-            Icon(
-                Icons.TwoTone.Favorite,
-                modifier = Modifier
-                    .clickable {
-                        fav = !fav
-                        onClick
-                        onRefresh(refresh)
-                    }
-                    .size(35.dp),
-                contentDescription = null,
-                tint = if (fav) Color.Red else Color.LightGray,
-            )
-            Text(text = "Favorite",
-                color = Color.Black
-            )
-        }
-    }
 
 @Composable
 fun SearchBar(
@@ -320,7 +268,11 @@ fun SearchBar(
         mutableStateOf(hint != "")
     }
 
-    Box(modifier = modifier) {
+    Box(modifier = Modifier
+        .background(Color.LightGray)
+        .clip(RoundedCornerShape(20.dp))
+        .padding(top = 5.dp)
+    ) {
         BasicTextField(
             value = text,
             onValueChange = {
@@ -334,17 +286,24 @@ fun SearchBar(
                 .fillMaxWidth()
                 .shadow(5.dp, CircleShape)
                 .background(Color.White, CircleShape)
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .padding(horizontal = 35.dp, vertical = 12.dp)
                 .onFocusChanged {
                     isHintDisplayed = it.isFocused != true
                 }
         )
+
+        Icon(imageVector = Icons.TwoTone.Search,
+            contentDescription = null,
+            modifier = Modifier
+                .padding(horizontal = 10.dp, vertical = 12.dp)
+        )
+
         if (isHintDisplayed) {
             Text(
                 text = hint,
                 color = Color.LightGray,
                 modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 12.dp)
+                    .padding(horizontal = 35.dp, vertical = 12.dp)
             )
         }
     }

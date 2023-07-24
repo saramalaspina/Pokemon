@@ -12,3 +12,10 @@ fun fontFamily() : FontFamily {
         Font("Candal-Regular.ttf", assets)
     )
 }
+@Composable
+fun newFont() : FontFamily {
+    val assets = LocalContext.current.assets
+    return FontFamily(
+        Font("Nunito.ttf", assets)
+    )
+}

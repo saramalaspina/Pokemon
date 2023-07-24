@@ -11,9 +11,7 @@ class Repository(private val dao: DaoPokemon) {
     val readAllData: LiveData<MutableList<Pokemon>> = dao.getAll()
 
      fun update(pokemon: Pokemon) {
-        CoroutineScope(Dispatchers.IO).launch {
             dao.update(pokemon)
-        }
     }
 
     fun readByTag(s: String, f: Int): LiveData<MutableList<Pokemon>> {
