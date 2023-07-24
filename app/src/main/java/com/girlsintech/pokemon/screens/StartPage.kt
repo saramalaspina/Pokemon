@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 
@@ -21,6 +23,11 @@ import com.girlsintech.pokemon.ui.theme.BluePokemon
 fun MainView(
     onClick: () -> Unit,
 ) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.pokeball_animation))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -49,9 +56,9 @@ fun MainView(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Bottom
         ) {
-            Image(painter = painterResource(id = R.drawable.pokeball),
-                contentDescription = "pokeball",
-                modifier = Modifier.requiredSize(60.dp)
+            LottieAnimation(
+                modifier = Modifier.size(60.dp),
+                composition = composition, progress = {progress}
             )
         }
     }
@@ -112,7 +119,8 @@ fun Start(onClick: () -> Unit) {
 
                 Image(painter = painterResource(id = R.drawable.grey_pokeball),
                     contentDescription = "pokeball",
-                    modifier = Modifier.requiredSize(45.dp)
+                    modifier = Modifier
+                        .requiredSize(45.dp)
                         .align(Alignment.CenterVertically)
                 )
             }
