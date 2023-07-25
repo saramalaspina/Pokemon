@@ -109,7 +109,9 @@ fun PokemonListPage(
 
             SearchBar(
                 hint = "Search..."
-            )
+            ) {
+                filter = it
+            }
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -272,7 +274,7 @@ fun PokemonItem(
 @Composable
 fun SearchBar(
     hint: String = "",
-    onSearch: (String) -> Unit = {}
+    onSearch: (String) -> Unit
 ) {
     var text by remember {
         mutableStateOf("")
