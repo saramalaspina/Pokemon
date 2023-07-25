@@ -67,6 +67,10 @@ fun PokemonListPage(
             mutableStateOf(false)
         }
 
+        var isHintDisplayed by remember {
+            mutableStateOf(false)
+        }
+
         val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0)
             .observeAsState(listOf()).value
 
@@ -107,11 +111,46 @@ fun PokemonListPage(
                 )
             }
 
-            SearchBar(
-                hint = "Search..."
+            Box(modifier = Modifier
+                .background(CardBackground, CircleShape)
+                .clip(RoundedCornerShape(20.dp))
+                .padding(horizontal = 10.dp, vertical = 5.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
-                filter = it
+                BasicTextField(
+                    value = filter,
+                    onValueChange = {
+                        filter = it
+                    },
+                    maxLines = 1,
+                    singleLine = true,
+                    textStyle = TextStyle(color = Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(5.dp, CircleShape)
+                        .background(Color.White, CircleShape)
+                        .padding(horizontal = 35.dp, vertical = 12.dp)
+                        .onFocusChanged {
+                            isHintDisplayed = it.isFocused != true
+                        }
+                )
+
+                Icon(imageVector = Icons.TwoTone.Search,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 12.dp)
+                )
+
+                if (isHintDisplayed) {
+                    Text(
+                        text = "Search...",
+                        color = Color.LightGray,
+                        modifier = Modifier
+                            .padding(horizontal = 35.dp, vertical = 12.dp)
+                    )
+                }
             }
+
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -172,10 +211,8 @@ fun PokemonItem(
     viewModel: PokemonViewModel,
     onRefresh: (Boolean) -> Unit
 ){
-
-    val defaultDominantColor = MaterialTheme.colors.surface
     var dominantColor by remember {
-        mutableStateOf(defaultDominantColor)
+        mutableStateOf(Color.LightGray)
     }
 
     viewModel.calcDominantColor(pokemon.img) { color ->
