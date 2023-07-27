@@ -42,9 +42,9 @@ fun MainView(
 
         Column {
             Spacer(modifier = Modifier.height(10.dp))
-            myImage(R.drawable.pokemon_title)
+            MyImage(R.drawable.pokemon_title)
             Spacer(modifier = Modifier.height(40.dp))
-            myImage(R.drawable.pokemon)
+            MyImage(R.drawable.pokemon)
             Spacer(modifier = Modifier.height(80.dp))
             Start(onClick)
         }
@@ -88,7 +88,7 @@ fun Start(onClick: () -> Unit) {
                 color = BluePokemon,
                 fontSize = 30.sp,
                 textAlign = TextAlign.Center,
-                fontFamily = fontFamily()
+                fontFamily = fontPokemon()
             )
         }
 
@@ -114,7 +114,7 @@ fun Start(onClick: () -> Unit) {
                     color = Color.White,
                     fontSize = 25.sp,
                     textAlign = TextAlign.Center,
-                    fontFamily = fontFamily()
+                    fontFamily = fontPokemon()
                 )
 
                 Image(painter = painterResource(id = R.drawable.grey_pokeball),

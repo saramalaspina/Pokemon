@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.twotone.Favorite
@@ -35,7 +34,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -102,7 +100,10 @@ fun PokemonListPage(
 
         Column {
             Spacer(modifier = Modifier.height(10.dp))
-            myImage(R.drawable.pokemon_title)
+
+            MyImage(R.drawable.pokemon_title)
+
+            Spacer(modifier = Modifier.height(3.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -126,10 +127,11 @@ fun PokemonListPage(
                     color = BlackLight,
                     fontStyle = FontStyle.Italic,
                     fontSize = 20.sp,
-                    fontFamily = newFont(),
+                    fontFamily = fontBasic(),
                     textAlign = TextAlign . Center,
                 )
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(75.dp))
+
                 TypeSelection(itemList = types) {
                     type = if (it == "None") {
                         ""
@@ -140,7 +142,7 @@ fun PokemonListPage(
 
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Box(modifier = Modifier
                 .background(CardBackground, CircleShape)
@@ -181,7 +183,8 @@ fun PokemonListPage(
                         modifier = Modifier
                             .padding(horizontal = 50.dp, vertical = 12.dp),
                         fontSize = 18.sp,
-                        fontStyle = FontStyle.Italic
+                        fontStyle = FontStyle.Italic,
+                        fontFamily = fontBasic()
                     )
                 }
             }
@@ -207,7 +210,7 @@ fun TypeSelection(
     itemList: List<String>,
     onItemSelected: (selectedItem: String) -> Unit
 ) {
-    var expanded by rememberSaveable() { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
@@ -218,50 +221,52 @@ fun TypeSelection(
     else
         Icons.Filled.KeyboardArrowDown
 
-    OutlinedButton(onClick = { expanded = true },
-        modifier = Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned { coordinates ->
-                //This value is used to assign to the DropDown the same width
-                textFieldSize = coordinates.size.toSize()
-            }) {
-        Text(
-            text = selectedItem,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            modifier = Modifier.weight(
-                1f,
-            ),
-        )
-        Icon(icon, contentDescription = null)
-    }
-
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier
-            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-    ) {
-        itemList.forEach {
-            DropdownMenuItem(onClick = {
-                expanded = false
-                selectedItem = if (it == "None") {
-                    "Select Type"
-                } else {
-                    it
+    Column {
+        OutlinedButton(onClick = { expanded = !expanded },
+            modifier = Modifier
+                .onGloballyPositioned { coordinates ->
+                    //This value is used to assign to the DropDown the same width
+                    textFieldSize = coordinates.size.toSize()
                 }
-                onItemSelected(it)
-            }){
-                Text(text = it)
-            }
+               .background(CardBackground, RoundedCornerShape(10.dp))
+        ) {
+            Text(
+                text = selectedItem,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                modifier = Modifier.width(110.dp),
+                fontFamily = fontBasic(),
+                color = Color.Black,
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center,
+                fontStyle = FontStyle.Italic
+            )
+            Icon(icon, contentDescription = null, tint = BlackLight)
         }
 
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                .height(with(LocalDensity.current) { textFieldSize.height.toDp() + 255.dp })
+        ) {
+            itemList.forEach {
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    selectedItem = if (it == "None") {
+                        "Select Type"
+                    } else {
+                        it
+                    }
+                    onItemSelected(it)
+                }) {
+                    Text(text = it)
+                }
+            }
+        }
     }
 }
-
-
-
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -282,7 +287,7 @@ fun PokemonList(
             Modifier
                 .padding(top =5.dp)
                 ) {
-            itemsIndexed(list) { index, pokemon ->
+            itemsIndexed(list) { _, pokemon ->
                 ListItem(
                     text = {
                         PokemonItem(
@@ -342,14 +347,14 @@ fun PokemonItem(
                                 Locale.ROOT
                             ) else it.toString()
                         },
-                        fontFamily = fontFamily(),
+                        fontFamily = fontPokemon(),
                         fontSize = 20.sp,
                         color = Color.White
                     )
 
                     Text(
                         text = pokemon.type,
-                        fontFamily = fontFamily(),
+                        fontFamily = fontPokemon(),
                         fontSize = 15.sp,
                         color = Color.White
                     )
@@ -404,61 +409,6 @@ fun PokemonItem(
                 )
             }
 
-        }
-    }
-}
-
-
-@Composable
-fun SearchBar(
-    hint: String = "",
-    onSearch: (String) -> Unit
-) {
-    var text by remember {
-        mutableStateOf("")
-    }
-    var isHintDisplayed by remember {
-        mutableStateOf(hint != "")
-    }
-
-    Box(modifier = Modifier
-        .background(CardBackground, CircleShape)
-        .clip(RoundedCornerShape(20.dp))
-        .padding(horizontal = 10.dp, vertical = 5.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        BasicTextField(
-            value = text,
-            onValueChange = {
-                text = it
-                onSearch(it)
-            },
-            maxLines = 1,
-            singleLine = true,
-            textStyle = TextStyle(color = Color.Black),
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(5.dp, CircleShape)
-                .background(Color.White, CircleShape)
-                .padding(horizontal = 35.dp, vertical = 12.dp)
-                .onFocusChanged {
-                    isHintDisplayed = it.isFocused != true
-                }
-        )
-
-        Icon(imageVector = Icons.TwoTone.Search,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(horizontal = 10.dp, vertical = 12.dp)
-        )
-
-        if (isHintDisplayed) {
-            Text(
-                text = hint,
-                color = Color.LightGray,
-                modifier = Modifier
-                    .padding(horizontal = 35.dp, vertical = 12.dp)
-            )
         }
     }
 }
