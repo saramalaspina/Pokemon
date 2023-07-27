@@ -18,8 +18,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -28,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,8 +38,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.db.Pokemon
+import com.girlsintech.pokemon.ui.theme.BlackLight
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -104,12 +109,15 @@ fun PokemonListPage(
                 Spacer(modifier = Modifier.width(7.dp))
                 Text(
                     text = "Favorites",
-                    color = Color.Black,
+                    color = BlackLight,
+                    fontStyle = FontStyle.Italic,
                     fontSize = 20.sp,
                     fontFamily = newFont(),
                     textAlign = TextAlign . Center,
                 )
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             Box(modifier = Modifier
                 .background(CardBackground, CircleShape)
@@ -138,15 +146,19 @@ fun PokemonListPage(
                 Icon(imageVector = Icons.TwoTone.Search,
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 12.dp)
+                        .padding(horizontal = 15.dp, vertical = 12.dp)
                 )
+
+                Spacer(modifier = Modifier.width(15.dp))
 
                 if (isHintDisplayed) {
                     Text(
                         text = "Search...",
                         color = Color.LightGray,
                         modifier = Modifier
-                            .padding(horizontal = 35.dp, vertical = 12.dp)
+                            .padding(horizontal = 50.dp, vertical = 12.dp),
+                        fontSize = 18.sp,
+                        fontStyle = FontStyle.Italic
                     )
                 }
             }
@@ -212,11 +224,7 @@ fun PokemonItem(
     onRefresh: (Boolean) -> Unit
 ){
     var dominantColor by remember {
-        mutableStateOf(Color.LightGray)
-    }
-
-    viewModel.calcDominantColor(pokemon.img) { color ->
-        dominantColor = color
+        mutableStateOf(BluePokemon.copy(0.4f))
     }
 
     Column {
@@ -263,9 +271,17 @@ fun PokemonItem(
                     )
                 }
 
-                SubcomposeAsyncImage(
-                    pokemon.img,
-                    contentDescription = null,
+                 SubcomposeAsyncImage(
+                     model = ImageRequest.Builder(LocalContext.current)
+                         .data(pokemon.img)
+                         .diskCacheKey("pokemon_image_${pokemon.id}")
+                         .listener { _, result ->
+                             viewModel.calcDominantColor(result.drawable) { color ->
+                             dominantColor = color
+                            }
+                         }
+                         .build(),
+                     contentDescription = null,
                     loading = {
                         CircularProgressIndicator(
                             modifier = Modifier.requiredSize(30.dp),
@@ -273,12 +289,13 @@ fun PokemonItem(
                             strokeWidth = 2.dp
                         )
                     },
+
                     modifier = Modifier
                         .constrainAs(image)
                         {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 190.dp)
-                            end.linkTo(icon.start, 15.dp)
+                            start.linkTo(parent.start, 195.dp)
+                            end.linkTo(icon.start, 9.dp)
                             bottom.linkTo(parent.bottom)
                         }
                         .size(90.dp)

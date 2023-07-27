@@ -1,6 +1,10 @@
 package com.girlsintech.pokemon.viewmodel
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.*
 import androidx.palette.graphics.Palette
@@ -10,6 +14,8 @@ import com.girlsintech.pokemon.db.Repository
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
+import java.net.URL
 
 class PokemonViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -39,16 +45,14 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun calcDominantColor(url: String, onFinish: (Color) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val imageBitmap = Picasso.get().load(url).get()
+    fun calcDominantColor(drawable: Drawable, onFinish: (Color) -> Unit) {
+        val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-            Palette.from(imageBitmap).generate { palette ->
-                palette?.dominantSwatch?.rgb?.let { colorValue ->
-                    onFinish(Color(colorValue))
-                }
+        Palette.from(bmp).generate { palette ->
+            palette?.dominantSwatch?.rgb?.let { colorValue ->
+                onFinish(Color(colorValue))
             }
         }
-
     }
 }
+
