@@ -38,8 +38,8 @@ interface DaoPokemon {
     @RawQuery(observedEntities = [Pokemon::class])
     fun getAllByTagAndFavorite(query: SupportSQLiteQuery): LiveData<MutableList<Pokemon>>
 
-    fun getAllByTagAndFavoriteQuery(s: String, f: Int = 0): LiveData<MutableList<Pokemon>> {
-        var query = "SELECT * FROM Pokemon WHERE name LIKE '%$s%'"
+    fun getAllByTagAndFavoriteQuery(s: String, f: Int = 0, t: String): LiveData<MutableList<Pokemon>> {
+        var query = "SELECT * FROM Pokemon WHERE name LIKE '%$s%' AND type LIKE '%$t%'"
         if (f == 1)
             query += " AND favorite = 1"
         val simpleSQLiteQuery = SimpleSQLiteQuery(query, arrayOf<Pokemon>())

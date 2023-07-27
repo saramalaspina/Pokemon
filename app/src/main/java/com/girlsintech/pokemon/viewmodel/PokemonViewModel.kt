@@ -26,8 +26,8 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
             repository = Repository(dao)
         }
 
-        fun readByTag(s: String, f: Int): LiveData<MutableList<Pokemon>> {
-            return repository.readByTag("%$s%", f)
+        fun readByTag(s: String, f: Int, t: String): LiveData<MutableList<Pokemon>> {
+            return repository.readByTag("%$s%", f, "%$t%")
         }
 
         fun update(item: Pokemon) {

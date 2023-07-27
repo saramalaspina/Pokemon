@@ -12,28 +12,35 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material.icons.twotone.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -64,6 +71,10 @@ fun PokemonListPage(
             mutableStateOf("")
         }
 
+        var type by rememberSaveable {
+            mutableStateOf("")
+        }
+
         var refresh by rememberSaveable {
             mutableStateOf(false)
         }
@@ -76,7 +87,10 @@ fun PokemonListPage(
             mutableStateOf(false)
         }
 
-        val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0)
+        val types = listOf("None", "Normal", "Fire", "Water", "Grass", "Flying", "Fighting", "Poison",
+            "Electric", "Ground", "Rock", "Psychic", "Ice", "Bug", "Ghost", "Steel", "Dragon", "Dark", "Fairy")
+
+        val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0, "%$type%")
             .observeAsState(listOf()).value
 
         Image(
@@ -115,6 +129,15 @@ fun PokemonListPage(
                     fontFamily = newFont(),
                     textAlign = TextAlign . Center,
                 )
+                Spacer(modifier = Modifier.width(20.dp))
+                TypeSelection(itemList = types) {
+                    type = if (it == "None") {
+                        ""
+                    } else {
+                        it
+                    }
+                }
+
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -178,6 +201,67 @@ fun PokemonListPage(
 
     }
 }
+
+@Composable
+fun TypeSelection(
+    itemList: List<String>,
+    onItemSelected: (selectedItem: String) -> Unit
+) {
+    var expanded by rememberSaveable() { mutableStateOf(false) }
+
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+
+    var selectedItem by remember { mutableStateOf("Select Type") }
+
+    val icon = if (expanded)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+    OutlinedButton(onClick = { expanded = true },
+        modifier = Modifier
+            .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                //This value is used to assign to the DropDown the same width
+                textFieldSize = coordinates.size.toSize()
+            }) {
+        Text(
+            text = selectedItem,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            modifier = Modifier.weight(
+                1f,
+            ),
+        )
+        Icon(icon, contentDescription = null)
+    }
+
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false },
+        modifier = Modifier
+            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+    ) {
+        itemList.forEach {
+            DropdownMenuItem(onClick = {
+                expanded = false
+                selectedItem = if (it == "None") {
+                    "Select Type"
+                } else {
+                    it
+                }
+                onItemSelected(it)
+            }){
+                Text(text = it)
+            }
+        }
+
+    }
+}
+
+
+
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

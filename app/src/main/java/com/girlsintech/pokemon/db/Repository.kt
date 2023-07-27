@@ -14,6 +14,6 @@ class Repository(private val dao: DaoPokemon) {
             dao.update(pokemon)
     }
 
-    fun readByTag(s: String, f: Int): LiveData<MutableList<Pokemon>> {
-        return dao.getAllByTagAndFavoriteQuery(s, f) }
+    fun readByTag(s: String, f: Int, t: String): LiveData<MutableList<Pokemon>> {
+        return dao.getAllByTagAndFavoriteQuery(s, f, t) }
 }
