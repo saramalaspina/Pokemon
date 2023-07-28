@@ -42,8 +42,7 @@ class APIRequest (context: Context){
     }
 
     fun getPokemonInfo(onSuccess: (JSONObject?) -> Unit,
-                       onFail: (VolleyError?) -> Unit, pokemonName: String){
-        val url = "$BASE_URL/$pokemonName"
+                       onFail: (VolleyError?) -> Unit, url: String){
 
         val jsonLoader = JsonObjectRequest(url,
             onSuccess,

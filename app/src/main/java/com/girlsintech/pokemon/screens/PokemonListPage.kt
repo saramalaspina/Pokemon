@@ -324,7 +324,7 @@ fun PokemonItem(
                 .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
                     navController.navigate(
-                        "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.name}"
+                        "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.url}"
                     )
                 }
                 .fillMaxWidth()
