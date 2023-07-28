@@ -3,6 +3,7 @@ package com.girlsintech.pokemon.screens
 import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material.icons.twotone.Search
 import androidx.compose.runtime.*
@@ -26,6 +28,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -49,14 +52,14 @@ import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BlackLight
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
+import com.girlsintech.pokemon.util.Route
+import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 
 
 @Composable
-fun PokemonListPage(
-    navController: NavController,
-) {
+fun PokemonListPage() {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -91,17 +94,37 @@ fun PokemonListPage(
         val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0, "%$type%")
             .observeAsState(listOf()).value
 
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.sfondo),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds
-        )
+
+Row {
+    Icon(Icons.TwoTone.ArrowBack,
+        contentDescription = null,
+        tint = BluePokemon,
+        modifier = Modifier
+            .size(50.dp)
+            .padding(top = 15.dp, start = 15.dp)
+            .clickable {
+            ScreenRouter.navigateTo(2,1)
+            }
+    )
+
+    Image(
+        modifier = Modifier.fillMaxSize(),
+        painter = painterResource(id = R.drawable.sfondo),
+        contentDescription = "background",
+        contentScale = ContentScale.FillBounds
+    )
+}
 
         Column {
             Spacer(modifier = Modifier.height(10.dp))
 
-            MyImage(R.drawable.pokemon_title)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Top) {
+                Image(
+                    painter = painterResource(id = R.drawable.pokemon_title),
+                    contentDescription = null,
+                    alignment = Alignment.TopCenter
+                )
+            }
 
             Spacer(modifier = Modifier.height(3.dp))
 
@@ -196,7 +219,6 @@ fun PokemonListPage(
                 list = pokemonList,
                 refresh = refresh,
                 viewModel = viewModel,
-                navController = navController,
             ) {
                 refresh = !it
             }
@@ -228,7 +250,7 @@ fun TypeSelection(
                     //This value is used to assign to the DropDown the same width
                     textFieldSize = coordinates.size.toSize()
                 }
-               .background(CardBackground, RoundedCornerShape(10.dp))
+                .background(CardBackground, RoundedCornerShape(10.dp))
         ) {
             Text(
                 text = selectedItem,
@@ -274,7 +296,6 @@ fun PokemonList(
     list: List<Pokemon>,
     refresh: Boolean,
     viewModel: PokemonViewModel,
-    navController: NavController,
     onRefresh: (Boolean) -> Unit
 ) {
 
@@ -292,7 +313,6 @@ fun PokemonList(
                     text = {
                         PokemonItem(
                             pokemon = pokemon,
-                            navController = navController,
                             refresh = refresh,
                             viewModel = viewModel,
                             onRefresh = onRefresh
@@ -307,7 +327,6 @@ fun PokemonList(
 @Composable
 fun PokemonItem(
     pokemon : Pokemon,
-    navController: NavController,
     refresh: Boolean,
     viewModel: PokemonViewModel,
     onRefresh: (Boolean) -> Unit
@@ -323,9 +342,7 @@ fun PokemonItem(
                 .clip(RoundedCornerShape(20.dp))
                 .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
-                    navController.navigate(
-                        "pokemon_detail_screen/${dominantColor.toArgb()}/${pokemon.url}"
-                    )
+                    ScreenRouter.navigateToDetail(2, dominantColor, pokemon.url)
                 }
                 .fillMaxWidth()
         ) {

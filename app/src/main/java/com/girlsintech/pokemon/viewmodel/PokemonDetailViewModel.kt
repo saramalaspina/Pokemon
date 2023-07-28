@@ -12,11 +12,11 @@ class PokemonDetailViewModel(private var application: Application) : AndroidView
 
     private val pokemonInfo = MutableLiveData<Pokemon>()
 
-    fun getData(url: String, onError: (String) -> Unit) : MutableLiveData<Pokemon> {
+    fun getData(url: String, onError: (String) -> Unit) {
         val queue = APIRequest.getAPI(application)
         queue.getPokemonInfo({
             val l = unpackProduct(it)
-            pokemonInfo.postValue(l)
+            pokemonInfo.value = l
         }, {
             Log.w("XXX", "VolleyError")
             if (it?.message != null)
@@ -26,9 +26,11 @@ class PokemonDetailViewModel(private var application: Application) : AndroidView
         },
             url
         )
-        return pokemonInfo
     }
 
+    fun getPokemon() : Pokemon? {
+        return pokemonInfo.value
+    }
 
     private fun unpackProduct(it: JSONObject?): Pokemon {
         val json = it?.toString()

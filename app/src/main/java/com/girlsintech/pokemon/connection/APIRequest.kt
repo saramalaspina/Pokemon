@@ -28,19 +28,6 @@ class APIRequest (context: Context){
         request = Volley.newRequestQueue(context)
     }
 
-    fun getPokemonList(onSuccess: (JSONObject?) -> Unit,
-                    onFail: (VolleyError?) -> Unit, limit: Int, offset:Int ){
-        val url = "$BASE_URL?offset=$offset&limit=$limit"
-
-        val jsonLoader = JsonObjectRequest(url,
-            onSuccess,
-            onFail)
-        jsonLoader.retryPolicy = DefaultRetryPolicy(5000,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-        request.add(jsonLoader)
-    }
-
     fun getPokemonInfo(onSuccess: (JSONObject?) -> Unit,
                        onFail: (VolleyError?) -> Unit, url: String){
 

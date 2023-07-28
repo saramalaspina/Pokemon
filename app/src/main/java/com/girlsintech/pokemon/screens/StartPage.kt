@@ -1,10 +1,13 @@
 package com.girlsintech.pokemon.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.ui.theme.BluePokemon
+import com.girlsintech.pokemon.util.ScreenRouter
 
 @Composable
 fun MainView(
@@ -33,12 +37,23 @@ fun MainView(
             .fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.sfondo),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds
-        )
+        Row {
+            Icon(
+                Icons.TwoTone.ArrowBack,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(top = 15.dp, start = 15.dp)
+
+            )
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = R.drawable.sfondo),
+                contentDescription = "background",
+                contentScale = ContentScale.FillBounds
+            )
+        }
 
         Column {
             Spacer(modifier = Modifier.height(10.dp))
