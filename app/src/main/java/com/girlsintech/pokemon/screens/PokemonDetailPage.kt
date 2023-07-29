@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -39,67 +40,7 @@ fun PokemonDetailPage (
     ) {
 
         var pokemon = viewModel.pokemonInfo.observeAsState().value
-
-        Column {
-            Row (modifier = Modifier
-                .padding(top = 15.dp)
-                .fillMaxWidth()
-            ) {
-                Icon(
-                    Icons.TwoTone.ArrowBack,
-                    contentDescription = null,
-                    tint = BluePokemon,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .padding(start = 30.dp)
-                        .clickable {
-                            ScreenRouter.navigateTo(3, 2)
-                        }
-                )
-                Icon(
-                    Icons.TwoTone.Favorite,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .padding(start = 100.dp)
-                        .clickable {
-                            //TODO
-                        }
-                )
-            }
-            Row {
-                Column {
-                    Text(
-                        text = pokemon!!.name.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString()
-                        },
-                        fontFamily = fontPokemon(),
-                        fontSize = 40.sp,
-                        color = Color.White
-                    )
-
-                    Row {
-                        pokemon.types.forEach {
-                            Text(
-                                text = it.type.name,
-                                fontFamily = fontPokemon(),
-                                fontSize = 25.sp,
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
-                Text(
-                    text = "#${pokemon!!.id}",
-                    fontFamily = fontPokemon(),
-                    fontSize = 30.sp,
-                )
-            }
-        }
-
+        topBox(pokemon = pokemon!!)
     }
 }
 
@@ -111,6 +52,7 @@ fun topBox(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 18.dp)
         ) {
             ConstraintLayout {
                 val (arrow, favorite) = createRefs()
@@ -121,8 +63,8 @@ fun topBox(
                     tint = BluePokemon,
                     modifier = Modifier
                         .constrainAs(arrow) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start, 10.dp)
+                            top.linkTo(parent.top, 20.dp)
+                            start.linkTo(parent.start)
                             bottom.linkTo(parent.bottom)
                         }
                         .requiredSize(40.dp)
@@ -137,7 +79,7 @@ fun topBox(
                     modifier = Modifier
                         .constrainAs(favorite) {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 100.dp)
+                            start.linkTo(parent.start, 340.dp)
                             bottom.linkTo(parent.bottom)
                         }
                         .requiredSize(40.dp)
@@ -150,10 +92,7 @@ fun topBox(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Box(
-            modifier = Modifier
-                .padding(15.dp)
-        ) {
+        Box {
             ConstraintLayout {
                 val (description, number) = createRefs()
 
@@ -172,14 +111,18 @@ fun topBox(
                             ) else it.toString()
                         },
                         fontFamily = fontPokemon(),
-                        fontSize = 40.sp,
+                        fontSize = 35.sp,
                         color = Color.White
                     )
 
                     Row {
-                        pokemon.types.forEach {
+                        pokemon.types.forEach { s ->
                             Text(
-                                text = it.type.name,
+                                text = s.type.name.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.getDefault()
+                                    ) else it.toString()
+                                } + " ",
                                 fontFamily = fontPokemon(),
                                 fontSize = 25.sp,
                                 color = Color.White
@@ -191,12 +134,12 @@ fun topBox(
                     modifier = Modifier
                         .constrainAs(number) {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 200.dp)
+                            start.linkTo(parent.start, 300.dp)
                             bottom.linkTo(parent.bottom)
                         },
-                    text = "#${pokemon!!.id}",
+                    text = "N° ${pokemon!!.id}",
                     fontFamily = fontPokemon(),
-                    fontSize = 30.sp,
+                    fontSize = 28.sp,
                     color = Color.White
                 )
             }
