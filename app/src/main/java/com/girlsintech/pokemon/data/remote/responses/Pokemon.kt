@@ -23,7 +23,3 @@ data class Pokemon(
     val types: List<Type>,
     val weight: Int
 )
-
-class SelectedPokemon {
-    var pokemon : MutableList<Pokemon> = mutableListOf()
-}

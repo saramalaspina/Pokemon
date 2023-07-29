@@ -3,31 +3,30 @@ package com.girlsintech.pokemon.screens
 import android.app.Application
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.icons.twotone.Favorite
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.girlsintech.pokemon.data.remote.responses.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
+import java.util.*
 
 @Composable
 fun PokemonDetailPage (
@@ -36,27 +35,175 @@ fun PokemonDetailPage (
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = dominantColor.copy(0.5f)
     ) {
 
-        var pokemon = viewModel.pokemonInfo.value?.get(0)
+        var pokemon = viewModel.pokemonInfo.observeAsState().value
 
-        Icon(
-            Icons.TwoTone.ArrowBack,
-            contentDescription = null,
-            tint = BluePokemon,
-            modifier = Modifier
-                .size(20.dp)
-                .padding(top = 15.dp, start = 15.dp)
-                .clickable {
-                    ScreenRouter.navigateTo(3, 2)
+        Column {
+            Row (modifier = Modifier
+                .padding(top = 15.dp)
+                .fillMaxWidth()
+            ) {
+                Icon(
+                    Icons.TwoTone.ArrowBack,
+                    contentDescription = null,
+                    tint = BluePokemon,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .padding(start = 30.dp)
+                        .clickable {
+                            ScreenRouter.navigateTo(3, 2)
+                        }
+                )
+                Icon(
+                    Icons.TwoTone.Favorite,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .padding(start = 100.dp)
+                        .clickable {
+                            //TODO
+                        }
+                )
+            }
+            Row {
+                Column {
+                    Text(
+                        text = pokemon!!.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.ROOT
+                            ) else it.toString()
+                        },
+                        fontFamily = fontPokemon(),
+                        fontSize = 40.sp,
+                        color = Color.White
+                    )
+
+                    Row {
+                        pokemon.types.forEach {
+                            Text(
+                                text = it.type.name,
+                                fontFamily = fontPokemon(),
+                                fontSize = 25.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
                 }
-        )
-
-        Text(text = pokemon?.name + pokemon?.height)
+                Text(
+                    text = "#${pokemon!!.id}",
+                    fontFamily = fontPokemon(),
+                    fontSize = 30.sp,
+                )
+            }
+        }
 
     }
 }
+
+@Composable
+fun topBox(
+    pokemon : Pokemon
+){
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            ConstraintLayout {
+                val (arrow, favorite) = createRefs()
+
+                Icon(
+                    Icons.TwoTone.ArrowBack,
+                    contentDescription = null,
+                    tint = BluePokemon,
+                    modifier = Modifier
+                        .constrainAs(arrow) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 10.dp)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .requiredSize(40.dp)
+                        .clickable {
+                            ScreenRouter.navigateTo(3, 2)
+                        }
+                )
+                Icon(
+                    Icons.TwoTone.Favorite,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .constrainAs(favorite) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 100.dp)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .requiredSize(40.dp)
+                        .clickable {
+                            ScreenRouter.navigateTo(3, 2)
+                        }
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Box(
+            modifier = Modifier
+                .padding(15.dp)
+        ) {
+            ConstraintLayout {
+                val (description, number) = createRefs()
+
+                Column(
+                    modifier = Modifier
+                        .constrainAs(description) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 20.dp)
+                            bottom.linkTo(parent.bottom)
+                        }
+                ) {
+                    Text(
+                        text = pokemon!!.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.ROOT
+                            ) else it.toString()
+                        },
+                        fontFamily = fontPokemon(),
+                        fontSize = 40.sp,
+                        color = Color.White
+                    )
+
+                    Row {
+                        pokemon.types.forEach {
+                            Text(
+                                text = it.type.name,
+                                fontFamily = fontPokemon(),
+                                fontSize = 25.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+                Text(
+                    modifier = Modifier
+                        .constrainAs(number) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 200.dp)
+                            bottom.linkTo(parent.bottom)
+                        },
+                    text = "#${pokemon!!.id}",
+                    fontFamily = fontPokemon(),
+                    fontSize = 30.sp,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
 fun ErrorMessage(message: String) {
