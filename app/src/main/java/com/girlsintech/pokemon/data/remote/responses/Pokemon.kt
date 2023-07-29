@@ -1,5 +1,8 @@
 package com.girlsintech.pokemon.data.remote.responses
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+
 data class Pokemon(
     val abilities: List<Ability>,
     val base_experience: Int,
@@ -20,3 +23,7 @@ data class Pokemon(
     val types: List<Type>,
     val weight: Int
 )
+
+class SelectedPokemon {
+    var pokemon : MutableList<Pokemon> = mutableListOf()
+}
