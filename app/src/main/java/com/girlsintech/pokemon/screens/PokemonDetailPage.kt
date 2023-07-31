@@ -1,8 +1,6 @@
 package com.girlsintech.pokemon.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -167,17 +165,46 @@ fun imageBox(
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(300.dp)
-                        .offset(y = 120.dp)
+                        .size(280.dp)
+                        .offset(y = 180.dp)
                 )
             }
     }
 }
 
 @Composable
-fun bottomBox(
+fun PokemonDetailSection(
     pokemon: Pokemon
-){}
+){
+    val scrollState = rememberScrollState()
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(y = 100.dp)
+            .verticalScroll(scrollState)
+    ) {
+        Row() {
+            Column() {
+                
+            }
+            TextInfo(text = "Species")
+            TextInfo(text = "")
+        }
+    }
+}
+
+@Composable
+fun TextInfo(
+    text : String
+){
+    Text(
+        text = text,
+        fontSize = 15.sp,
+        fontFamily = fontBasic(),
+        color = Color.LightGray
+    ) 
+}
 
 @Composable
 fun ErrorMessage(message: String) {
