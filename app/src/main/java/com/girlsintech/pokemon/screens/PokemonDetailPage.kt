@@ -1,6 +1,6 @@
 package com.girlsintech.pokemon.screens
 
-import android.app.Application
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,21 +11,19 @@ import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.girlsintech.pokemon.data.remote.responses.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
-import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import java.util.*
 
@@ -40,13 +38,15 @@ fun PokemonDetailPage (
     ) {
 
         var pokemon = viewModel.pokemonInfo.observeAsState().value
-        topBox(pokemon = pokemon!!)
+        topBox(pokemon = pokemon!!, dominantColor)
+        imageBox(pokemon = pokemon!!)
     }
 }
 
 @Composable
 fun topBox(
-    pokemon : Pokemon
+    pokemon : Pokemon,
+    dominantColor: Color
 ){
     Column {
         Box(
@@ -115,17 +115,22 @@ fun topBox(
                         color = Color.White
                     )
 
-                    Row {
+                    Row (
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ){
                         pokemon.types.forEach { s ->
                             Text(
                                 text = s.type.name.replaceFirstChar {
                                     if (it.isLowerCase()) it.titlecase(
                                         Locale.getDefault()
                                     ) else it.toString()
-                                } + " ",
+                                },
                                 fontFamily = fontPokemon(),
                                 fontSize = 25.sp,
-                                color = Color.White
+                                color = Color.White,
+                                modifier = Modifier
+                                    .background(dominantColor.copy(0.3f), RoundedCornerShape(50))
+                                    .padding(horizontal = 8.dp)
                             )
                         }
                     }
@@ -147,6 +152,32 @@ fun topBox(
     }
 }
 
+@Composable
+fun imageBox(
+    pokemon: Pokemon
+){
+    Box(contentAlignment = Alignment.TopCenter,
+        modifier = Modifier
+            .fillMaxSize()) {
+            pokemon.sprites?.let {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(it.front_default)
+                        .diskCacheKey("pokemon_image_${pokemon.id}")
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(300.dp)
+                        .offset(y = 120.dp)
+                )
+            }
+    }
+}
+
+@Composable
+fun bottomBox(
+    pokemon: Pokemon
+){}
 
 @Composable
 fun ErrorMessage(message: String) {
