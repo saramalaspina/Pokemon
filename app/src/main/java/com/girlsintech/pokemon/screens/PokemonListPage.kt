@@ -335,9 +335,9 @@ fun PokemonItem(
             modifier = Modifier
                 .padding(top = 5.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(dominantColor.copy(alpha = 0.6f))
+                .background(dominantColor.copy(alpha = 0.9f))
                 .clickable {
-                    ScreenRouter.navigateToDetail(2, dominantColor, pokemon.url)
+                    ScreenRouter.navigateToDetail(2, dominantColor, pokemon.url, pokemon.img)
                 }
                 .fillMaxWidth()
         ) {

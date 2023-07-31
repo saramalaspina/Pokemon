@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,34 +22,38 @@ import com.girlsintech.pokemon.data.remote.responses.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
+import java.lang.Math.round
 import java.util.*
+import kotlin.math.roundToInt
 
 @Composable
 fun PokemonDetailPage (
     dominantColor: Color,
+    imgUrl: String,
     viewModel: PokemonDetailViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = dominantColor.copy(0.5f)
+        color = dominantColor.copy(0.8f)
     ) {
 
         var pokemon = viewModel.pokemonInfo.observeAsState().value
-        topBox(pokemon = pokemon!!, dominantColor)
-        imageBox(pokemon = pokemon!!)
+        TopBox(pokemon = pokemon!!, dominantColor)
+        PokemonDetailSection(pokemon = pokemon!!)
+        ImageBox(imgUrl)
     }
 }
 
 @Composable
-fun topBox(
-    pokemon : Pokemon,
+fun TopBox(
+    pokemon: Pokemon,
     dominantColor: Color
-){
+) {
     Column {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 18.dp)
+                .padding(top = 20.dp)
         ) {
             ConstraintLayout {
                 val (arrow, favorite) = createRefs()
@@ -61,11 +64,11 @@ fun topBox(
                     tint = BluePokemon,
                     modifier = Modifier
                         .constrainAs(arrow) {
-                            top.linkTo(parent.top, 20.dp)
-                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 15.dp)
                             bottom.linkTo(parent.bottom)
                         }
-                        .requiredSize(40.dp)
+                        .requiredSize(30.dp)
                         .clickable {
                             ScreenRouter.navigateTo(3, 2)
                         }
@@ -80,7 +83,7 @@ fun topBox(
                             start.linkTo(parent.start, 340.dp)
                             bottom.linkTo(parent.bottom)
                         }
-                        .requiredSize(40.dp)
+                        .requiredSize(30.dp)
                         .clickable {
                             ScreenRouter.navigateTo(3, 2)
                         }
@@ -91,84 +94,69 @@ fun topBox(
         Spacer(modifier = Modifier.height(10.dp))
 
         Box {
-            ConstraintLayout {
-                val (description, number) = createRefs()
 
-                Column(
-                    modifier = Modifier
-                        .constrainAs(description) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start, 20.dp)
-                            bottom.linkTo(parent.bottom)
-                        }
-                ) {
-                    Text(
-                        text = pokemon!!.name.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString()
-                        },
-                        fontFamily = fontPokemon(),
-                        fontSize = 35.sp,
-                        color = Color.White
-                    )
-
-                    Row (
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ){
-                        pokemon.types.forEach { s ->
-                            Text(
-                                text = s.type.name.replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(
-                                        Locale.getDefault()
-                                    ) else it.toString()
-                                },
-                                fontFamily = fontPokemon(),
-                                fontSize = 25.sp,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .background(dominantColor.copy(0.3f), RoundedCornerShape(50))
-                                    .padding(horizontal = 8.dp)
-                            )
-                        }
-                    }
-                }
+            Column (modifier = Modifier.padding(start = 25.dp, top = 5.dp)){
                 Text(
-                    modifier = Modifier
-                        .constrainAs(number) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start, 300.dp)
-                            bottom.linkTo(parent.bottom)
-                        },
-                    text = "N° ${pokemon!!.id}",
+                    text = "N° ${pokemon.id}",
                     fontFamily = fontPokemon(),
-                    fontSize = 28.sp,
+                    fontSize = 25.sp,
                     color = Color.White
                 )
+
+                Text(
+                    text = pokemon.name.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.ROOT
+                        ) else it.toString()
+                    },
+                    fontFamily = fontPokemon(),
+                    fontSize = 30.sp,
+                    color = Color.White
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    pokemon.types.forEach { s ->
+                        Text(
+                            text = s.type.name.replaceFirstChar {
+                                if (it.isLowerCase()) it.titlecase(
+                                    Locale.getDefault()
+                                ) else it.toString()
+                            },
+                            fontFamily = fontPokemon(),
+                            fontSize = 20.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .background(dominantColor.copy(1f), RoundedCornerShape(50))
+                                .padding(horizontal = 8.dp)
+                        )
+
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun imageBox(
-    pokemon: Pokemon
-){
-    Box(contentAlignment = Alignment.TopCenter,
+fun ImageBox(
+    imgUrl: String
+) {
+    Box(
+        contentAlignment = Alignment.TopCenter,
         modifier = Modifier
-            .fillMaxSize()) {
-            pokemon.sprites?.let {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(it.front_default)
-                        .diskCacheKey("pokemon_image_${pokemon.id}")
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(280.dp)
-                        .offset(y = 180.dp)
-                )
-            }
+            .fillMaxSize()
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imgUrl)
+                .build(),
+            contentDescription = null,
+            modifier = Modifier
+                .size(250.dp)
+                .offset(y = 180.dp)
+        )
     }
 }
 
@@ -181,28 +169,57 @@ fun PokemonDetailSection(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .offset(y = 100.dp)
+            .offset(y = 330.dp)
             .verticalScroll(scrollState)
+            .background(Color.White, RoundedCornerShape(10))
     ) {
-        Row() {
-            Column() {
-                
+        Spacer(modifier = Modifier.height(150.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 25.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TextInfo(text = "Species")
+                TextInfo(text = "Height")
+                TextInfo(text = "Weight")
+                TextInfo(text = "Abilities")
             }
-            TextInfo(text = "Species")
-            TextInfo(text = "")
+
+            Spacer(modifier = Modifier.width(60.dp))
+
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TextInfo(text = pokemon.species.name, Color.Black)
+                TextInfo(text ="${(pokemon.height * 100f).roundToInt() / 1000f} m", Color.Black)
+                TextInfo(text ="${(pokemon.weight * 100f).roundToInt() / 1000f} kg", Color.Black)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ){
+                    pokemon.abilities.forEach{
+                        TextInfo(text = it.ability.name, Color.Black)
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 fun TextInfo(
-    text : String
+    text : String,
+    color: Color = Color.Gray
 ){
     Text(
-        text = text,
+        text = text.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
         fontSize = 15.sp,
         fontFamily = fontBasic(),
-        color = Color.LightGray
+        color = color
     ) 
 }
 

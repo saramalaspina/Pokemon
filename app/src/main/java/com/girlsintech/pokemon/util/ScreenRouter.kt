@@ -9,6 +9,7 @@ object ScreenRouter {
 
     var color: MutableState<Color> = mutableStateOf(Color.White)
     var url: MutableState<String> = mutableStateOf("")
+    var imgUrl: MutableState<String> = mutableStateOf("")
 
 
     fun navigateTo(source: Int = currentScreen.value, destination: Int) {
@@ -16,10 +17,11 @@ object ScreenRouter {
         currentScreen.value = destination
     }
 
-    fun navigateToDetail(source: Int = currentScreen.value, dominantColor: Color, pokemonUrl: String) {
+    fun navigateToDetail(source: Int = currentScreen.value, dominantColor: Color, pokemonUrl: String, img: String) {
         previousScreen.value = source
         currentScreen.value = 3
         color.value = dominantColor
         url.value = pokemonUrl
+        imgUrl.value = img
     }
 }
