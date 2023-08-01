@@ -27,11 +27,6 @@ import com.girlsintech.pokemon.util.ScreenRouter
 fun MainView(
     onClick: () -> Unit,
 ) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.pokeball_animation))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever
-    )
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -71,9 +66,10 @@ fun MainView(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Bottom
         ) {
-            LottieAnimation(
+            Image(
+                painter = painterResource(id = R.drawable.pokeball),
                 modifier = Modifier.size(60.dp),
-                composition = composition, progress = {progress}
+                contentDescription = null
             )
         }
     }

@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.*
+import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
@@ -28,7 +30,9 @@ import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
+import kotlinx.coroutines.delay
 import java.util.*
+import kotlin.concurrent.schedule
 import kotlin.math.roundToInt
 
 @SuppressLint("UnrememberedMutableState")
@@ -64,7 +68,9 @@ fun PokemonDetailPage (
             },
             {
                 pokemonSpecies = it
-                refresh = MyState.Success
+                Timer().schedule(1500) {
+                    refresh = MyState.Success
+                }
             }
         )
 
@@ -297,20 +303,29 @@ fun ErrorMessage(message: String) {
 
 @Composable
 fun Loading() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.pokeball_animation))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
     ConstraintLayout {
         val (pi, wp) = createRefs()
-        CircularProgressIndicator(modifier = Modifier.constrainAs(pi) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            bottom.linkTo(parent.bottom)
-            end.linkTo(parent.end)
-        })
+        LottieAnimation(modifier = Modifier
+            .size(50.dp)
+            .constrainAs(pi) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                bottom.linkTo(parent.bottom)
+                end.linkTo(parent.end)
+            },
+            composition = composition, progress = {progress})
         Text(text = "Wait, please", modifier = Modifier
             .constrainAs(wp) {
                 top.linkTo(pi.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            }
+            },
+            fontFamily = fontBasic()
         )
     }
 }

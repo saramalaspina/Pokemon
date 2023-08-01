@@ -65,9 +65,7 @@ class MainActivity : ComponentActivity() {
                             MyState.Error -> {
                                 ErrorMessage(message)
                             }
-                            MyState.Load, MyState.Init -> {
-                                Loading()
-                            }
+                            MyState.Load, MyState.Init -> {}
                         }
                     }
                 }
