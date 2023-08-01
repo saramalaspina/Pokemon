@@ -346,7 +346,7 @@ fun PokemonItem(
         ) {
             val idImage = if(pokemon.id > 1010) {
                 pokemon.id + 8990
-            }else {
+            } else {
                 pokemon.id
             }
 

@@ -1,5 +1,6 @@
 package com.girlsintech.pokemon.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +25,13 @@ import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
+import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 import kotlin.math.roundToInt
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun PokemonDetailPage (
     dominantColor: Color,
@@ -39,16 +43,44 @@ fun PokemonDetailPage (
         modifier = Modifier.fillMaxSize(),
         color = dominantColor.copy(0.6f)
     ){
-
-        var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
-
-        var pokemonSpecies by remember {
+        var pokemonSpecies: Species? by rememberSaveable {
             mutableStateOf(null)
         }
 
-        TopBox(pokemonInfo = pokemonInfo!!, pokemon ,dominantColor, viewModelDb)
-        PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!)
-        ImageBox(pokemon.img)
+        var refresh by rememberSaveable {
+            mutableStateOf(MyState.Load)
+        }
+
+        var message by rememberSaveable {
+            mutableStateOf("")
+        }
+
+        var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
+
+        viewModel.getSpecies(pokemonInfo!!.species.url,
+            {
+                refresh = MyState.Error
+                message = it
+            },
+            {
+                pokemonSpecies = it
+                refresh = MyState.Success
+            }
+        )
+
+        when (refresh) {
+            MyState.Success -> {
+                TopBox(pokemonInfo = pokemonInfo, pokemon ,dominantColor, viewModelDb)
+                PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!)
+                ImageBox(pokemon.img)
+            }
+            MyState.Error -> {
+                ErrorMessage(message)
+            }
+            MyState.Load, MyState.Init -> {
+                Loading()
+            }
+        }
     }
 }
 

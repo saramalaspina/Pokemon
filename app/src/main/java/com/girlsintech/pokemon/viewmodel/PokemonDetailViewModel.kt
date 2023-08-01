@@ -9,6 +9,7 @@ import com.girlsintech.pokemon.connection.APIRequest
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
+import com.girlsintech.pokemon.util.Resource
 import com.google.gson.GsonBuilder
 import org.json.JSONObject
 
@@ -33,11 +34,11 @@ class PokemonDetailViewModel(private var application: Application) : AndroidView
         )
     }
 
-    fun getSpecies(url: String, onError: (String) -> Unit){
+    fun getSpecies(url: String, onError: (String) -> Unit, onSuccess: (Species) -> Unit){
         val queue = APIRequest.getAPI(application)
         queue.getPokemonInfo({
             val l = unpackSpecies(it)
-            pokemonSpecies.postValue(l)
+            onSuccess(l)
         }, {
             Log.w("XXX", "VolleyError")
             if (it?.message != null)

@@ -53,19 +53,6 @@ class MainActivity : ComponentActivity() {
                             refresh = MyState.Success
                         }
 
-                        println(SPECIES_URL + ScreenRouter.pokemonSelected.value!!.name)
-
-                        viewModel.getSpecies(SPECIES_URL + ScreenRouter.pokemonSelected.value!!.name){
-                            refresh = MyState.Error
-                            message = it
-                        }
-
-                        viewModel.pokemonSpecies.observe(this) {
-                            refresh = MyState.Success
-
-                        }
-
-
                         when (refresh) {
                             MyState.Success -> {
                                 PokemonDetailPage(
