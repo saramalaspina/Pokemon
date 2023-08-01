@@ -9,6 +9,7 @@ import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,9 +20,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
+import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
+import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
@@ -37,11 +40,15 @@ fun PokemonDetailPage (
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = dominantColor.copy(0.6f)
-    ) {
+    ){
 
         var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
+
+        var pokemonSpecies = viewModel.pokemonSpecies.value
+
+
         TopBox(pokemonInfo = pokemonInfo!!, pokemon!! ,dominantColor, viewModelDb)
-        PokemonDetailSection(pokemonInfo = pokemonInfo!!)
+        PokemonDetailSection(pokemonInfo = pokemonInfo!!, pokemonSpecies = pokemonSpecies!!)
         ImageBox(pokemon!!.img)
     }
 }
@@ -93,7 +100,7 @@ fun TopBox(
                         .requiredSize(30.dp)
                         .clickable {
                             pokemon.favorite = 1 - pokemon.favorite
-                            fav = 1-fav
+                            fav = 1 - fav
                             viewModel.update(pokemon)
                         }
                         .size(30.dp),
@@ -173,7 +180,8 @@ fun ImageBox(
 
 @Composable
 fun PokemonDetailSection(
-    pokemonInfo: PokemonInfo
+    pokemonInfo: PokemonInfo,
+    pokemonSpecies: Species
 ){
     val scrollState = rememberScrollState()
     Column (
@@ -206,7 +214,7 @@ fun PokemonDetailSection(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                TextInfo(text = pokemonInfo.species.name, Color.Black)
+                TextInfo(text = pokemonSpecies.habitat.name, Color.Black)
                 TextInfo(text ="${(pokemonInfo.height * 100f).roundToInt() / 1000f} m", Color.Black)
                 TextInfo(text ="${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg", Color.Black)
                 Row(

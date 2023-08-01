@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -12,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.girlsintech.pokemon.screens.*
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
+import com.girlsintech.pokemon.util.Constants.SPECIES_URL
 import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity() {
                 var refresh by rememberSaveable {
                     mutableStateOf(MyState.Load)
                 }
+
                 var message by rememberSaveable {
                     mutableStateOf("")
                 }
@@ -49,6 +52,17 @@ class MainActivity : ComponentActivity() {
                         viewModel.pokemonInfo.observe(this) {
                             refresh = MyState.Success
                         }
+
+                        viewModel.getSpecies("https://pokeapi.co/api/v2/pokemon-species/${ScreenRouter.pokemonSelected.value!!.name}"){
+                            refresh = MyState.Error
+                            message = it
+                        }
+
+                        viewModel.pokemonSpecies.observe(this) {
+                            refresh = MyState.Success
+
+                        }
+
 
                         when (refresh) {
                             MyState.Success -> {
