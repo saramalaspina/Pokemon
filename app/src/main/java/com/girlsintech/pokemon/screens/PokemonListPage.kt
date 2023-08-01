@@ -183,7 +183,7 @@ Row {
                         .fillMaxWidth()
                         .shadow(5.dp, CircleShape)
                         .background(Color.White, CircleShape)
-                        .padding(horizontal = 35.dp, vertical = 12.dp)
+                        .padding(horizontal = 45.dp, vertical = 12.dp)
                         .onFocusChanged {
                             isHintDisplayed = it.isFocused != true
                         }
@@ -324,7 +324,7 @@ fun PokemonList(
 
 @Composable
 fun PokemonItem(
-    pokemon : Pokemon,
+    pokemon: Pokemon,
     refresh: Boolean,
     viewModel: PokemonViewModel,
     onRefresh: (Boolean) -> Unit

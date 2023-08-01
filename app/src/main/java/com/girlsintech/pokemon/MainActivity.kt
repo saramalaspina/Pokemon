@@ -53,7 +53,9 @@ class MainActivity : ComponentActivity() {
                             refresh = MyState.Success
                         }
 
-                        viewModel.getSpecies("https://pokeapi.co/api/v2/pokemon-species/${ScreenRouter.pokemonSelected.value!!.name}"){
+                        println(SPECIES_URL + ScreenRouter.pokemonSelected.value!!.name)
+
+                        viewModel.getSpecies(SPECIES_URL + ScreenRouter.pokemonSelected.value!!.name){
                             refresh = MyState.Error
                             message = it
                         }

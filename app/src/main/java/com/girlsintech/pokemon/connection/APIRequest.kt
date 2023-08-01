@@ -1,12 +1,14 @@
 package com.girlsintech.pokemon.connection
 
 import android.content.Context
+import androidx.compose.runtime.MutableState
 import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.girlsintech.pokemon.util.Constants.BASE_URL
+import com.girlsintech.pokemon.data.remote.species.Species
 import org.json.JSONObject
 
 class APIRequest (context: Context){

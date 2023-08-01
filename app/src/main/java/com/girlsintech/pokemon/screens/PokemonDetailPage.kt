@@ -9,7 +9,6 @@ import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +23,6 @@ import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
-import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
@@ -44,12 +42,13 @@ fun PokemonDetailPage (
 
         var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
 
-        var pokemonSpecies = viewModel.pokemonSpecies.value
+        var pokemonSpecies by remember {
+            mutableStateOf(null)
+        }
 
-
-        TopBox(pokemonInfo = pokemonInfo!!, pokemon!! ,dominantColor, viewModelDb)
-        PokemonDetailSection(pokemonInfo = pokemonInfo!!, pokemonSpecies = pokemonSpecies!!)
-        ImageBox(pokemon!!.img)
+        TopBox(pokemonInfo = pokemonInfo!!, pokemon ,dominantColor, viewModelDb)
+        PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!)
+        ImageBox(pokemon.img)
     }
 }
 
