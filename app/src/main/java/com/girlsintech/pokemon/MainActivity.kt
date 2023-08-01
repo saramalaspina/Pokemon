@@ -54,8 +54,9 @@ class MainActivity : ComponentActivity() {
                             MyState.Success -> {
                                 PokemonDetailPage(
                                     dominantColor = ScreenRouter.color.value,
-                                    pokemon = ScreenRouter.pokemonSelected.value,
-                                    viewModel = viewModel
+                                    pokemon = ScreenRouter.pokemonSelected.value!!,
+                                    viewModel = viewModel,
+                                    viewModelDb = ScreenRouter.viewModel.value!!
                                 )
                             }
                             MyState.Error -> {

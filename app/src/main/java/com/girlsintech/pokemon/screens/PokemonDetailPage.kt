@@ -23,14 +23,16 @@ import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
+import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 import kotlin.math.roundToInt
 
 @Composable
 fun PokemonDetailPage (
     dominantColor: Color,
-    pokemon: Pokemon?,
-    viewModel: PokemonDetailViewModel
+    pokemon: Pokemon,
+    viewModel: PokemonDetailViewModel,
+    viewModelDb: PokemonViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -38,7 +40,7 @@ fun PokemonDetailPage (
     ) {
 
         var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
-        TopBox(pokemonInfo = pokemonInfo!!, dominantColor)
+        TopBox(pokemonInfo = pokemonInfo!!, pokemon!! ,dominantColor, viewModelDb)
         PokemonDetailSection(pokemonInfo = pokemonInfo!!)
         ImageBox(pokemon!!.img)
     }
@@ -47,8 +49,14 @@ fun PokemonDetailPage (
 @Composable
 fun TopBox(
     pokemonInfo: PokemonInfo,
-    dominantColor: Color
+    pokemon: Pokemon,
+    dominantColor: Color,
+    viewModel: PokemonViewModel
 ) {
+    var fav by remember {
+        mutableStateOf(pokemon.favorite)
+    }
+
     Column {
         Box(
             modifier = Modifier
@@ -76,7 +84,6 @@ fun TopBox(
                 Icon(
                     Icons.TwoTone.Favorite,
                     contentDescription = null,
-                    tint = Color.White,
                     modifier = Modifier
                         .constrainAs(favorite) {
                             top.linkTo(parent.top)
@@ -85,8 +92,12 @@ fun TopBox(
                         }
                         .requiredSize(30.dp)
                         .clickable {
-                            ScreenRouter.navigateTo(3, 2)
+                            pokemon.favorite = 1 - pokemon.favorite
+                            fav = 1-fav
+                            viewModel.update(pokemon)
                         }
+                        .size(30.dp),
+                    tint = if (fav == 1) Color.Red else Color.White
                 )
             }
         }

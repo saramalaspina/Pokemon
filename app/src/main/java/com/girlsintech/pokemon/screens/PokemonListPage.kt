@@ -340,7 +340,7 @@ fun PokemonItem(
                 .clip(RoundedCornerShape(20.dp))
                 .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
-                    ScreenRouter.navigateToDetail(2, dominantColor, pokemon)
+                    ScreenRouter.navigateToDetail(2, dominantColor, pokemon, viewModel)
                 }
                 .fillMaxWidth()
         ) {
