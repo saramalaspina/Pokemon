@@ -344,6 +344,26 @@ fun PokemonItem(
                 }
                 .fillMaxWidth()
         ) {
+            val idImage = if(pokemon.id > 1010) {
+                pokemon.id + 8990
+            }else {
+                pokemon.id
+            }
+
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("$IMAGE_URL$idImage.png")
+                    .diskCacheKey("pokemon_color_${pokemon.id}")
+                    .listener { _, result ->
+                        viewModel.calcDominantColor(result.drawable) { color ->
+                            dominantColor = color
+                        }
+                    }
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier .alpha(0f)
+            )
+
             ConstraintLayout {
                 val (description, image, icon) = createRefs()
 
@@ -375,25 +395,6 @@ fun PokemonItem(
                     )
                 }
 
-                val idImage = if(pokemon.id > 1010) {
-                    pokemon.id + 8990
-                }else {
-                    pokemon.id
-                }
-
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data("$IMAGE_URL$idImage.png")
-                        .diskCacheKey("pokemon_color_${pokemon.id}")
-                        .listener { _, result ->
-                            viewModel.calcDominantColor(result.drawable) { color ->
-                                dominantColor = color
-                            }
-                        }
-                        .build(),
-                        contentDescription = null,
-                        modifier = Modifier .size(10.dp)
-                )
 
                  SubcomposeAsyncImage(
                      model = ImageRequest.Builder(LocalContext.current)

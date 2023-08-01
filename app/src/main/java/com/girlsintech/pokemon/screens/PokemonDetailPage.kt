@@ -34,7 +34,7 @@ fun PokemonDetailPage (
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = dominantColor.copy(0.8f)
+        color = dominantColor.copy(0.6f)
     ) {
 
         var pokemon = viewModel.pokemonInfo.observeAsState().value
@@ -128,7 +128,7 @@ fun TopBox(
                             fontSize = 20.sp,
                             color = Color.White,
                             modifier = Modifier
-                                .background(dominantColor.copy(1f), RoundedCornerShape(50))
+                                .background(dominantColor.copy(0.8f), RoundedCornerShape(50))
                                 .padding(horizontal = 8.dp)
                         )
 
