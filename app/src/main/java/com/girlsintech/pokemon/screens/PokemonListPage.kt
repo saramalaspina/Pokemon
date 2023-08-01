@@ -22,6 +22,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.girlsintech.pokemon.R
@@ -48,6 +50,7 @@ import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BlackLight
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
+import com.girlsintech.pokemon.util.Constants.IMAGE_URL
 import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
@@ -372,18 +375,35 @@ fun PokemonItem(
                     )
                 }
 
+                val idImage = if(pokemon.id > 1010) {
+                    pokemon.id + 8990
+                }else {
+                    pokemon.id
+                }
+
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+
+                        .data("$IMAGE_URL$idImage.png")
+                        .diskCacheKey("pokemon_color_${pokemon.id}")
+                        .listener { _, result ->
+                            viewModel.calcDominantColor(result.drawable) { color ->
+                                dominantColor = color
+                            }
+                        }
+                        .build(),
+                        contentDescription = null,
+                        modifier = Modifier .requiredSize(0.dp)
+                            .alpha(0f)
+                )
+
                  SubcomposeAsyncImage(
                      model = ImageRequest.Builder(LocalContext.current)
                          .data(pokemon.img)
                          .diskCacheKey("pokemon_image_${pokemon.id}")
-                         .listener { _, result ->
-                             viewModel.calcDominantColor(result.drawable) { color ->
-                             dominantColor = color
-                            }
-                         }
                          .build(),
                      contentDescription = null,
-                    loading = {
+                     loading = {
                         CircularProgressIndicator(
                             modifier = Modifier.requiredSize(30.dp),
                             color = BluePokemon,
