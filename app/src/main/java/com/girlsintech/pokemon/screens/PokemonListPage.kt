@@ -338,7 +338,7 @@ fun PokemonItem(
             modifier = Modifier
                 .padding(top = 5.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(dominantColor.copy(alpha = 0.9f))
+                .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
                     ScreenRouter.navigateToDetail(2, dominantColor, pokemon.url, pokemon.img)
                 }
@@ -392,7 +392,7 @@ fun PokemonItem(
                         }
                         .build(),
                         contentDescription = null,
-                        modifier = Modifier .requiredSize(1.dp)
+                        modifier = Modifier .size(10.dp)
                 )
 
                  SubcomposeAsyncImage(
