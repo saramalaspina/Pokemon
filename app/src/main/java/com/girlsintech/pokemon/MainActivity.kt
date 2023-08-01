@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     }
                     2 -> PokemonListPage()
                     3 -> {
-                        viewModel.getData(ScreenRouter.url.value) {
+                        viewModel.getData(ScreenRouter.pokemonSelected.value!!.url) {
                             refresh = MyState.Error
                             message = it
                         }
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                             MyState.Success -> {
                                 PokemonDetailPage(
                                     dominantColor = ScreenRouter.color.value,
-                                    imgUrl = ScreenRouter.imgUrl.value,
+                                    pokemon = ScreenRouter.pokemonSelected.value,
                                     viewModel = viewModel
                                 )
                             }

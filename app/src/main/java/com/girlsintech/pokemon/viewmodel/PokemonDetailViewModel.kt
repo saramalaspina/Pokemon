@@ -2,16 +2,15 @@ package com.girlsintech.pokemon.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.*
 import com.girlsintech.pokemon.connection.APIRequest
-import com.girlsintech.pokemon.data.remote.responses.Pokemon
+import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.google.gson.GsonBuilder
 import org.json.JSONObject
 
 class PokemonDetailViewModel(private var application: Application) : AndroidViewModel(application) {
 
-    val pokemonInfo = MutableLiveData<Pokemon>()
+    val pokemonInfo = MutableLiveData<PokemonInfo>()
 
     fun getData(url: String, onError: (String) -> Unit) {
         val queue = APIRequest.getAPI(application)
@@ -30,10 +29,10 @@ class PokemonDetailViewModel(private var application: Application) : AndroidView
     }
 
 
-    private fun unpackProduct(it: JSONObject?): Pokemon {
+    private fun unpackProduct(it: JSONObject?): PokemonInfo {
         val json = it?.toString()
         val gson = GsonBuilder().create()
-        return gson.fromJson(json, Pokemon::class.java)
+        return gson.fromJson(json, PokemonInfo::class.java)
     }
 
     @Suppress("UNCHECKED_CAST")

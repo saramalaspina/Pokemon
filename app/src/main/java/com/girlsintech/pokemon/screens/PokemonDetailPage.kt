@@ -18,18 +18,18 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.girlsintech.pokemon.data.remote.responses.Pokemon
+import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
+import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
-import java.lang.Math.round
 import java.util.*
 import kotlin.math.roundToInt
 
 @Composable
 fun PokemonDetailPage (
     dominantColor: Color,
-    imgUrl: String,
+    pokemon: Pokemon?,
     viewModel: PokemonDetailViewModel
 ) {
     Surface(
@@ -37,16 +37,16 @@ fun PokemonDetailPage (
         color = dominantColor.copy(0.6f)
     ) {
 
-        var pokemon = viewModel.pokemonInfo.observeAsState().value
-        TopBox(pokemon = pokemon!!, dominantColor)
-        PokemonDetailSection(pokemon = pokemon!!)
-        ImageBox(imgUrl)
+        var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
+        TopBox(pokemonInfo = pokemonInfo!!, dominantColor)
+        PokemonDetailSection(pokemonInfo = pokemonInfo!!)
+        ImageBox(pokemon!!.img)
     }
 }
 
 @Composable
 fun TopBox(
-    pokemon: Pokemon,
+    pokemonInfo: PokemonInfo,
     dominantColor: Color
 ) {
     Column {
@@ -97,14 +97,14 @@ fun TopBox(
 
             Column (modifier = Modifier.padding(start = 25.dp, top = 5.dp)){
                 Text(
-                    text = "N° ${pokemon.id}",
+                    text = "N° ${pokemonInfo.id}",
                     fontFamily = fontPokemon(),
                     fontSize = 25.sp,
                     color = Color.White
                 )
 
                 Text(
-                    text = pokemon.name.replaceFirstChar {
+                    text = pokemonInfo.name.replaceFirstChar {
                         if (it.isLowerCase()) it.titlecase(
                             Locale.ROOT
                         ) else it.toString()
@@ -117,7 +117,7 @@ fun TopBox(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    pokemon.types.forEach { s ->
+                    pokemonInfo.types.forEach { s ->
                         Text(
                             text = s.type.name.replaceFirstChar {
                                 if (it.isLowerCase()) it.titlecase(
@@ -162,7 +162,7 @@ fun ImageBox(
 
 @Composable
 fun PokemonDetailSection(
-    pokemon: Pokemon
+    pokemonInfo: PokemonInfo
 ){
     val scrollState = rememberScrollState()
     Column (
@@ -195,13 +195,13 @@ fun PokemonDetailSection(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                TextInfo(text = pokemon.species.name, Color.Black)
-                TextInfo(text ="${(pokemon.height * 100f).roundToInt() / 1000f} m", Color.Black)
-                TextInfo(text ="${(pokemon.weight * 100f).roundToInt() / 1000f} kg", Color.Black)
+                TextInfo(text = pokemonInfo.species.name, Color.Black)
+                TextInfo(text ="${(pokemonInfo.height * 100f).roundToInt() / 1000f} m", Color.Black)
+                TextInfo(text ="${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg", Color.Black)
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ){
-                    pokemon.abilities.forEach{
+                    pokemonInfo.abilities.forEach{
                         TextInfo(text = it.ability.name, Color.Black)
                     }
                 }

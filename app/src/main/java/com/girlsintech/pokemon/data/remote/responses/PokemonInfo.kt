@@ -1,6 +1,6 @@
 package com.girlsintech.pokemon.data.remote.responses
 
-data class Pokemon(
+data class PokemonInfo(
     val abilities: List<Ability>,
     val base_experience: Int,
     val forms: List<Form>,
