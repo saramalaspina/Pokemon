@@ -383,7 +383,6 @@ fun PokemonItem(
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-
                         .data("$IMAGE_URL$idImage.png")
                         .diskCacheKey("pokemon_color_${pokemon.id}")
                         .listener { _, result ->
@@ -393,8 +392,7 @@ fun PokemonItem(
                         }
                         .build(),
                         contentDescription = null,
-                        modifier = Modifier .requiredSize(0.dp)
-                            .alpha(0f)
+                        modifier = Modifier .requiredSize(1.dp)
                 )
 
                  SubcomposeAsyncImage(
