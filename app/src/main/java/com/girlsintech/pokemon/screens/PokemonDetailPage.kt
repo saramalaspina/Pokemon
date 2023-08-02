@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -30,7 +32,6 @@ import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
-import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.math.roundToInt
@@ -251,15 +252,78 @@ fun PokemonDetailSection(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                TextInfo(text = pokemonSpecies.habitat.name, Color.Black)
-                TextInfo(text ="${(pokemonInfo.height * 100f).roundToInt() / 1000f} m", Color.Black)
-                TextInfo(text ="${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg", Color.Black)
+                pokemonSpecies.genera.forEach {
+                    if (it.language.name.equals("en")) {
+                        TextInfo(text = it.genus, Color.Black)
+                    }
+                }
+                TextInfo(
+                    text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
+                    Color.Black
+                )
+                TextInfo(
+                    text = "${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg",
+                    Color.Black
+                )
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ){
-                    pokemonInfo.abilities.forEach{
+                ) {
+                    pokemonInfo.abilities.forEach {
                         TextInfo(text = it.ability.name, Color.Black)
                     }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.padding(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 25.dp)
+        ) {
+            Text(
+                text = "Evolution",
+                fontSize = 20.sp,
+                color = Color.Black,
+                fontFamily = fontBasic(),
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Spacer(modifier = Modifier.padding(5.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 25.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TextInfo(text = "Generation")
+                TextInfo(text = "Growth rate")
+                TextInfo(text = "Egg groups")
+                if (pokemonSpecies.generation.name != "generation-i") {
+                    TextInfo(text = "Evolves from ")
+                }
+            }
+
+            Spacer(modifier = Modifier.width(38.dp))
+
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TextInfo(text = pokemonSpecies.generation.name, Color.Black)
+                TextInfo(text = pokemonSpecies.growth_rate.name, Color.Black)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    pokemonSpecies.egg_groups.forEach {
+                        TextInfo(text = it.name, Color.Black)
+                    }
+                }
+                if (pokemonSpecies.generation.name != "generation-i") {
+                    TextInfo(text = pokemonSpecies.evolves_from_species.name, Color.Black)
                 }
             }
         }
