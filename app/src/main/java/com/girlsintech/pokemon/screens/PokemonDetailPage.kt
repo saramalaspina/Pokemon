@@ -357,9 +357,6 @@ fun NavigationBar()
         Spacer(modifier = Modifier.width(35.dp))
         Column(
             modifier = Modifier
-                .clickable { 
-
-                }
         ) {
             Text(
                 text = "Base Stats",
