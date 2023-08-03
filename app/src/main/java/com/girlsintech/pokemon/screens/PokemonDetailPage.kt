@@ -230,7 +230,9 @@ fun PokemonDetailSection(
             .verticalScroll(scrollState)
             .background(Color.White, RoundedCornerShape(10))
     ) {
-        Spacer(modifier = Modifier.height(150.dp))
+        Spacer(modifier = Modifier.height(110.dp))
+        NavigationBar()
+        Spacer(modifier = Modifier.height(25.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -326,6 +328,46 @@ fun PokemonDetailSection(
                     TextInfo(text = pokemonSpecies.evolves_from_species.name, Color.Black)
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun NavigationBar()
+{
+    var selectedScreen by remember {
+        mutableStateOf(false)
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
+        Column(
+            modifier = Modifier
+                .padding(start = 25.dp)
+        ) {
+            Text(
+                text = "About",
+                fontFamily = fontBasic(),
+                color = Color.Gray,
+                fontSize = 18.sp,
+                // fontWeight = if (selectedScreen) FontWeight.Bold else FontWeight(10)
+            )
+        }
+        Spacer(modifier = Modifier.width(35.dp))
+        Column(
+            modifier = Modifier
+                .clickable { 
+
+                }
+        ) {
+            Text(
+                text = "Base Stats",
+                fontFamily = fontBasic(),
+                color = Color.Gray,
+                fontSize = 18.sp,
+                // fontWeight = if (selectedScreen) FontWeight.Bold else FontWeight(10)
+            )
         }
     }
 }
