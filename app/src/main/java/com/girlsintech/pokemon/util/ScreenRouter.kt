@@ -25,9 +25,9 @@ object ScreenRouter {
         viewModel.value = viewModelDb
     }
 
-    fun navigateToStats(source: Int = currentScreen.value, dominantColor: Color, pokemon: Pokemon, viewModelDb: PokemonViewModel){
+    fun navigateToStats(source: Int = currentScreen.value, destination: Int, dominantColor: Color, pokemon: Pokemon, viewModelDb: PokemonViewModel){
         previousScreen.value = source
-        currentScreen.value = 4
+        currentScreen.value = destination
         color.value = dominantColor
         pokemonSelected.value = pokemon
         viewModel.value = viewModelDb

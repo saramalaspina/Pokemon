@@ -226,15 +226,17 @@ fun PokemonDetailStats(
                 .fillMaxWidth(curPercent.value)
                 .clip(CircleShape)
                 .background(statColor)
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 10.dp)
         ) {
             Text(
                 text = statName,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontFamily = fontBasic()
             )
             Text(
                 text = (curPercent.value * statMaxValue).toInt().toString(),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontFamily = fontBasic()
             )
         }
     }
@@ -491,9 +493,14 @@ fun NavigationBar(
     pokemonViewModel: PokemonViewModel
 )
 {
-    var selectedScreen by remember {
+    var selectedAbout by rememberSaveable {
+        mutableStateOf(true)
+    }
+
+    var selectedStats by rememberSaveable {
         mutableStateOf(false)
     }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -502,30 +509,40 @@ fun NavigationBar(
             modifier = Modifier
                 .padding(start = 25.dp)
                 .clickable {
-                    ScreenRouter.navigateTo(4,3)
+                    selectedAbout = !selectedAbout
+                    selectedStats = false
+                    ScreenRouter.navigateToStats(
+                        4,
+                        3,
+                        dominantColor,
+                        pokemon,
+                        viewModelDb = pokemonViewModel
+                    )
                 }
         ) {
             Text(
                 text = "About",
                 fontFamily = fontBasic(),
-                color = Color.Gray,
-                fontSize = 18.sp,
-                // fontWeight = if (selectedScreen) FontWeight.Bold else FontWeight(10)
+                color = if (selectedAbout) Color.Black else Color.Gray,
+                fontSize = 20.sp,
+                fontWeight = if (selectedAbout == true) FontWeight.Bold else FontWeight(10)
             )
         }
         Spacer(modifier = Modifier.width(35.dp))
         Column(
             modifier = Modifier
                 .clickable {
-                    ScreenRouter.navigateToStats(3, dominantColor = dominantColor, pokemon = pokemon, viewModelDb = pokemonViewModel)
+                    selectedStats = !selectedStats
+                    selectedAbout = false
+                    ScreenRouter.navigateToStats(3, 4, dominantColor = dominantColor, pokemon = pokemon, viewModelDb = pokemonViewModel)
                 }
         ) {
             Text(
                 text = "Base Stats",
                 fontFamily = fontBasic(),
-                color = Color.Gray,
-                fontSize = 18.sp,
-                // fontWeight = if (selectedScreen) FontWeight.Bold else FontWeight(10)
+                color = if (selectedStats) Color.Black else Color.Gray,
+                fontSize = 20.sp,
+                fontWeight = if (selectedStats == true) FontWeight.Bold else FontWeight(10)
             )
         }
     }
