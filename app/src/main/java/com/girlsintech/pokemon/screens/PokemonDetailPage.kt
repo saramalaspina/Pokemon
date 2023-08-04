@@ -1,8 +1,11 @@
 package com.girlsintech.pokemon.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,9 +16,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +33,8 @@ import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.util.ScreenRouter
+import com.girlsintech.pokemon.util.parseStatToAbbr
+import com.girlsintech.pokemon.util.parseStatToColor
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -38,7 +44,7 @@ import kotlin.math.roundToInt
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun PokemonDetailPage (
+fun PokemonDetailPageAbout (
     dominantColor: Color,
     pokemon: Pokemon,
     viewModel: PokemonDetailViewModel,
@@ -78,7 +84,7 @@ fun PokemonDetailPage (
         when (refresh) {
             MyState.Success -> {
                 TopBox(pokemonInfo = pokemonInfo, pokemon ,dominantColor, viewModelDb)
-                PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!)
+                PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!, dominantColor, pokemon, viewModelDb)
                 ImageBox(pokemon.img)
             }
             MyState.Error -> {
@@ -87,6 +93,149 @@ fun PokemonDetailPage (
             MyState.Load, MyState.Init -> {
                 Loading()
             }
+        }
+    }
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun PokemonDetailPageStats (
+    dominantColor: Color,
+    pokemon: Pokemon,
+    viewModel: PokemonDetailViewModel,
+    viewModelDb: PokemonViewModel,
+    animDelayPerItem: Int = 100
+) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = dominantColor.copy(0.6f)
+    ){
+        val scrollState = rememberScrollState()
+
+        var pokemonSpecies: Species? by rememberSaveable {
+            mutableStateOf(null)
+        }
+
+        var refresh by rememberSaveable {
+            mutableStateOf(MyState.Load)
+        }
+
+        var message by rememberSaveable {
+            mutableStateOf("")
+        }
+
+        var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
+
+        val maxBaseStat = remember {
+            pokemonInfo!!.stats.maxOf { it.base_stat }
+        }
+
+        viewModel.getSpecies(pokemonInfo!!.species.url,
+            {
+                refresh = MyState.Error
+                message = it
+            },
+            {
+                pokemonSpecies = it
+                refresh = MyState.Success
+
+            }
+        )
+
+        when (refresh) {
+            MyState.Success -> {
+                TopBox(pokemonInfo = pokemonInfo, pokemon ,dominantColor, viewModelDb)
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset(y = 330.dp)
+                        .verticalScroll(scrollState)
+                        .background(Color.White, RoundedCornerShape(10))
+                ) {
+
+                    Spacer(modifier = Modifier.height(110.dp))
+                    NavigationBar(dominantColor, pokemon, pokemonViewModel = viewModelDb)
+                    Spacer(modifier = Modifier.height(25.dp))
+
+                    pokemonInfo.stats.forEach {
+                    Spacer(modifier = Modifier.height(20.dp))
+                        PokemonDetailStats(
+                            statName = parseStatToAbbr(it),
+                            statValue = it.base_stat,
+                            statMaxValue = maxBaseStat,
+                            statColor = parseStatToColor(it),
+                            animDelay = animDelayPerItem
+                        )
+                    }
+                }
+                ImageBox(pokemon.img)
+            }
+            MyState.Error -> {
+                ErrorMessage(message)
+            }
+            MyState.Load, MyState.Init -> {}
+        }
+    }
+}
+
+@Composable
+fun PokemonDetailStats(
+    statName: String,
+    statValue: Int,
+    statMaxValue: Int,
+    statColor: Color,
+    animDuration: Int = 1000,
+    animDelay: Int = 0
+) {
+    var animationPlayed by remember {
+        mutableStateOf(false)
+    }
+    val curPercent = animateFloatAsState(
+        targetValue = if (animationPlayed) {
+            statValue / statMaxValue.toFloat()
+        } else 0f,
+        animationSpec = tween(
+            animDuration,
+            animDelay
+        )
+    )
+    LaunchedEffect(key1 = true) {
+        animationPlayed = true
+    }
+    Box(
+        modifier = Modifier
+            .padding(start = 25.dp, end = 45.dp)
+            .fillMaxWidth()
+            .height(25.dp)
+            .clip(CircleShape)
+            .background(
+                if (isSystemInDarkTheme()) {
+                    Color(0xFF505050)
+                } else {
+                    Color.LightGray
+                }
+            )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(25.dp)
+                .fillMaxWidth(curPercent.value)
+                .clip(CircleShape)
+                .background(statColor)
+                .padding(horizontal = 8.dp)
+        ) {
+            Text(
+                text = statName,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = (curPercent.value * statMaxValue).toInt().toString(),
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -219,7 +368,10 @@ fun ImageBox(
 @Composable
 fun PokemonDetailSection(
     pokemonInfo: PokemonInfo,
-    pokemonSpecies: Species
+    pokemonSpecies: Species,
+    dominantColor: Color,
+    pokemon: Pokemon,
+    pokemonViewModel: PokemonViewModel
 ){
     val scrollState = rememberScrollState()
     Column (
@@ -231,7 +383,7 @@ fun PokemonDetailSection(
             .background(Color.White, RoundedCornerShape(10))
     ) {
         Spacer(modifier = Modifier.height(110.dp))
-        NavigationBar()
+        NavigationBar(dominantColor, pokemon, pokemonViewModel)
         Spacer(modifier = Modifier.height(25.dp))
         Row(
             modifier = Modifier
@@ -333,7 +485,11 @@ fun PokemonDetailSection(
 }
 
 @Composable
-fun NavigationBar()
+fun NavigationBar(
+    dominantColor: Color,
+    pokemon: Pokemon,
+    pokemonViewModel: PokemonViewModel
+)
 {
     var selectedScreen by remember {
         mutableStateOf(false)
@@ -345,6 +501,9 @@ fun NavigationBar()
         Column(
             modifier = Modifier
                 .padding(start = 25.dp)
+                .clickable {
+                    ScreenRouter.navigateTo(4,3)
+                }
         ) {
             Text(
                 text = "About",
@@ -357,6 +516,9 @@ fun NavigationBar()
         Spacer(modifier = Modifier.width(35.dp))
         Column(
             modifier = Modifier
+                .clickable {
+                    ScreenRouter.navigateToStats(3, dominantColor = dominantColor, pokemon = pokemon, viewModelDb = pokemonViewModel)
+                }
         ) {
             Text(
                 text = "Base Stats",
