@@ -17,7 +17,6 @@ import org.json.JSONObject
 class PokemonDetailViewModel(private var application: Application) : AndroidViewModel(application) {
 
     val pokemonInfo = MutableLiveData<PokemonInfo>()
-    val pokemonSpecies = MutableLiveData<Species>()
 
     fun getData(url: String, onError: (String) -> Unit) {
         val queue = APIRequest.getAPI(application)

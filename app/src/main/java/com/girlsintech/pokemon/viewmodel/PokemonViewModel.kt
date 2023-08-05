@@ -26,6 +26,10 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
             return repository.readByTag("%$s%", f, "%$t%")
         }
 
+        fun getImageFromName(s: String): LiveData<String> {
+            return repository.getImageFromName(s)
+        }
+
         fun update(item: Pokemon) {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.update(item)

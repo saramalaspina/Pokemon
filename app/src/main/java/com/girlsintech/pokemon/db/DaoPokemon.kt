@@ -24,6 +24,15 @@ interface DaoPokemon {
     suspend fun getRandomPokemon(): Pokemon  //query da usare se vogliamo fare la funzionalità aggiuntiva della sfida
 
     @RawQuery(observedEntities = [Pokemon::class])
+    fun getImageFromName(query: SupportSQLiteQuery): LiveData<String>
+
+    fun getImageFromNameQuery(s: String): LiveData<String> {
+        val query = "SELECT img FROM Pokemon WHERE name LIKE '%$s%'"
+        val simpleSQLiteQuery = SimpleSQLiteQuery(query)
+        return getImageFromName(simpleSQLiteQuery)
+    }
+
+    @RawQuery(observedEntities = [Pokemon::class])
     fun getAllByTagAndFavorite(query: SupportSQLiteQuery): LiveData<MutableList<Pokemon>>
 
     fun getAllByTagAndFavoriteQuery(s: String, f: Int = 0, t: String): LiveData<MutableList<Pokemon>> {

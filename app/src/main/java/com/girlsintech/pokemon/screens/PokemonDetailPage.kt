@@ -32,6 +32,7 @@ import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
+import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.util.parseStatToAbbr
 import com.girlsintech.pokemon.util.parseStatToColor
@@ -133,18 +134,15 @@ fun PokemonDetailPage(
                     Spacer(modifier = Modifier.height(110.dp))
 
                     NavigationBar {
-                        navState = 1 - navState
+                        navState = it
                     }
 
                     Spacer(modifier = Modifier.height(25.dp))
 
                     when (navState) {
-                        0 -> PokemonDetailSection(
-                            pokemonInfo = pokemonInfo,
-                            pokemonSpecies = pokemonSpecies!!,
-                            evolution = evolutionChain!!
-                        )
+                        0 -> PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!)
                         1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
+                        2 -> PokemonEvolutionSection(viewModelDb = viewModelDb, evolution = evolutionChain!!)
                     }
                 }
                 ImageBox(pokemon.img)
@@ -365,13 +363,70 @@ fun PokemonStatSection(
     }
 }
 
+@Composable
+fun PokemonEvolutionSection(
+    viewModelDb: PokemonViewModel,
+    evolution: Evolution
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize(1f)
+            .padding(horizontal = 5.dp, vertical = 50.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        EvolutionBox(viewModelDb = viewModelDb, text = evolution.chain.species.name)
+
+        evolution.chain.evolves_to.forEach { evolves_to ->
+
+            TextInfo(text = " -> ", Color.Black)
+            EvolutionBox(viewModelDb = viewModelDb, text = evolves_to.species.name)
+
+            evolves_to.evolves_to.forEach {
+                TextInfo(text = " -> ", Color.Black)
+                EvolutionBox(viewModelDb = viewModelDb, text = it.species.name)
+            }
+        }
+    }
+}
+@Composable
+fun EvolutionBox(
+    viewModelDb: PokemonViewModel,
+    text: String
+) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .background(CardBackground, RoundedCornerShape(100))
+                .requiredSize(115.dp)
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(
+                        viewModelDb.getImageFromName(text).observeAsState().value
+                    )
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .requiredSize(95.dp)
+            )
+        }
+
+        TextInfo(text = text, Color.Black)
+    }
+}
+
+
 
 
 @Composable
 fun PokemonDetailSection(
     pokemonInfo: PokemonInfo,
     pokemonSpecies: Species,
-    evolution: Evolution
 ) {
     Row(
         modifier = Modifier
@@ -444,7 +499,6 @@ fun PokemonDetailSection(
             TextInfo(text = "Generation")
             TextInfo(text = "Growth rate")
             TextInfo(text = "Egg groups")
-            TextInfo(text = "Chain")
         }
 
         Spacer(modifier = Modifier.width(38.dp))
@@ -462,17 +516,6 @@ fun PokemonDetailSection(
                     TextInfo(text = it.name, Color.Black)
                 }
             }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                TextInfo(text = evolution.chain.species.name, Color.Black)
-                evolution.chain.evolves_to.forEach { evolves_to ->
-                    TextInfo(text = " -> " + evolves_to.species.name, Color.Black)
-                    evolves_to.evolves_to.forEach{
-                        TextInfo(text = " -> " + it.species.name, Color.Black)
-                    }
-                }
-            }
         }
     }
 }
@@ -480,14 +523,17 @@ fun PokemonDetailSection(
 
 @Composable
 fun NavigationBar(
-    onClick: () -> Unit
-)
-{
+    onClick: (Int) -> Unit
+) {
     var selectedAbout by rememberSaveable {
         mutableStateOf(true)
     }
 
     var selectedStats by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var selectedEvolution by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -499,9 +545,10 @@ fun NavigationBar(
             modifier = Modifier
                 .padding(start = 25.dp)
                 .clickable {
-                    selectedAbout = !selectedAbout
+                    selectedAbout = true
                     selectedStats = false
-                    onClick()
+                    selectedEvolution = false
+                    onClick(0)
                 }
         ) {
             Text(
@@ -516,9 +563,10 @@ fun NavigationBar(
         Column(
             modifier = Modifier
                 .clickable {
-                    selectedStats = !selectedStats
+                    selectedStats = true
                     selectedAbout = false
-                    onClick()
+                    selectedEvolution = false
+                    onClick(1)
                 }
         ) {
             Text(
@@ -527,6 +575,24 @@ fun NavigationBar(
                 color = if (selectedStats) Color.Black else Color.Gray,
                 fontSize = 20.sp,
                 fontWeight = if (selectedStats) FontWeight.Bold else FontWeight(10)
+            )
+        }
+        Spacer(modifier = Modifier.width(35.dp))
+        Column(
+            modifier = Modifier
+                .clickable {
+                    selectedEvolution = true
+                    selectedAbout = false
+                    selectedStats = false
+                    onClick(2)
+                }
+        ) {
+            Text(
+                text = "Evolutions",
+                fontFamily = fontBasic(),
+                color = if (selectedEvolution) Color.Black else Color.Gray,
+                fontSize = 20.sp,
+                fontWeight = if (selectedEvolution) FontWeight.Bold else FontWeight(10)
             )
         }
     }

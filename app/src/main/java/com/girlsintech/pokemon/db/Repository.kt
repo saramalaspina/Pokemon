@@ -11,4 +11,8 @@ class Repository(private val dao: DaoPokemon) {
 
     fun readByTag(s: String, f: Int, t: String): LiveData<MutableList<Pokemon>> {
         return dao.getAllByTagAndFavoriteQuery(s, f, t) }
+
+    fun getImageFromName(s: String): LiveData<String> {
+        return dao.getImageFromNameQuery(s)
+    }
 }
