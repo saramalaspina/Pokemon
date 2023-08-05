@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.responses.Stat
 import com.girlsintech.pokemon.data.remote.responses.Type
-import com.girlsintech.pokemon.data.remote.species.Pokemon
 import com.girlsintech.pokemon.ui.theme.*
 import java.util.*
 
@@ -35,12 +34,12 @@ fun parseTypeToColor(pokemon: PokemonInfo, type: Type): Color {
 
 fun parseStatToColor(stat: Stat): Color {
     return when(stat.stat.name.lowercase(Locale.ROOT)) {
-        "hp" -> Color.Yellow
-        "attack" -> Color.Green
-        "defense" -> Color.Red
-        "special-attack" -> Color.Blue
-        "special-defense" -> Color.Cyan
-        "speed" -> Color.Magenta
+        "hp" -> hpColor.copy(0.8f)
+        "attack" -> attackColor.copy(0.8f)
+        "defense" -> defenseColor.copy(0.8f)
+        "special-attack" -> specialAttackColor.copy(0.8f)
+        "special-defense" -> specialDefenseColor.copy(0.8f)
+        "speed" -> speedColor.copy(0.8f)
         else -> Color.White
     }
 }

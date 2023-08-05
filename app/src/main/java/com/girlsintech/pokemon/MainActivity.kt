@@ -10,7 +10,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.screens.*
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
 import com.girlsintech.pokemon.util.ScreenRouter
@@ -54,36 +53,12 @@ class MainActivity : ComponentActivity() {
 
                         when (refresh) {
                             MyState.Success -> {
-                                PokemonDetailPageAbout(
+                                PokemonDetailPage(
                                     dominantColor = ScreenRouter.color.value,
                                     pokemon = ScreenRouter.pokemonSelected.value!!,
                                     viewModel = viewModel,
                                     viewModelDb = ScreenRouter.viewModel.value!!
                                 )
-                            }
-                            MyState.Error -> {
-                                ErrorMessage(message)
-                            }
-                            MyState.Load, MyState.Init -> {}
-                        }
-                    }
-                    4 -> {
-                        viewModel.getData(ScreenRouter.pokemonSelected.value!!.url) {
-                            refresh = MyState.Error
-                            message = it
-                        }
-                        viewModel.pokemonInfo.observe(this) {
-                            refresh = MyState.Success
-                        }
-
-                        when (refresh) {
-                            MyState.Success -> {
-                                PokemonDetailPageStats(
-                                    dominantColor = ScreenRouter.color.value,
-                                    pokemon = ScreenRouter.pokemonSelected.value!!,
-                                    viewModel = viewModel,
-                                    viewModelDb = ScreenRouter.viewModel.value!!,
-                                    )
                             }
                             MyState.Error -> {
                                 ErrorMessage(message)

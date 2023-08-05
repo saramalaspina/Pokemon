@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,7 +43,7 @@ import kotlin.math.roundToInt
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun PokemonDetailPageAbout (
+fun PokemonDetailPage(
     dominantColor: Color,
     pokemon: Pokemon,
     viewModel: PokemonDetailViewModel,
@@ -53,13 +52,19 @@ fun PokemonDetailPageAbout (
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = dominantColor.copy(0.6f)
-    ){
+    ) {
         var pokemonSpecies: Species? by rememberSaveable {
             mutableStateOf(null)
         }
 
+        val scrollState = rememberScrollState()
+
         var refresh by rememberSaveable {
             mutableStateOf(MyState.Load)
+        }
+
+        var navState by rememberSaveable {
+            mutableStateOf(0)
         }
 
         var message by rememberSaveable {
@@ -83,68 +88,8 @@ fun PokemonDetailPageAbout (
 
         when (refresh) {
             MyState.Success -> {
-                TopBox(pokemonInfo = pokemonInfo, pokemon ,dominantColor, viewModelDb)
-                PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!, dominantColor, pokemon, viewModelDb)
-                ImageBox(pokemon.img)
-            }
-            MyState.Error -> {
-                ErrorMessage(message)
-            }
-            MyState.Load, MyState.Init -> {
-                Loading()
-            }
-        }
-    }
-}
 
-@SuppressLint("UnrememberedMutableState")
-@Composable
-fun PokemonDetailPageStats (
-    dominantColor: Color,
-    pokemon: Pokemon,
-    viewModel: PokemonDetailViewModel,
-    viewModelDb: PokemonViewModel,
-    animDelayPerItem: Int = 100
-) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = dominantColor.copy(0.6f)
-    ){
-        val scrollState = rememberScrollState()
-
-        var pokemonSpecies: Species? by rememberSaveable {
-            mutableStateOf(null)
-        }
-
-        var refresh by rememberSaveable {
-            mutableStateOf(MyState.Load)
-        }
-
-        var message by rememberSaveable {
-            mutableStateOf("")
-        }
-
-        var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
-
-        val maxBaseStat = remember {
-            pokemonInfo!!.stats.maxOf { it.base_stat }
-        }
-
-        viewModel.getSpecies(pokemonInfo!!.species.url,
-            {
-                refresh = MyState.Error
-                message = it
-            },
-            {
-                pokemonSpecies = it
-                refresh = MyState.Success
-
-            }
-        )
-
-        when (refresh) {
-            MyState.Success -> {
-                TopBox(pokemonInfo = pokemonInfo, pokemon ,dominantColor, viewModelDb)
+                TopBox(pokemonInfo = pokemonInfo, pokemon, dominantColor, viewModelDb)
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -154,28 +99,31 @@ fun PokemonDetailPageStats (
                         .verticalScroll(scrollState)
                         .background(Color.White, RoundedCornerShape(10))
                 ) {
-
                     Spacer(modifier = Modifier.height(110.dp))
-                    NavigationBar(dominantColor, pokemon, pokemonViewModel = viewModelDb)
+
+                    NavigationBar {
+                        navState = 1 - navState
+                    }
+
                     Spacer(modifier = Modifier.height(25.dp))
 
-                    pokemonInfo.stats.forEach {
-                    Spacer(modifier = Modifier.height(20.dp))
-                        PokemonDetailStats(
-                            statName = parseStatToAbbr(it),
-                            statValue = it.base_stat,
-                            statMaxValue = maxBaseStat,
-                            statColor = parseStatToColor(it),
-                            animDelay = animDelayPerItem
+                    when (navState) {
+                        0 -> PokemonDetailSection(
+                            pokemonInfo = pokemonInfo,
+                            pokemonSpecies = pokemonSpecies!!
                         )
+                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
                     }
                 }
                 ImageBox(pokemon.img)
             }
+
             MyState.Error -> {
                 ErrorMessage(message)
             }
-            MyState.Load, MyState.Init -> {}
+            MyState.Load, MyState.Init -> {
+                Loading()
+            }
         }
     }
 }
@@ -231,11 +179,13 @@ fun PokemonDetailStats(
             Text(
                 text = statName,
                 fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
                 fontFamily = fontBasic()
             )
             Text(
                 text = (curPercent.value * statMaxValue).toInt().toString(),
                 fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
                 fontFamily = fontBasic()
             )
         }
@@ -368,129 +318,130 @@ fun ImageBox(
 }
 
 @Composable
+fun PokemonStatSection(
+    pokemonInfo: PokemonInfo
+) {
+    pokemonInfo.stats.forEach { stat ->
+        Spacer(modifier = Modifier.height(20.dp))
+        PokemonDetailStats(
+            statName = parseStatToAbbr(stat),
+            statValue = stat.base_stat,
+            statMaxValue = pokemonInfo.stats.maxOf { it.base_stat },
+            statColor = parseStatToColor(stat),
+            animDelay = 500
+        )
+    }
+}
+
+
+
+@Composable
 fun PokemonDetailSection(
     pokemonInfo: PokemonInfo,
-    pokemonSpecies: Species,
-    dominantColor: Color,
-    pokemon: Pokemon,
-    pokemonViewModel: PokemonViewModel
-){
-    val scrollState = rememberScrollState()
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
+    pokemonSpecies: Species
+) {
+    Row(
         modifier = Modifier
-            .fillMaxSize()
-            .offset(y = 330.dp)
-            .verticalScroll(scrollState)
-            .background(Color.White, RoundedCornerShape(10))
+            .fillMaxWidth()
+            .padding(start = 25.dp)
     ) {
-        Spacer(modifier = Modifier.height(110.dp))
-        NavigationBar(dominantColor, pokemon, pokemonViewModel)
-        Spacer(modifier = Modifier.height(25.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 25.dp)
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                TextInfo(text = "Species")
-                TextInfo(text = "Height")
-                TextInfo(text = "Weight")
-                TextInfo(text = "Abilities")
-            }
-
-            Spacer(modifier = Modifier.width(60.dp))
-
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                pokemonSpecies.genera.forEach {
-                    if (it.language.name.equals("en")) {
-                        TextInfo(text = it.genus, Color.Black)
-                    }
-                }
-                TextInfo(
-                    text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
-                    Color.Black
-                )
-                TextInfo(
-                    text = "${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg",
-                    Color.Black
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    pokemonInfo.abilities.forEach {
-                        TextInfo(text = it.ability.name, Color.Black)
-                    }
-                }
-            }
+            TextInfo(text = "Species")
+            TextInfo(text = "Height")
+            TextInfo(text = "Weight")
+            TextInfo(text = "Abilities")
         }
-        Spacer(modifier = Modifier.padding(10.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 25.dp)
+
+        Spacer(modifier = Modifier.width(60.dp))
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                text = "Evolution",
-                fontSize = 20.sp,
-                color = Color.Black,
-                fontFamily = fontBasic(),
-                fontWeight = FontWeight.Bold
+            pokemonSpecies.genera.forEach {
+                if (it.language.name.equals("en")) {
+                    TextInfo(text = it.genus, Color.Black)
+                }
+            }
+            TextInfo(
+                text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
+                Color.Black
             )
-        }
-        Spacer(modifier = Modifier.padding(5.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 25.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+            TextInfo(
+                text = "${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg",
+                Color.Black
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TextInfo(text = "Generation")
-                TextInfo(text = "Growth rate")
-                TextInfo(text = "Egg groups")
-                if (pokemonSpecies.generation.name != "generation-i") {
-                    TextInfo(text = "Evolves from ")
+                pokemonInfo.abilities.forEach {
+                    TextInfo(text = it.ability.name, Color.Black)
                 }
             }
+        }
+    }
+    Spacer(modifier = Modifier.padding(10.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 25.dp)
+    ) {
+        Text(
+            text = "Evolution",
+            fontSize = 20.sp,
+            color = Color.Black,
+            fontFamily = fontBasic(),
+            fontWeight = FontWeight.Bold
+        )
+    }
+    Spacer(modifier = Modifier.padding(5.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 25.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            TextInfo(text = "Generation")
+            TextInfo(text = "Growth rate")
+            TextInfo(text = "Egg groups")
+            if (pokemonSpecies.generation.name != "generation-i") {
+                TextInfo(text = "Evolves from ")
+            }
+        }
 
-            Spacer(modifier = Modifier.width(38.dp))
+        Spacer(modifier = Modifier.width(38.dp))
 
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            TextInfo(text = pokemonSpecies.generation.name, Color.Black)
+            TextInfo(text = pokemonSpecies.growth_rate.name, Color.Black)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TextInfo(text = pokemonSpecies.generation.name, Color.Black)
-                TextInfo(text = pokemonSpecies.growth_rate.name, Color.Black)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    pokemonSpecies.egg_groups.forEach {
-                        TextInfo(text = it.name, Color.Black)
-                    }
+                pokemonSpecies.egg_groups.forEach {
+                    TextInfo(text = it.name, Color.Black)
                 }
-                if (pokemonSpecies.generation.name != "generation-i") {
-                    TextInfo(text = pokemonSpecies.evolves_from_species.name, Color.Black)
-                }
+            }
+            if (pokemonSpecies.generation.name != "generation-i") {
+                TextInfo(text = pokemonSpecies.evolves_from_species.name, Color.Black)
             }
         }
     }
 }
 
+
 @Composable
 fun NavigationBar(
-    dominantColor: Color,
-    pokemon: Pokemon,
-    pokemonViewModel: PokemonViewModel
+    onClick: () -> Unit
 )
 {
     var selectedAbout by rememberSaveable {
@@ -511,13 +462,7 @@ fun NavigationBar(
                 .clickable {
                     selectedAbout = !selectedAbout
                     selectedStats = false
-                    ScreenRouter.navigateToStats(
-                        4,
-                        3,
-                        dominantColor,
-                        pokemon,
-                        viewModelDb = pokemonViewModel
-                    )
+                    onClick()
                 }
         ) {
             Text(
@@ -525,7 +470,7 @@ fun NavigationBar(
                 fontFamily = fontBasic(),
                 color = if (selectedAbout) Color.Black else Color.Gray,
                 fontSize = 20.sp,
-                fontWeight = if (selectedAbout == true) FontWeight.Bold else FontWeight(10)
+                fontWeight = if (selectedAbout) FontWeight.Bold else FontWeight(10)
             )
         }
         Spacer(modifier = Modifier.width(35.dp))
@@ -534,7 +479,7 @@ fun NavigationBar(
                 .clickable {
                     selectedStats = !selectedStats
                     selectedAbout = false
-                    ScreenRouter.navigateToStats(3, 4, dominantColor = dominantColor, pokemon = pokemon, viewModelDb = pokemonViewModel)
+                    onClick()
                 }
         ) {
             Text(
@@ -542,7 +487,7 @@ fun NavigationBar(
                 fontFamily = fontBasic(),
                 color = if (selectedStats) Color.Black else Color.Gray,
                 fontSize = 20.sp,
-                fontWeight = if (selectedStats == true) FontWeight.Bold else FontWeight(10)
+                fontWeight = if (selectedStats) FontWeight.Bold else FontWeight(10)
             )
         }
     }
