@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
+import com.girlsintech.pokemon.data.remote.evolution.Evolution
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
@@ -57,9 +58,17 @@ fun PokemonDetailPage(
             mutableStateOf(null)
         }
 
+        var evolutionChain: Evolution? by rememberSaveable{
+            mutableStateOf(null)
+        }
+
         val scrollState = rememberScrollState()
 
         var refresh by rememberSaveable {
+            mutableStateOf(MyState.Load)
+        }
+
+        var refreshEvolution by rememberSaveable {
             mutableStateOf(MyState.Load)
         }
 
@@ -80,11 +89,33 @@ fun PokemonDetailPage(
             },
             {
                 pokemonSpecies = it
-                Timer().schedule(1500) {
-                    refresh = MyState.Success
-                }
+                refreshEvolution = MyState.Success
             }
         )
+
+        when(refreshEvolution) {
+            MyState.Success -> {
+                viewModel.getEvolution(pokemonSpecies!!.evolution_chain.url,
+                    {
+                        refresh = MyState.Error
+                        message = it
+                    },
+                    {
+                        evolutionChain = it
+                        Timer().schedule(1500) {
+                            refresh = MyState.Success
+                        }
+                    }
+                )
+            }
+
+            MyState.Error -> {
+                ErrorMessage(message = message)
+            }
+
+            MyState.Load, MyState.Init -> {}
+        }
+
 
         when (refresh) {
             MyState.Success -> {
@@ -110,7 +141,8 @@ fun PokemonDetailPage(
                     when (navState) {
                         0 -> PokemonDetailSection(
                             pokemonInfo = pokemonInfo,
-                            pokemonSpecies = pokemonSpecies!!
+                            pokemonSpecies = pokemonSpecies!!,
+                            evolution = evolutionChain!!
                         )
                         1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
                     }
@@ -338,7 +370,8 @@ fun PokemonStatSection(
 @Composable
 fun PokemonDetailSection(
     pokemonInfo: PokemonInfo,
-    pokemonSpecies: Species
+    pokemonSpecies: Species,
+    evolution: Evolution
 ) {
     Row(
         modifier = Modifier
@@ -411,9 +444,7 @@ fun PokemonDetailSection(
             TextInfo(text = "Generation")
             TextInfo(text = "Growth rate")
             TextInfo(text = "Egg groups")
-            if (pokemonSpecies.generation.name != "generation-i") {
-                TextInfo(text = "Evolves from ")
-            }
+            TextInfo(text = "Chain")
         }
 
         Spacer(modifier = Modifier.width(38.dp))
@@ -431,8 +462,16 @@ fun PokemonDetailSection(
                     TextInfo(text = it.name, Color.Black)
                 }
             }
-            if (pokemonSpecies.generation.name != "generation-i") {
-                TextInfo(text = pokemonSpecies.evolves_from_species.name, Color.Black)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                TextInfo(text = evolution.chain.species.name, Color.Black)
+                evolution.chain.evolves_to.forEach { evolves_to ->
+                    TextInfo(text = " -> " + evolves_to.species.name, Color.Black)
+                    evolves_to.evolves_to.forEach{
+                        TextInfo(text = " -> " + it.species.name, Color.Black)
+                    }
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.girlsintech.pokemon.connection.APIRequest
+import com.girlsintech.pokemon.data.remote.evolution.Evolution
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
@@ -48,6 +49,28 @@ class PokemonDetailViewModel(private var application: Application) : AndroidView
         },
             url
         )
+    }
+
+    fun getEvolution(url: String, onError: (String) -> Unit, onSuccess: (Evolution) -> Unit){
+        val queue = APIRequest.getAPI(application)
+        queue.getPokemonInfo({
+            val l = unpackEvolution(it)
+            onSuccess(l)
+        }, {
+            Log.w("XXX", "VolleyError")
+            if (it?.message != null)
+                onError(it.message!!)
+            else
+                onError("Network Error")
+        },
+            url
+        )
+    }
+
+    private fun unpackEvolution(it: JSONObject?): Evolution {
+        val json = it?.toString()
+        val gson = GsonBuilder().create()
+        return gson.fromJson(json, Evolution::class.java)
     }
 
     private fun unpackSpecies(it: JSONObject?): Species {
