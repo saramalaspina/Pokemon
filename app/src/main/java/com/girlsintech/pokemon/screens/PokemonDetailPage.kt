@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -382,12 +384,25 @@ fun PokemonEvolutionSection(
     Column(
         modifier = Modifier
             .fillMaxSize(1f)
-            .padding(start = 25.dp, end = 25.dp, bottom = 20.dp)
+            .padding(start = 25.dp, end = 25.dp, bottom = 330.dp)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var evolutionFirst = evolution.chain.species.name
+
+        if(evolution.chain.evolves_to.isEmpty()) {
+            Text(
+                text = "This Pokemon doesn't have evolution",
+                modifier = Modifier.fillMaxSize()
+                    .padding(top = 30.dp),
+                textAlign = TextAlign.Center,
+                fontFamily = fontBasic(),
+                fontStyle = FontStyle.Italic,
+                fontSize = 20.sp,
+                color = Color.DarkGray
+            )
+        }
 
         evolution.chain.evolves_to.forEach { evolves_to ->
 
@@ -440,7 +455,7 @@ fun PokemonEvolutionSection(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 @Composable
