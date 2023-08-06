@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.twotone.ArrowForward
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -62,8 +63,6 @@ fun PokemonDetailPage(
         var evolutionChain: Evolution? by rememberSaveable{
             mutableStateOf(null)
         }
-
-        val scrollState = rememberScrollState()
 
         var refresh by rememberSaveable {
             mutableStateOf(MyState.Load)
@@ -128,7 +127,6 @@ fun PokemonDetailPage(
                     modifier = Modifier
                         .fillMaxSize()
                         .offset(y = 330.dp)
-                        .verticalScroll(scrollState)
                         .background(Color.White, RoundedCornerShape(10))
                 ) {
                     Spacer(modifier = Modifier.height(110.dp))
@@ -139,10 +137,21 @@ fun PokemonDetailPage(
 
                     Spacer(modifier = Modifier.height(25.dp))
 
-                    when (navState) {
-                        0 -> PokemonDetailSection(pokemonInfo = pokemonInfo, pokemonSpecies = pokemonSpecies!!)
-                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
-                        2 -> PokemonEvolutionSection(viewModelDb = viewModelDb, evolution = evolutionChain!!)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        when (navState) {
+                            0 -> PokemonDetailSection(
+                                pokemonInfo = pokemonInfo,
+                                pokemonSpecies = pokemonSpecies!!
+                            )
+                            1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
+                            2 -> PokemonEvolutionSection(
+                                viewModelDb = viewModelDb,
+                                evolution = evolutionChain!!
+                            )
+                        }
                     }
                 }
                 ImageBox(pokemon.img)
@@ -368,25 +377,70 @@ fun PokemonEvolutionSection(
     viewModelDb: PokemonViewModel,
     evolution: Evolution
 ) {
-    Row(
+    val scrollState = rememberScrollState()
+
+    Column(
         modifier = Modifier
             .fillMaxSize(1f)
-            .padding(horizontal = 5.dp, vertical = 50.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(start = 25.dp, end = 25.dp, bottom = 20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        EvolutionBox(viewModelDb = viewModelDb, text = evolution.chain.species.name)
+        var evolutionFirst = evolution.chain.species.name
 
         evolution.chain.evolves_to.forEach { evolves_to ->
 
-            TextInfo(text = " -> ", Color.Black)
-            EvolutionBox(viewModelDb = viewModelDb, text = evolves_to.species.name)
+            var evolutionSecond = evolves_to.species.name
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                EvolutionBox(viewModelDb = viewModelDb, text = evolutionFirst)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        Icons.TwoTone.ArrowForward,
+                        contentDescription = null,
+                        tint = Color.DarkGray,
+                        modifier = Modifier
+                            .requiredSize(30.dp)
+                    )
+                    TextInfo(text = evolves_to.evolution_details[0].trigger.name)
+                }
+                EvolutionBox(viewModelDb = viewModelDb, text = evolutionSecond)
+            }
             evolves_to.evolves_to.forEach {
-                TextInfo(text = " -> ", Color.Black)
-                EvolutionBox(viewModelDb = viewModelDb, text = it.species.name)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    EvolutionBox(viewModelDb = viewModelDb, text = evolutionSecond)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.TwoTone.ArrowForward,
+                            contentDescription = null,
+                            tint = Color.DarkGray,
+                            modifier = Modifier
+                                .requiredSize(30.dp)
+                        )
+                        TextInfo(text = it.evolution_details[0].trigger.name)
+                    }
+                    EvolutionBox(viewModelDb = viewModelDb, text = it.species.name)
+                }
             }
         }
+        Spacer(modifier = Modifier.height(100.dp))
     }
 }
 @Composable
@@ -472,21 +526,8 @@ fun PokemonDetailSection(
             }
         }
     }
-    Spacer(modifier = Modifier.padding(10.dp))
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 25.dp)
-    ) {
-        Text(
-            text = "Evolution",
-            fontSize = 20.sp,
-            color = Color.Black,
-            fontFamily = fontBasic(),
-            fontWeight = FontWeight.Bold
-        )
-    }
-    Spacer(modifier = Modifier.padding(5.dp))
+    Spacer(modifier = Modifier.height(40.dp))
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -540,10 +581,12 @@ fun NavigationBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 25.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ){
         Column(
             modifier = Modifier
-                .padding(start = 25.dp)
                 .clickable {
                     selectedAbout = true
                     selectedStats = false
@@ -559,7 +602,6 @@ fun NavigationBar(
                 fontWeight = if (selectedAbout) FontWeight.Bold else FontWeight(10)
             )
         }
-        Spacer(modifier = Modifier.width(35.dp))
         Column(
             modifier = Modifier
                 .clickable {
@@ -577,7 +619,6 @@ fun NavigationBar(
                 fontWeight = if (selectedStats) FontWeight.Bold else FontWeight(10)
             )
         }
-        Spacer(modifier = Modifier.width(35.dp))
         Column(
             modifier = Modifier
                 .clickable {
