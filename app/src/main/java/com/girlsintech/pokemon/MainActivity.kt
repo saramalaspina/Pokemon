@@ -10,9 +10,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.girlsintech.pokemon.screens.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.girlsintech.pokemon.screens.ErrorMessage
+import com.girlsintech.pokemon.screens.MainView
+import com.girlsintech.pokemon.screens.PokemonDetailPage
+import com.girlsintech.pokemon.screens.PokemonListPage
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
-import com.girlsintech.pokemon.util.ScreenRouter
+import com.girlsintech.pokemon.util.SelectedPokemon
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 
@@ -24,10 +30,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             PokemonTheme {
                 val context = LocalContext.current
+                val owner = this
 
                 val viewModel: PokemonDetailViewModel =
                     viewModel(
-                        factory = PokemonDetailViewModel.PokemonDetailViewModelFactory(context.applicationContext as Application))
+                        factory = PokemonDetailViewModel.PokemonDetailViewModelFactory(context.applicationContext as Application)
+                    )
 
                 var refresh by rememberSaveable {
                     mutableStateOf(MyState.Load)
@@ -37,27 +45,35 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf("")
                 }
 
-                when(ScreenRouter.currentScreen.value) {
-                    1 -> MainView {
-                        ScreenRouter.navigateTo(1, 2)
+
+                val navController = rememberNavController()
+
+                NavHost(navController = navController,
+                    startDestination = "pokemon_homepage"){
+                    composable("pokemon_homepage"){
+                        MainView { navController.navigate("pokemon_list_screen") }
                     }
-                    2 -> PokemonListPage()
-                    3 -> {
-                        viewModel.getData(ScreenRouter.pokemonSelected.value!!.url) {
+                    composable("pokemon_list_screen"){
+                        PokemonListPage(navController = navController)
+                    }
+                    composable("pokemon_detail_screen"){
+
+                        viewModel.getData(SelectedPokemon.pokemonSelected.value!!.url) {
                             refresh = MyState.Error
                             message = it
                         }
-                        viewModel.pokemonInfo.observe(this) {
+                        viewModel.pokemonInfo.observe(owner) {
                             refresh = MyState.Success
                         }
 
                         when (refresh) {
                             MyState.Success -> {
                                 PokemonDetailPage(
-                                    dominantColor = ScreenRouter.color.value,
-                                    pokemon = ScreenRouter.pokemonSelected.value!!,
+                                    dominantColor = SelectedPokemon.color.value,
+                                    pokemon = SelectedPokemon.pokemonSelected.value!!,
                                     viewModel = viewModel,
-                                    viewModelDb = ScreenRouter.viewModel.value!!
+                                    viewModelDb = SelectedPokemon.viewModel.value!!,
+                                    navController = navController
                                 )
                             }
                             MyState.Error -> {

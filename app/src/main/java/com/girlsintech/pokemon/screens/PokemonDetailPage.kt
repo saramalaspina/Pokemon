@@ -20,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
@@ -36,9 +38,9 @@ import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
-import com.girlsintech.pokemon.util.ScreenRouter
 import com.girlsintech.pokemon.util.parseStatToAbbr
 import com.girlsintech.pokemon.util.parseStatToColor
+import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -52,37 +54,38 @@ fun PokemonDetailPage(
     dominantColor: Color,
     pokemon: Pokemon,
     viewModel: PokemonDetailViewModel,
-    viewModelDb: PokemonViewModel
+    viewModelDb: PokemonViewModel,
+    navController: NavController
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = dominantColor.copy(0.6f)
     ) {
-        var pokemonSpecies: Species? by rememberSaveable {
+        var pokemonSpecies: Species? by remember {
             mutableStateOf(null)
         }
 
-        var evolutionChain: Evolution? by rememberSaveable{
+        var evolutionChain: Evolution? by remember {
             mutableStateOf(null)
         }
 
-        var refresh by rememberSaveable {
+        var refresh by remember {
             mutableStateOf(MyState.Load)
         }
 
-        var refreshEvolution by rememberSaveable {
+        var refreshEvolution by remember {
             mutableStateOf(MyState.Load)
         }
 
-        var navState by rememberSaveable {
+        var navState by remember {
             mutableStateOf(0)
         }
 
-        var message by rememberSaveable {
+        var message by remember {
             mutableStateOf("")
         }
 
-        var pokemonInfo = viewModel.pokemonInfo.observeAsState().value
+        val pokemonInfo = viewModel.pokemonInfo.observeAsState().value
 
         viewModel.getSpecies(pokemonInfo!!.species.url,
             {
@@ -122,7 +125,7 @@ fun PokemonDetailPage(
         when (refresh) {
             MyState.Success -> {
 
-                TopBox(pokemonInfo = pokemonInfo, pokemon, dominantColor, viewModelDb)
+                TopBox(pokemonInfo = pokemonInfo, pokemon, dominantColor, viewModelDb, navController)
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -238,7 +241,8 @@ fun TopBox(
     pokemonInfo: PokemonInfo,
     pokemon: Pokemon,
     dominantColor: Color,
-    viewModel: PokemonViewModel
+    viewModel: PokemonViewModel,
+    navController: NavController
 ) {
     var fav by remember {
         mutableStateOf(pokemon.favorite)
@@ -265,7 +269,8 @@ fun TopBox(
                         }
                         .requiredSize(30.dp)
                         .clickable {
-                            ScreenRouter.navigateTo(3, 2)
+                            navController.popBackStack()
+                           // ScreenRouter.navigateTo(3, 2)
                         }
                 )
                 Icon(
@@ -315,13 +320,9 @@ fun TopBox(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    pokemonInfo.types.forEach { s ->
+                    pokemonInfo.types.forEach {
                         Text(
-                            text = s.type.name.replaceFirstChar {
-                                if (it.isLowerCase()) it.titlecase(
-                                    Locale.getDefault()
-                                ) else it.toString()
-                            },
+                            text = parseType(type = it.type.name),
                             fontFamily = fontPokemon(),
                             fontSize = 20.sp,
                             color = Color.White,
@@ -389,12 +390,13 @@ fun PokemonEvolutionSection(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var evolutionFirst = evolution.chain.species.name
+        val evolutionFirst = evolution.chain.species.name
 
         if(evolution.chain.evolves_to.isEmpty()) {
             Text(
-                text = "This Pokemon doesn't have evolution",
-                modifier = Modifier.fillMaxSize()
+                text = stringResource(id = R.string.no_evolution),
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(top = 30.dp),
                 textAlign = TextAlign.Center,
                 fontFamily = fontBasic(),
@@ -406,7 +408,7 @@ fun PokemonEvolutionSection(
 
         evolution.chain.evolves_to.forEach { evolves_to ->
 
-            var evolutionSecond = evolves_to.species.name
+            val evolutionSecond = evolves_to.species.name
 
             Row(
                 modifier = Modifier
@@ -506,10 +508,10 @@ fun PokemonDetailSection(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            TextInfo(text = "Species")
-            TextInfo(text = "Height")
-            TextInfo(text = "Weight")
-            TextInfo(text = "Abilities")
+            TextInfo(text = stringResource(id = R.string.species))
+            TextInfo(text = stringResource(id = R.string.height))
+            TextInfo(text = stringResource(id = R.string.weight))
+            TextInfo(text = stringResource(id = R.string.abilities))
         }
 
         Spacer(modifier = Modifier.width(60.dp))
@@ -519,7 +521,7 @@ fun PokemonDetailSection(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             pokemonSpecies.genera.forEach {
-                if (it.language.name.equals("en")) {
+                if (it.language.name == Locale.getDefault().language) {
                     TextInfo(text = it.genus, Color.Black)
                 }
             }
@@ -552,9 +554,9 @@ fun PokemonDetailSection(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            TextInfo(text = "Generation")
-            TextInfo(text = "Growth rate")
-            TextInfo(text = "Egg groups")
+            TextInfo(text = stringResource(id = R.string.generation))
+            TextInfo(text = stringResource(id = R.string.growth_rate))
+            TextInfo(text = stringResource(id = R.string.egg_groups))
         }
 
         Spacer(modifier = Modifier.width(38.dp))
@@ -610,7 +612,7 @@ fun NavigationBar(
                 }
         ) {
             Text(
-                text = "About",
+                text = stringResource(id = R.string.about),
                 fontFamily = fontBasic(),
                 color = if (selectedAbout) Color.Black else Color.Gray,
                 fontSize = 20.sp,
@@ -627,7 +629,7 @@ fun NavigationBar(
                 }
         ) {
             Text(
-                text = "Base Stats",
+                text = stringResource(id = R.string.stats),
                 fontFamily = fontBasic(),
                 color = if (selectedStats) Color.Black else Color.Gray,
                 fontSize = 20.sp,
@@ -644,7 +646,7 @@ fun NavigationBar(
                 }
         ) {
             Text(
-                text = "Evolutions",
+                text = stringResource(id = R.string.evolutions),
                 fontFamily = fontBasic(),
                 color = if (selectedEvolution) Color.Black else Color.Gray,
                 fontSize = 20.sp,
@@ -707,7 +709,9 @@ fun Loading() {
                 end.linkTo(parent.end)
             },
             composition = composition, progress = {progress})
-        Text(text = "Wait, please", modifier = Modifier
+        Text(
+            text = stringResource(id = R.string.loading),
+            modifier = Modifier
             .constrainAs(wp) {
                 top.linkTo(pi.bottom)
                 start.linkTo(parent.start)

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,7 +87,7 @@ fun Start(onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically  //gli oggetti sono inseriti tutti nella parte alta dell'interfaccia
         ) {
             Text(
-                text = "Let's Start!",
+                text = stringResource(id = R.string.start),
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()

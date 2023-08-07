@@ -19,7 +19,6 @@ import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material.icons.twotone.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -33,6 +32,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
@@ -51,13 +52,17 @@ import com.girlsintech.pokemon.ui.theme.BlackLight
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.util.Constants.IMAGE_URL
-import com.girlsintech.pokemon.util.ScreenRouter
+import com.girlsintech.pokemon.util.SelectedPokemon
+import com.girlsintech.pokemon.util.parseType
+import com.girlsintech.pokemon.util.parseTypeIt
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 
 
 @Composable
-fun PokemonListPage() {
+fun PokemonListPage(
+    navController: NavController
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -66,19 +71,19 @@ fun PokemonListPage() {
         val viewModel: PokemonViewModel =
             viewModel(factory = PokemonViewModel.PokemonViewModelFactory(context.applicationContext as Application))
 
-        var filter by rememberSaveable {
+        var filter by remember {
             mutableStateOf("")
         }
 
-        var type by rememberSaveable {
+        var type by remember {
             mutableStateOf("")
         }
 
-        var refresh by rememberSaveable {
+        var refresh by remember {
             mutableStateOf(false)
         }
 
-        var onlyFavorite by rememberSaveable {
+        var onlyFavorite by remember {
             mutableStateOf(false)
         }
 
@@ -86,8 +91,9 @@ fun PokemonListPage() {
             mutableStateOf(false)
         }
 
-        val types = listOf("None", "Normal", "Fire", "Water", "Grass", "Flying", "Fighting", "Poison",
-            "Electric", "Ground", "Rock", "Psychic", "Ice", "Bug", "Ghost", "Steel", "Dragon", "Dark", "Fairy")
+        val types = listOf(
+            stringResource(id = R.string.noneType), stringResource(id = R.string.normal), stringResource(id = R.string.fire), stringResource(id = R.string.water), stringResource(id = R.string.grass), stringResource(id = R.string.flying), stringResource(id = R.string.fighting), stringResource(id = R.string.poison),
+            stringResource(id = R.string.electric), stringResource(id = R.string.ground), stringResource(id = R.string.rock), stringResource(id = R.string.psychic), stringResource(id = R.string.ice), stringResource(id = R.string.bug), stringResource(id = R.string.ghost), stringResource(id = R.string.steel), stringResource(id = R.string.dragon), stringResource(id = R.string.dark), stringResource(id = R.string.fairy))
 
         val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0, "%$type%")
             .observeAsState(listOf()).value
@@ -101,7 +107,7 @@ Row {
             .size(50.dp)
             .padding(top = 15.dp, start = 15.dp)
             .clickable {
-            ScreenRouter.navigateTo(2,1)
+                navController.popBackStack()
             }
     )
 
@@ -144,7 +150,7 @@ Row {
                 )
                 Spacer(modifier = Modifier.width(7.dp))
                 Text(
-                    text = "Favorites",
+                    text = stringResource(id = R.string.favorites),
                     color = BlackLight,
                     fontStyle = FontStyle.Italic,
                     fontSize = 20.sp,
@@ -153,11 +159,17 @@ Row {
                 )
                 Spacer(modifier = Modifier.width(75.dp))
 
+                val noneSelection = stringResource(id = R.string.noneType)
+
                 TypeSelection(itemList = types) {
-                    type = if (it == "None") {
+                    type = if (it ==  noneSelection) {
                         ""
                     } else {
-                        it
+                        if(Locale.getDefault().language == "it"){
+                            parseTypeIt(type = it)
+                        } else {
+                            it
+                        }
                     }
                 }
 
@@ -199,7 +211,7 @@ Row {
 
                 if (isHintDisplayed) {
                     Text(
-                        text = "Search...",
+                        text =  stringResource(id = R.string.search),
                         color = Color.LightGray,
                         modifier = Modifier
                             .padding(horizontal = 50.dp, vertical = 12.dp),
@@ -217,6 +229,7 @@ Row {
                 list = pokemonList,
                 refresh = refresh,
                 viewModel = viewModel,
+                navController = navController
             ) {
                 refresh = !it
             }
@@ -230,11 +243,14 @@ fun TypeSelection(
     itemList: List<String>,
     onItemSelected: (selectedItem: String) -> Unit
 ) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    val selectionString = stringResource(id = R.string.selection_type)
+    val noneSelection = stringResource(id = R.string.noneType)
+
+    var expanded by remember { mutableStateOf(false) }
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    var selectedItem by remember { mutableStateOf("Select Type") }
+    var selectedItem by remember { mutableStateOf(selectionString) }
 
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
@@ -274,8 +290,8 @@ fun TypeSelection(
             itemList.forEach {
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    selectedItem = if (it == "None") {
-                        "Select Type"
+                    selectedItem = if (it == noneSelection) {
+                        selectionString
                     } else {
                         it
                     }
@@ -294,6 +310,7 @@ fun PokemonList(
     list: List<Pokemon>,
     refresh: Boolean,
     viewModel: PokemonViewModel,
+    navController: NavController,
     onRefresh: (Boolean) -> Unit
 ) {
 
@@ -313,6 +330,7 @@ fun PokemonList(
                             pokemon = pokemon,
                             refresh = refresh,
                             viewModel = viewModel,
+                            navController = navController,
                             onRefresh = onRefresh
                         )
                     }
@@ -327,8 +345,9 @@ fun PokemonItem(
     pokemon: Pokemon,
     refresh: Boolean,
     viewModel: PokemonViewModel,
+    navController: NavController,
     onRefresh: (Boolean) -> Unit
-){
+) {
     var dominantColor by remember {
         mutableStateOf(BluePokemon.copy(0.4f))
     }
@@ -340,11 +359,12 @@ fun PokemonItem(
                 .clip(RoundedCornerShape(20.dp))
                 .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
-                    ScreenRouter.navigateToDetail(2, dominantColor, pokemon, viewModel)
+                    SelectedPokemon.selectPokemon(dominantColor, pokemon, viewModel)
+                    navController.navigate("pokemon_detail_screen")
                 }
                 .fillMaxWidth()
         ) {
-            val idImage = if(pokemon.id > 1010) {
+            val idImage = if (pokemon.id > 1010) {
                 pokemon.id + 8990
             } else {
                 pokemon.id
@@ -361,7 +381,7 @@ fun PokemonItem(
                     }
                     .build(),
                 contentDescription = null,
-                modifier = Modifier .alpha(0f)
+                modifier = Modifier.alpha(0f)
             )
 
             ConstraintLayout {
@@ -387,22 +407,30 @@ fun PokemonItem(
                         color = Color.White
                     )
 
-                    Text(
-                        text = pokemon.type,
-                        fontFamily = fontPokemon(),
-                        fontSize = 15.sp,
-                        color = Color.White
-                    )
+                    Row (
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        val types = pokemon.type
+                        val delim = ", "
+
+                        types.split(delim).forEach {
+                            Text(
+                                text = parseType(type = it),
+                                fontFamily = fontPokemon(),
+                                fontSize = 15.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
                 }
 
-
-                 SubcomposeAsyncImage(
-                     model = ImageRequest.Builder(LocalContext.current)
-                         .data(pokemon.img)
-                         .diskCacheKey("pokemon_image_${pokemon.id}")
-                         .build(),
-                     contentDescription = null,
-                     loading = {
+                SubcomposeAsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(pokemon.img)
+                        .diskCacheKey("pokemon_image_${pokemon.id}")
+                        .build(),
+                    contentDescription = null,
+                    loading = {
                         CircularProgressIndicator(
                             modifier = Modifier.requiredSize(30.dp),
                             color = BluePokemon,

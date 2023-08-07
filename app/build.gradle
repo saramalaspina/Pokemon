@@ -108,7 +108,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
     //Navigation
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha04"
+    implementation "androidx.navigation:navigation-compose:2.6.0"
 
     //Palette
     implementation 'androidx.palette:palette:1.0.0'
