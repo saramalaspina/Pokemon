@@ -4,36 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.girlsintech.pokemon.R
-import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.responses.Stat
-import com.girlsintech.pokemon.data.remote.responses.Type
 import com.girlsintech.pokemon.ui.theme.*
 import java.util.*
-
-
-fun parseTypeToColor(pokemon: PokemonInfo, type: Type): Color {
-    return when(type.type.name.lowercase(Locale.ROOT)) {
-        "normal" -> Color.Green
-        "fire" -> Color.Red
-        "water" -> Color.Cyan
-        "electric" -> Color.Yellow
-        "grass" -> Color.Green
-        "ice" -> Color.Blue
-        "fighting" -> Color.Red
-        "poison" -> Color.DarkGray
-        "ground" -> Color.LightGray
-        "flying" -> Color.Blue
-        "psychic" -> Color.Green
-        "bug" -> Color.Magenta
-        "rock" -> Color.DarkGray
-        "ghost" -> Color.Yellow
-        "dragon" -> Color.Red
-        "dark" -> Color.DarkGray
-        "steel" -> Color.Red
-        "fairy" -> Color.Magenta
-        else -> Color.Black
-    }
-}
 
 fun parseStatToColor(stat: Stat): Color {
     return when(stat.stat.name.lowercase(Locale.ROOT)) {
@@ -81,6 +54,28 @@ fun parseType(type: String): String {
         "dark" -> stringResource(id = R.string.dark)
         "steel" -> stringResource(id = R.string.steel)
         "fairy" -> stringResource(id = R.string.fairy)
+        else -> ""
+    }
+}
+
+@Composable
+fun parseEggGroups(eggGroup: String): String {
+    return when(eggGroup.lowercase(Locale.ROOT)) {
+        "monster" -> stringResource(id = R.string.monster)
+        "water1" -> stringResource(id = R.string.water1)
+        "water2" -> stringResource(id = R.string.water2)
+        "water3" -> stringResource(id = R.string.water3)
+        "flying" -> stringResource(id = R.string.flying)
+        "bug" -> stringResource(id = R.string.bug)
+        "ground" -> stringResource(id = R.string.ground)
+        "fairy" -> stringResource(id = R.string.magic)
+        "plant" -> stringResource(id = R.string.plant)
+        "humanshape" -> stringResource(id = R.string.human)
+        "mineral" -> stringResource(id = R.string.mineral)
+        "indeterminate" -> stringResource(id = R.string.indeterminate_egg)
+        "ditto" -> stringResource(id = R.string.ditto)
+        "dragon" -> stringResource(id = R.string.dragon)
+        "no-eggs" -> stringResource(id = R.string.no_eggs)
         else -> ""
     }
 }

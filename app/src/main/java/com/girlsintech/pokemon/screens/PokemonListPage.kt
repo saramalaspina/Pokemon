@@ -19,6 +19,7 @@ import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material.icons.twotone.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -75,7 +76,7 @@ fun PokemonListPage(
             mutableStateOf("")
         }
 
-        var type by remember {
+        var type by rememberSaveable {
             mutableStateOf("")
         }
 
@@ -83,7 +84,7 @@ fun PokemonListPage(
             mutableStateOf(false)
         }
 
-        var onlyFavorite by remember {
+        var onlyFavorite by rememberSaveable {
             mutableStateOf(false)
         }
 
@@ -250,7 +251,7 @@ fun TypeSelection(
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    var selectedItem by remember { mutableStateOf(selectionString) }
+    var selectedItem by rememberSaveable { mutableStateOf(selectionString) }
 
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp

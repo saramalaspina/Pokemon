@@ -42,4 +42,15 @@
     <string name="evolutions">Evoluzioni</string>
     <string name="stats">Statistiche</string>
     <string name="about">Informazioni</string>
+    <string name="monster">Mostro</string>
+    <string name="water1">Acqua 1</string>
+    <string name="water2">Acqua 2</string>
+    <string name="water3">Acqua 3</string>
+    <string name="magic">Magico</string>
+    <string name="plant">Erba</string>
+    <string name="human">Umanoide</string>
+    <string name="mineral">Minerale</string>
+    <string name="indeterminate_egg">Amorfo</string>
+    <string name="ditto">Ditto</string>
+    <string name="no_eggs">Sconosciuto</string>
 </resources>

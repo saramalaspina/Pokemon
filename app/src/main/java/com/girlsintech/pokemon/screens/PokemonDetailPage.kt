@@ -38,6 +38,7 @@ import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
+import com.girlsintech.pokemon.util.parseEggGroups
 import com.girlsintech.pokemon.util.parseStatToAbbr
 import com.girlsintech.pokemon.util.parseStatToColor
 import com.girlsintech.pokemon.util.parseType
@@ -270,7 +271,6 @@ fun TopBox(
                         .requiredSize(30.dp)
                         .clickable {
                             navController.popBackStack()
-                           // ScreenRouter.navigateTo(3, 2)
                         }
                 )
                 Icon(
@@ -520,11 +520,14 @@ fun PokemonDetailSection(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+
             pokemonSpecies.genera.forEach {
                 if (it.language.name == Locale.getDefault().language) {
                     TextInfo(text = it.genus, Color.Black)
                 }
             }
+
+
             TextInfo(
                 text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
                 Color.Black
@@ -571,7 +574,7 @@ fun PokemonDetailSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 pokemonSpecies.egg_groups.forEach {
-                    TextInfo(text = it.name, Color.Black)
+                    TextInfo(text = parseEggGroups(eggGroup = it.name), Color.Black)
                 }
             }
         }

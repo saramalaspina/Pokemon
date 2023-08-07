@@ -41,4 +41,15 @@
     <string name="evolutions">Evolutions</string>
     <string name="stats">Base Stats</string>
     <string name="about">About</string>
+    <string name="monster">Monster</string>
+    <string name="water1">Water 1</string>
+    <string name="water2">Water 2</string>
+    <string name="water3">Water 3</string>
+    <string name="magic">Fairy</string>
+    <string name="plant">Plant</string>
+    <string name="human">Human-Like</string>
+    <string name="mineral">Mineral</string>
+    <string name="indeterminate_egg">Amorphous</string>
+    <string name="ditto">Ditto</string>
+    <string name="no_eggs">No Eggs</string>
 </resources>
