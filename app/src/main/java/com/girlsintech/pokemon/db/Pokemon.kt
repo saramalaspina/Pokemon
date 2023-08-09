@@ -11,5 +11,7 @@ data class Pokemon(
     var url: String,
     var img: String,
     var favorite: Int,
-    var type: String
+    var type: String,
+    var generation: Int,
+    var ability: String
 )

@@ -248,7 +248,7 @@ fun TopBox(
     var fav by remember {
         mutableStateOf(pokemon.favorite)
     }
-
+    
     Column {
         Box(
             modifier = Modifier
