@@ -53,4 +53,6 @@
     <string name="indeterminate_egg">Amorfo</string>
     <string name="ditto">Ditto</string>
     <string name="no_eggs">Sconosciuto</string>
+    <string name="selection_generation">Generazione</string>
+    <string name="search_ability">Cerca Abilità</string>
 </resources>

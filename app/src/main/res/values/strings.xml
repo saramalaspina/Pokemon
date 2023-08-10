@@ -52,4 +52,6 @@
     <string name="indeterminate_egg">Amorphous</string>
     <string name="ditto">Ditto</string>
     <string name="no_eggs">No Eggs</string>
+    <string name="selection_generation">Select Generation</string>
+    <string name="search_ability">Search Ability</string>
 </resources>

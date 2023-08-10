@@ -33,6 +33,21 @@ fun parseStatToAbbr(stat: Stat): String {
     }
 }
 
+fun parseGeneration(number: String): Int {
+    return when(number){
+        "I" -> 1
+        "II" -> 2
+        "III" -> 3
+        "IV" -> 4
+        "V" -> 5
+        "VI" -> 6
+        "VII" -> 7
+        "VIII" -> 8
+        "IX" -> 9
+        else -> 0
+    }
+}
+
 @Composable
 fun parseType(type: String): String {
     return when(type.lowercase(Locale.ROOT)) {

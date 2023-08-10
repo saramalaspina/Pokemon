@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -28,32 +30,40 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.model.content.RectangleShape
 import com.girlsintech.pokemon.R
+import com.girlsintech.pokemon.data.remote.model.ListOfAbilities
+import com.girlsintech.pokemon.data.remote.model.SingletonListOfAbilities
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BlackLight
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.util.Constants.IMAGE_URL
 import com.girlsintech.pokemon.util.SelectedPokemon
+import com.girlsintech.pokemon.util.parseGeneration
 import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.util.parseTypeIt
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -80,6 +90,14 @@ fun PokemonListPage(
             mutableStateOf("")
         }
 
+        var generation by rememberSaveable {
+            mutableStateOf("")
+        }
+
+        var ability by rememberSaveable {
+            mutableStateOf("")
+        }
+
         var refresh by remember {
             mutableStateOf(false)
         }
@@ -92,38 +110,43 @@ fun PokemonListPage(
             mutableStateOf(false)
         }
 
-        val types = listOf(
-            stringResource(id = R.string.noneType), stringResource(id = R.string.normal), stringResource(id = R.string.fire), stringResource(id = R.string.water), stringResource(id = R.string.grass), stringResource(id = R.string.flying), stringResource(id = R.string.fighting), stringResource(id = R.string.poison),
-            stringResource(id = R.string.electric), stringResource(id = R.string.ground), stringResource(id = R.string.rock), stringResource(id = R.string.psychic), stringResource(id = R.string.ice), stringResource(id = R.string.bug), stringResource(id = R.string.ghost), stringResource(id = R.string.steel), stringResource(id = R.string.dragon), stringResource(id = R.string.dark), stringResource(id = R.string.fairy))
+        var isDialogShown by remember {
+            mutableStateOf(false)
+        }
 
-        val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0, "%$type%")
+
+        val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0, "%$type%", parseGeneration(generation), "%$ability%")
             .observeAsState(listOf()).value
 
 
-Row {
-    Icon(Icons.TwoTone.ArrowBack,
-        contentDescription = null,
-        tint = BluePokemon,
-        modifier = Modifier
-            .size(50.dp)
-            .padding(top = 15.dp, start = 15.dp)
-            .clickable {
-                navController.popBackStack()
-            }
-    )
+        Row {
+            Icon(Icons.TwoTone.ArrowBack,
+                contentDescription = null,
+                tint = BluePokemon,
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(top = 15.dp, start = 15.dp)
+                    .clickable {
+                        navController.popBackStack()
+                    }
+            )
 
-    Image(
-        modifier = Modifier.fillMaxSize(),
-        painter = painterResource(id = R.drawable.sfondo),
-        contentDescription = "background",
-        contentScale = ContentScale.FillBounds
-    )
-}
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = R.drawable.sfondo),
+                contentDescription = "background",
+                contentScale = ContentScale.FillBounds
+            )
+        }
 
         Column {
             Spacer(modifier = Modifier.height(10.dp))
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Top) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Top
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.pokemon_title),
                     contentDescription = null,
@@ -138,7 +161,7 @@ Row {
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .padding(start = 20.dp)
-            ){
+            ) {
                 Icon(
                     Icons.TwoTone.Favorite,
                     modifier = Modifier
@@ -156,32 +179,57 @@ Row {
                     fontStyle = FontStyle.Italic,
                     fontSize = 20.sp,
                     fontFamily = fontBasic(),
-                    textAlign = TextAlign . Center,
+                    textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.width(75.dp))
+                Spacer(modifier = Modifier.width(145.dp))
 
-                val noneSelection = stringResource(id = R.string.noneType)
+                Text(
+                    text = "Add filter",
+                    color = Color.Black,
+                    modifier = Modifier
+                        .clickable {
+                            isDialogShown = true
+                        },
+                    fontSize = 20.sp,
+                    fontStyle = FontStyle.Italic,
+                    fontFamily = fontBasic()
+                )
 
-                TypeSelection(itemList = types) {
-                    type = if (it ==  noneSelection) {
-                        ""
-                    } else {
-                        if(Locale.getDefault().language == "it"){
-                            parseTypeIt(type = it)
-                        } else {
-                            it
+
+                if (isDialogShown) {
+                    FilterDialog(
+                        initAbility = ability,
+                        initType = type,
+                        initGen = generation,
+                        onDismiss = {
+                            isDialogShown = false
+                        },
+
+                        onClickType = {
+                            if(Locale.getDefault().language == "it"){
+                                parseTypeIt(type = it)
+                            } else {
+                                it
+                            }
+                        },
+                        onClickGeneration = {
+                            generation = it
+                        },
+                        onClickAbility = {
+                            ability = it
                         }
-                    }
+                    )
                 }
 
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Box(modifier = Modifier
-                .background(CardBackground, CircleShape)
-                .clip(RoundedCornerShape(20.dp))
-                .padding(horizontal = 10.dp, vertical = 5.dp),
+            Box(
+                modifier = Modifier
+                    .background(CardBackground, CircleShape)
+                    .clip(RoundedCornerShape(20.dp))
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
                 BasicTextField(
@@ -202,7 +250,8 @@ Row {
                         }
                 )
 
-                Icon(imageVector = Icons.TwoTone.Search,
+                Icon(
+                    imageVector = Icons.TwoTone.Search,
                     contentDescription = null,
                     modifier = Modifier
                         .padding(horizontal = 15.dp, vertical = 12.dp)
@@ -212,7 +261,7 @@ Row {
 
                 if (isHintDisplayed) {
                     Text(
-                        text =  stringResource(id = R.string.search),
+                        text = stringResource(id = R.string.search),
                         color = Color.LightGray,
                         modifier = Modifier
                             .padding(horizontal = 50.dp, vertical = 12.dp),
@@ -240,18 +289,247 @@ Row {
 }
 
 @Composable
-fun TypeSelection(
+fun AbilitySelection (
+    initAbility: String,
+    listOfAbilities: ListOfAbilities,
+    onClickAbility: (String) -> Unit
+) {
+    val options = listOfAbilities.abilities
+
+    var exp by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+
+    var selection by remember {
+        mutableStateOf("")
+    }
+
+    val icon = if (exp)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+    Column {
+        OutlinedTextField (
+            value = selection,
+            onValueChange = {
+            selection = it
+            exp = true
+            },
+            modifier = Modifier
+                .width(205.dp)
+                .height(50.dp)
+                .shadow(2.dp, spotColor = CardBackground),
+            enabled = true,
+            keyboardActions = KeyboardActions { },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done   //tasto di spunta
+            ),
+            singleLine = true,
+
+            textStyle = TextStyle(
+                color = Color.Black,
+                fontFamily = fontBasic()
+            ),
+            shape = RectangleShape,
+
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                disabledBorderColor = Color.LightGray
+            ),
+
+            trailingIcon = {
+                Icon(icon, contentDescription = null, tint = BlackLight)
+            },
+
+            placeholder = {
+                Text(
+                    text = initAbility.ifBlank {
+                        stringResource(id = R.string.search_ability)
+                    },
+                    fontSize = 15.sp,
+                    fontFamily = fontBasic(),
+                    color = Color.Black,
+                )
+            }
+        )
+
+        //colonne che non creano tutte le righe ma solo quelle visibili
+        LazyColumn(modifier = Modifier.padding(4.dp)) {
+            val filterOpts = options.filter {
+                if(Locale.getDefault().language == "en") {
+                    it.en.startsWith(
+                        selection,
+                        ignoreCase = true  //evita il problema delle maiuscole e delle minuscole
+                    )
+                } else {
+                    it.it.startsWith(
+                        selection,
+                        ignoreCase = true
+                    )
+                }
+            }
+
+            if (exp) {
+                //lista di LazyColumn a cui passo la lista di oggetti
+                itemsIndexed(filterOpts) { _, item ->
+                    Text(
+                        text = if(Locale.getDefault().language == "en") {item.en} else {item.it},
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clickable(onClick = {
+                                selection = if(Locale.getDefault().language == "en") {item.en} else {item.it}
+                                onClickAbility(item.en)
+                                exp = false //una volta cliccato la lista deve sparire
+                                focusManager.clearFocus()
+                            })
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FilterDialog(
+    initAbility: String,
+    initType: String,
+    initGen: String,
+    onDismiss: () -> Unit,
+    onClickType: (String) -> Unit,
+    onClickGeneration: (String) -> Unit,
+    onClickAbility: (String) -> Unit
+) {
+
+    val noneSelection = stringResource(id = R.string.noneType)
+
+    var typeSelection by rememberSaveable {
+        mutableStateOf(initType)
+    }
+
+    var generationSelection by remember {
+        mutableStateOf(initGen)
+    }
+
+    var abilitySelection by remember {
+        mutableStateOf("")
+    }
+
+    val types = listOf(
+        stringResource(id = R.string.noneType),
+        stringResource(id = R.string.normal),
+        stringResource(id = R.string.fire),
+        stringResource(id = R.string.water),
+        stringResource(id = R.string.grass),
+        stringResource(id = R.string.flying),
+        stringResource(id = R.string.fighting),
+        stringResource(id = R.string.poison),
+        stringResource(id = R.string.electric),
+        stringResource(id = R.string.ground),
+        stringResource(id = R.string.rock),
+        stringResource(id = R.string.psychic),
+        stringResource(id = R.string.ice),
+        stringResource(id = R.string.bug),
+        stringResource(id = R.string.ghost),
+        stringResource(id = R.string.steel),
+        stringResource(id = R.string.dragon),
+        stringResource(id = R.string.dark),
+        stringResource(id = R.string.fairy)
+    )
+
+    val generations = listOf(stringResource(id = R.string.noneType),"I","II","III","IV","V","VI","VII","VIII","IX")
+
+    var listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
+
+    Dialog(
+        onDismissRequest = { onDismiss() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(10.dp),
+            backgroundColor = Color.White,
+            modifier = Modifier
+                .height(500.dp)
+                .width(400.dp)
+                .shadow(10.dp, RoundedCornerShape(10.dp))
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 15.dp)
+            ) {
+
+                FilterSelection(
+                    itemList = types,
+                    currentSelection = typeSelection,
+                    selectionString = stringResource(id = R.string.selection_type)
+                ) {
+                    typeSelection = if (it == noneSelection) {
+                        ""
+                    } else {
+                        if (Locale.getDefault().language == "it") {
+                            parseTypeIt(type = it)
+                        } else {
+                            it
+                        }
+                    }
+                }
+
+                FilterSelection(
+                    itemList = generations,
+                    currentSelection = generationSelection,
+                    selectionString = stringResource(id = R.string.selection_generation)
+                ) {
+                    generationSelection = if (it == noneSelection) {
+                        ""
+                    } else {
+                        it
+                    }
+                }
+
+                AbilitySelection(
+                    initAbility = initAbility,
+                    listOfAbilities = listOfAbilities
+                ) {
+                    abilitySelection = it
+                }
+
+                Button(
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = CardBackground),
+                    modifier = Modifier
+                        .background(CardBackground, RoundedCornerShape(30.dp))
+                        .width(150.dp),
+                    onClick = {
+                        onClickType(typeSelection)
+                        onClickGeneration(generationSelection)
+                        onClickAbility(abilitySelection)
+                        onDismiss()
+                    }
+                ) {
+                    TextInfo(text = "Apply Filter", Color.Black)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FilterSelection(
     itemList: List<String>,
+    currentSelection: String,
+    selectionString: String,
     onItemSelected: (selectedItem: String) -> Unit
 ) {
-    val selectionString = stringResource(id = R.string.selection_type)
     val noneSelection = stringResource(id = R.string.noneType)
 
     var expanded by remember { mutableStateOf(false) }
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    var selectedItem by rememberSaveable { mutableStateOf(selectionString) }
+    var selectedItem by rememberSaveable { mutableStateOf(currentSelection) }
 
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
@@ -268,15 +546,19 @@ fun TypeSelection(
                 .background(CardBackground, RoundedCornerShape(10.dp))
         ) {
             Text(
-                text = selectedItem,
+                text =
+                if (selectedItem == "") {
+                    selectionString
+                } else {
+                    selectedItem
+                },
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                modifier = Modifier.width(110.dp),
+                modifier = Modifier.width(150.dp),
                 fontFamily = fontBasic(),
                 color = Color.Black,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
-                fontStyle = FontStyle.Italic
             )
             Icon(icon, contentDescription = null, tint = BlackLight)
         }
@@ -320,10 +602,10 @@ fun PokemonList(
             .padding(start = 15.dp, end = 15.dp)
             .background(CardBackground, RoundedCornerShape(10.dp))
     ) {
-        LazyColumn (
+        LazyColumn(
             Modifier
-                .padding(top =5.dp)
-                ) {
+                .padding(top = 5.dp)
+        ) {
             itemsIndexed(list) { _, pokemon ->
                 ListItem(
                     text = {
@@ -408,7 +690,7 @@ fun PokemonItem(
                         color = Color.White
                     )
 
-                    Row (
+                    Row(
                         horizontalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         val types = pokemon.type
