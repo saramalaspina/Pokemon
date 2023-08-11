@@ -309,7 +309,11 @@ fun AbilitySelection (
     else
         Icons.Filled.KeyboardArrowDown
 
-    Column {
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 57.dp)
+            ){
         OutlinedTextField (
             value = selection,
             onValueChange = {
@@ -329,7 +333,9 @@ fun AbilitySelection (
 
             textStyle = TextStyle(
                 color = Color.Black,
-                fontFamily = fontBasic()
+                fontFamily = fontBasic(),
+                textAlign = TextAlign.Center,
+                fontSize = 15.sp
             ),
             shape = RectangleShape,
 
