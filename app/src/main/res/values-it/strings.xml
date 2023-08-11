@@ -55,4 +55,5 @@
     <string name="no_eggs">Sconosciuto</string>
     <string name="selection_generation">Generazione</string>
     <string name="search_ability">Cerca Abilità</string>
+    <string name="apply_filters">Applica Filtri</string>
 </resources>

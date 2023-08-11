@@ -54,4 +54,5 @@
     <string name="no_eggs">No Eggs</string>
     <string name="selection_generation">Select Generation</string>
     <string name="search_ability">Search Ability</string>
+    <string name="apply_filters">Apply Filters</string>
 </resources>

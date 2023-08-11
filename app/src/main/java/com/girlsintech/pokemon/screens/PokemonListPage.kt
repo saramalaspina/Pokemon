@@ -199,18 +199,14 @@ fun PokemonListPage(
                 if (isDialogShown) {
                     FilterDialog(
                         initAbility = ability,
-                        initType = type,
+                        initType = parseType(type = type),
                         initGen = generation,
                         onDismiss = {
                             isDialogShown = false
                         },
 
                         onClickType = {
-                            if(Locale.getDefault().language == "it"){
-                                parseTypeIt(type = it)
-                            } else {
-                                it
-                            }
+                           type = it
                         },
                         onClickGeneration = {
                             generation = it
@@ -385,7 +381,11 @@ fun AbilitySelection (
                         modifier = Modifier
                             .padding(4.dp)
                             .clickable(onClick = {
-                                selection = if(Locale.getDefault().language == "en") {item.en} else {item.it}
+                                selection = if (Locale.getDefault().language == "en") {
+                                    item.en
+                                } else {
+                                    item.it
+                                }
                                 onClickAbility(item.en)
                                 exp = false //una volta cliccato la lista deve sparire
                                 focusManager.clearFocus()
@@ -475,10 +475,10 @@ fun FilterDialog(
                     typeSelection = if (it == noneSelection) {
                         ""
                     } else {
-                        if (Locale.getDefault().language == "it") {
-                            parseTypeIt(type = it)
-                        } else {
+                        if (Locale.getDefault().language == "en") {
                             it
+                        } else {
+                            parseTypeIt(type = it)
                         }
                     }
                 }
@@ -515,7 +515,7 @@ fun FilterDialog(
                         onDismiss()
                     }
                 ) {
-                    TextInfo(text = "Apply Filter", Color.Black)
+                    TextInfo(text = stringResource(id = R.string.apply_filters), Color.Black)
                 }
             }
         }
