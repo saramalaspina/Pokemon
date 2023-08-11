@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -181,10 +182,10 @@ fun PokemonListPage(
                     fontFamily = fontBasic(),
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.width(145.dp))
+                Spacer(modifier = Modifier.width(135.dp))
 
                 Text(
-                    text = "Add filter",
+                    text = stringResource(id = R.string.add_filters),
                     color = Color.Black,
                     modifier = Modifier
                         .clickable {
@@ -297,7 +298,7 @@ fun AbilitySelection (
     val focusManager = LocalFocusManager.current
 
     var selection by remember {
-        mutableStateOf("")
+        mutableStateOf(initAbility)
     }
 
     val icon = if (exp)
@@ -305,21 +306,17 @@ fun AbilitySelection (
     else
         Icons.Filled.KeyboardArrowDown
 
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 57.dp)
-            ){
-        OutlinedTextField (
+    Column {
+        OutlinedTextField(
             value = selection,
             onValueChange = {
-            selection = it
-            exp = true
+                selection = it
+                exp = true
             },
             modifier = Modifier
                 .width(205.dp)
                 .height(50.dp)
-                .shadow(2.dp, spotColor = CardBackground),
+                .shadow(5.dp, spotColor = CardBackground),
             enabled = true,
             keyboardActions = KeyboardActions { },
             keyboardOptions = KeyboardOptions(
@@ -333,7 +330,7 @@ fun AbilitySelection (
                 textAlign = TextAlign.Center,
                 fontSize = 15.sp
             ),
-            shape = RectangleShape,
+            shape = RoundedCornerShape(5.dp),
 
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.LightGray,
@@ -342,7 +339,14 @@ fun AbilitySelection (
             ),
 
             trailingIcon = {
-                Icon(icon, contentDescription = null, tint = BlackLight)
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = BlackLight,
+                    modifier = Modifier.clickable {
+                        exp = !exp
+                    }
+                )
             },
 
             placeholder = {
@@ -358,9 +362,12 @@ fun AbilitySelection (
         )
 
         //colonne che non creano tutte le righe ma solo quelle visibili
-        LazyColumn(modifier = Modifier.padding(4.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(4.dp)
+               ) {
             val filterOpts = options.filter {
-                if(Locale.getDefault().language == "en") {
+                if (Locale.getDefault().language == "en") {
                     it.en.startsWith(
                         selection,
                         ignoreCase = true  //evita il problema delle maiuscole e delle minuscole
@@ -377,7 +384,11 @@ fun AbilitySelection (
                 //lista di LazyColumn a cui passo la lista di oggetti
                 itemsIndexed(filterOpts) { _, item ->
                     Text(
-                        text = if(Locale.getDefault().language == "en") {item.en} else {item.it},
+                        text = if (Locale.getDefault().language == "en") {
+                            item.en
+                        } else {
+                            item.it
+                        },
                         modifier = Modifier
                             .padding(4.dp)
                             .clickable(onClick = {
@@ -419,7 +430,7 @@ fun FilterDialog(
     }
 
     var abilitySelection by remember {
-        mutableStateOf("")
+        mutableStateOf(initAbility)
     }
 
     val types = listOf(
@@ -455,7 +466,7 @@ fun FilterDialog(
             shape = RoundedCornerShape(10.dp),
             backgroundColor = Color.White,
             modifier = Modifier
-                .height(500.dp)
+                .height(530.dp)
                 .width(400.dp)
                 .shadow(10.dp, RoundedCornerShape(10.dp))
         ) {
@@ -549,7 +560,7 @@ fun FilterSelection(
                     //This value is used to assign to the DropDown the same width
                     textFieldSize = coordinates.size.toSize()
                 }
-                .background(CardBackground, RoundedCornerShape(10.dp))
+                //.background(CardBackground, RoundedCornerShape(10.dp))
         ) {
             Text(
                 text =

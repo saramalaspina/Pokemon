@@ -56,4 +56,13 @@
     <string name="selection_generation">Generazione</string>
     <string name="search_ability">Cerca Abilità</string>
     <string name="apply_filters">Applica Filtri</string>
+    <string name="add_filters">Aggiungi filtri</string>
+    <string name="fast">Veloce</string>
+    <string name="medium_fast">Medio-veloce</string>
+    <string name="medium_slow">Medio-lento</string>
+    <string name="slow">Lento</string>
+    <string name="fast_than_vey_slow">Veloce e poi molto lento</string>
+    <string name="erratic">Imprevedibile</string>
+    <string name="medium">Medio</string>
+    <string name="slow_than_very_fast">Lento e poi molto veloce</string>
 </resources>

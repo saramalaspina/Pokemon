@@ -55,4 +55,13 @@
     <string name="selection_generation">Select Generation</string>
     <string name="search_ability">Search Ability</string>
     <string name="apply_filters">Apply Filters</string>
+    <string name="add_filters">Add filters</string>
+    <string name="fast">Fast</string>
+    <string name="medium_fast">Medium-fast</string>
+    <string name="medium_slow">Medium-slow</string>
+    <string name="slow">Slow</string>
+    <string name="fast_than_vey_slow">Fast than very slow</string>
+    <string name="erratic">Erratic</string>
+    <string name="medium">Medium</string>
+    <string name="slow_than_very_fast">Slow than very fast</string>
 </resources>

@@ -38,10 +38,7 @@ import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
-import com.girlsintech.pokemon.util.parseEggGroups
-import com.girlsintech.pokemon.util.parseStatToAbbr
-import com.girlsintech.pokemon.util.parseStatToColor
-import com.girlsintech.pokemon.util.parseType
+import com.girlsintech.pokemon.util.*
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -512,21 +509,25 @@ fun PokemonDetailSection(
             TextInfo(text = stringResource(id = R.string.height))
             TextInfo(text = stringResource(id = R.string.weight))
             TextInfo(text = stringResource(id = R.string.abilities))
+
+            Spacer(modifier = Modifier.height(25.dp))
+
+            TextInfo(text = stringResource(id = R.string.generation))
+            TextInfo(text = stringResource(id = R.string.growth_rate))
+            TextInfo(text = stringResource(id = R.string.egg_groups))
         }
 
-        Spacer(modifier = Modifier.width(60.dp))
+        Spacer(modifier = Modifier.width(45.dp))
 
         Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-
             pokemonSpecies.genera.forEach {
                 if (it.language.name == Locale.getDefault().language) {
                     TextInfo(text = it.genus, Color.Black)
                 }
             }
-
 
             TextInfo(
                 text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
@@ -544,32 +545,16 @@ fun PokemonDetailSection(
                     TextInfo(text = it.ability.name, Color.Black)
                 }
             }
-        }
-    }
-    Spacer(modifier = Modifier.height(40.dp))
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 25.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            TextInfo(text = stringResource(id = R.string.generation))
-            TextInfo(text = stringResource(id = R.string.growth_rate))
-            TextInfo(text = stringResource(id = R.string.egg_groups))
-        }
+            Spacer(modifier = Modifier.height(25.dp))
 
-        Spacer(modifier = Modifier.width(38.dp))
+            val gen = pokemonSpecies.generation.name.split("-")[1]
+            TextInfo(text = gen.uppercase(), Color.Black)
 
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            TextInfo(text = pokemonSpecies.generation.name, Color.Black)
-            TextInfo(text = pokemonSpecies.growth_rate.name, Color.Black)
+
+            TextInfo(text = parseGrowthRate(growthRate = pokemonSpecies.growth_rate.name), Color.Black)
+
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {

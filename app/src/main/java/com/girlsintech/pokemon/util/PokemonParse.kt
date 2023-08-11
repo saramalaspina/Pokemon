@@ -118,3 +118,17 @@ fun parseTypeIt(type: String): String {
         else -> ""
     }
 }
+
+@Composable
+fun parseGrowthRate(growthRate: String): String {
+    return when(growthRate.lowercase(Locale.ROOT)){
+        "fast" -> stringResource(id = R.string.fast)
+        "medium-fast" -> stringResource(id = R.string.medium_fast)
+        "medium" -> stringResource(id = R.string.medium)
+        "medium-slow" -> stringResource(id = R.string.medium_slow)
+        "slow" -> stringResource(id = R.string.slow)
+        "fast-than-very-slow" -> stringResource(id = R.string.fast_than_vey_slow)
+        "slow-than-very-fast" -> stringResource(id = R.string.slow_than_very_fast)
+        else -> ""
+    }
+}
