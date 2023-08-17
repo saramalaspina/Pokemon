@@ -2,15 +2,12 @@ package com.girlsintech.pokemon.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.girlsintech.pokemon.connection.APIRequest
+import com.girlsintech.pokemon.data.remote.ability.AbilityDescription
 import com.girlsintech.pokemon.data.remote.evolution.Evolution
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
-import com.girlsintech.pokemon.db.Pokemon
-import com.girlsintech.pokemon.util.Resource
 import com.google.gson.GsonBuilder
 import org.json.JSONObject
 
@@ -65,6 +62,29 @@ class PokemonDetailViewModel(private var application: Application) : AndroidView
             url
         )
     }
+
+    fun getAbility(url: String, onError: (String) -> Unit, onSuccess: (AbilityDescription) -> Unit){
+        val queue = APIRequest.getAPI(application)
+        queue.getPokemonInfo({
+            val l = unpackAbility(it)
+            onSuccess(l)
+        }, {
+            Log.w("XXX", "VolleyError")
+            if (it?.message != null)
+                onError(it.message!!)
+            else
+                onError("Network Error")
+        },
+            url
+        )
+    }
+
+    private fun unpackAbility(it: JSONObject?): AbilityDescription {
+        val json = it?.toString()
+        val gson = GsonBuilder().create()
+        return gson.fromJson(json, AbilityDescription::class.java)
+    }
+
 
     private fun unpackEvolution(it: JSONObject?): Evolution {
         val json = it?.toString()

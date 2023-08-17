@@ -1,9 +1,7 @@
 package com.girlsintech.pokemon.screens
 
 import android.app.Application
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -37,6 +35,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.textInputServiceFactory
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -68,6 +67,8 @@ import com.girlsintech.pokemon.util.parseGeneration
 import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.util.parseTypeIt
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
+import com.google.android.material.textfield.TextInputEditText
+import okio.ByteString.Companion.encode
 import java.util.*
 
 
@@ -327,7 +328,7 @@ fun AbilitySelection (
             textStyle = TextStyle(
                 color = Color.Black,
                 fontFamily = fontBasic(),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 fontSize = 15.sp
             ),
             shape = RoundedCornerShape(5.dp),
@@ -357,6 +358,7 @@ fun AbilitySelection (
                     fontSize = 15.sp,
                     fontFamily = fontBasic(),
                     color = Color.Black,
+                    textAlign = TextAlign.Start
                 )
             }
         )
@@ -472,10 +474,10 @@ fun FilterDialog(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 15.dp)
+                    .padding(top = 70.dp)
             ) {
 
                 FilterSelection(
@@ -510,9 +512,15 @@ fun FilterDialog(
                     initAbility = initAbility,
                     listOfAbilities = listOfAbilities
                 ) {
-                    abilitySelection = it
+                    abilitySelection = if (it == noneSelection) {
+                        ""
+                    } else {
+                        it
+                    }
                 }
 
+                Spacer(modifier = Modifier.height(10.dp))
+                
                 Button(
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = CardBackground),
@@ -554,13 +562,16 @@ fun FilterSelection(
         Icons.Filled.KeyboardArrowDown
 
     Column {
-        OutlinedButton(onClick = { expanded = !expanded },
+        OutlinedButton(
+            onClick = { expanded = !expanded },
             modifier = Modifier
                 .onGloballyPositioned { coordinates ->
                     //This value is used to assign to the DropDown the same width
                     textFieldSize = coordinates.size.toSize()
                 }
                 //.background(CardBackground, RoundedCornerShape(10.dp))
+                .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(8.dp))
+                .height(50.dp)
         ) {
             Text(
                 text =
@@ -575,7 +586,7 @@ fun FilterSelection(
                 fontFamily = fontBasic(),
                 color = Color.Black,
                 fontSize = 15.sp,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
             )
             Icon(icon, contentDescription = null, tint = BlackLight)
         }
@@ -616,7 +627,7 @@ fun PokemonList(
 
     Column(
         Modifier
-            .padding(start = 15.dp, end = 15.dp)
+            .padding(start = 15.dp, end = 15.dp, bottom = 3.dp)
             .background(CardBackground, RoundedCornerShape(10.dp))
     ) {
         LazyColumn(
