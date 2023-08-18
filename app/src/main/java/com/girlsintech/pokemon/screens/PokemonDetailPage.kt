@@ -496,15 +496,16 @@ fun PokemonEvolutionSection(
         Spacer(modifier = Modifier.height(10.dp))
     }
 }
+
 @Composable
 fun EvolutionBox(
     viewModelDb: PokemonViewModel,
     text: String
 ) {
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -528,8 +529,6 @@ fun EvolutionBox(
 }
 
 
-
-
 @Composable
 fun PokemonDetailSection(
     pokemonInfo: PokemonInfo,
@@ -549,10 +548,10 @@ fun PokemonDetailSection(
             .fillMaxWidth()
             .padding(start = 25.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-        ){
+        ) {
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -561,13 +560,9 @@ fun PokemonDetailSection(
                 TextInfo(text = stringResource(id = R.string.height))
                 TextInfo(text = stringResource(id = R.string.weight))
                 TextInfo(text = stringResource(id = R.string.abilities))
-
-                TextInfo(text = stringResource(id = R.string.generation))
-                TextInfo(text = stringResource(id = R.string.growth_rate))
-                TextInfo(text = stringResource(id = R.string.egg_groups))
             }
 
-            Spacer(modifier = Modifier.width(45.dp))
+            Spacer(modifier = Modifier.width(76.dp))
 
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -609,6 +604,30 @@ fun PokemonDetailSection(
                         )
                     }
                 }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TextInfo(text = stringResource(id = R.string.generation))
+                TextInfo(text = stringResource(id = R.string.growth_rate))
+                TextInfo(text = stringResource(id = R.string.egg_groups))
+            }
+
+            Spacer(modifier = Modifier.width(35.dp))
+
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+
+
                 val gen = pokemonSpecies.generation.name.split("-")[1]
                 TextInfo(text = gen.uppercase(), Color.Black)
 
@@ -626,58 +645,17 @@ fun PokemonDetailSection(
                 }
             }
         }
-/*
-        Spacer(modifier = Modifier.height(25.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-        ){
-            Column (
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                TextInfo(text = stringResource(id = R.string.generation))
-                TextInfo(text = stringResource(id = R.string.growth_rate))
-                TextInfo(text = stringResource(id = R.string.egg_groups))
-            }
-
-
-        //Spacer(modifier = Modifier.width(45.dp))
-
-        Column(
-            modifier = Modifier
-                .padding(start = 60.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-
-            val gen = pokemonSpecies.generation.name.split("-")[1]
-            TextInfo(text = gen.uppercase(), Color.Black)
-
-            TextInfo(
-                text = parseGrowthRate(growthRate = (pokemonSpecies.growth_rate.name)),
-                Color.Black
+        if (isDialogShown) {
+            AbilityDialog(
+                initAbility = abilityDescription,
+                onDismiss = { isDialogShown = false },
+                ability = ability
             )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                pokemonSpecies.egg_groups.forEach {
-                    TextInfo(text = parseEggGroups(eggGroup = it.name), Color.Black)
-                }
-            }
-        }*/
-
-            if (isDialogShown){
-                AbilityDialog(
-                    initAbility = abilityDescription,
-                    onDismiss = { isDialogShown = false },
-                    ability = ability
-                )
-            }
         }
+    }
 }
+
 @Composable
 fun AbilityDialog(
     initAbility: String,
@@ -703,24 +681,25 @@ fun AbilityDialog(
                     .padding(top = 10.dp, start = 5.dp, end = 5.dp)
             ) {
 
-                if (ability.name == initAbility){
-                ability.effect_entries.forEach {
-                        if (it.language.name == "en") {
-                            Text(
-                                text = it.short_effect,
-                                color = Color.Black,
-                                fontFamily = fontBasic(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 15.sp
-                            )
+                if (ability.name == initAbility) {
+                    ability.flavor_text_entries.forEach {
+                        if (it.language.name == Locale.getDefault().language) {
+                                Text(
+                                    text = it.flavor_text,
+                                    color = Color.Black,
+                                    fontFamily = fontBasic(),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 15.sp
+                                )
+                            }
                         }
                     }
 
-                }
             }
         }
     }
 }
+
 
 @Composable
 fun NavigationBar(
