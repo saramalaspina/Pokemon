@@ -16,8 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -37,6 +35,7 @@ import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.data.remote.ability.AbilityDescription
+import com.girlsintech.pokemon.data.remote.ability.FlavorTextEntry
 import com.girlsintech.pokemon.data.remote.evolution.Evolution
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
@@ -69,7 +68,7 @@ fun PokemonDetailPage(
             mutableStateOf(null)
         }
 
-        var abilityDescription: AbilityDescription? by remember {
+        var ability: List<AbilityDescription>? by remember {
             mutableStateOf(null)
         }
 
@@ -121,7 +120,7 @@ fun PokemonDetailPage(
                             message = it
                         }
                     ) {
-                        abilityDescription = it
+                        ability = listOf(it)
                         refreshEvolution = MyState.Success
                     }
                 }
@@ -186,7 +185,7 @@ fun PokemonDetailPage(
                             0 -> PokemonDetailSection(
                                 pokemonInfo = pokemonInfo,
                                 pokemonSpecies = pokemonSpecies!!,
-                                ability = abilityDescription!!
+                                ability = ability!!
                             )
                             1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
                             2 -> PokemonEvolutionSection(
@@ -533,7 +532,7 @@ fun EvolutionBox(
 fun PokemonDetailSection(
     pokemonInfo: PokemonInfo,
     pokemonSpecies: Species,
-    ability: AbilityDescription
+    ability: List<AbilityDescription>
 ) {
     var isDialogShown by remember {
         mutableStateOf(false)
@@ -586,22 +585,26 @@ fun PokemonDetailSection(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    pokemonInfo.abilities.forEach {
-                        Text(
-                            text = it.ability.name.replaceFirstChar {
-                                if (it.isLowerCase()) it.titlecase(
-                                    Locale.ROOT
-                                ) else it.toString()
-                            },
-                            color = Color.Black,
-                            fontSize = 15.sp,
-                            fontFamily = fontBasic(),
-                            modifier = Modifier
-                                .clickable {
-                                    isDialogShown = true
-                                    abilityDescription = it.ability.name
-                                }
-                        )
+                    ability.forEach { ability_name ->
+                        ability_name.names.forEach {
+                            if (it.language.name == Locale.getDefault().language) {
+                                Text(
+                                    text = it.name.replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.ROOT
+                                        ) else it.toString()
+                                    },
+                                    color = Color.Black,
+                                    fontSize = 15.sp,
+                                    fontFamily = fontBasic(),
+                                    modifier = Modifier
+                                        .clickable {
+                                            isDialogShown = true
+                                            abilityDescription = ability_name.name
+                                        }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -660,8 +663,11 @@ fun PokemonDetailSection(
 fun AbilityDialog(
     initAbility: String,
     onDismiss: () -> Unit,
-    ability: AbilityDescription
+    ability: List<AbilityDescription>
 ) {
+    var flavorEntry: FlavorTextEntry? by remember {
+        mutableStateOf(null)
+    }
     Dialog(
         onDismissRequest = { onDismiss() }
     ) {
@@ -681,20 +687,24 @@ fun AbilityDialog(
                     .padding(top = 10.dp, start = 5.dp, end = 5.dp)
             ) {
 
-                if (ability.name == initAbility) {
-                    ability.flavor_text_entries.forEach {
-                        if (it.language.name == Locale.getDefault().language) {
-                                Text(
-                                    text = it.flavor_text,
-                                    color = Color.Black,
-                                    fontFamily = fontBasic(),
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 15.sp
-                                )
+                 ability.forEach {
+                     if(it.name == initAbility) {
+                        ability.forEach {
+                            it.flavor_text_entries.forEach {
+                                if (it.language.name == Locale.getDefault().language) {
+                                    flavorEntry = it
+                                }
                             }
                         }
                     }
-
+                    Text(
+                        text = flavorEntry!!.flavor_text,
+                        color = Color.Black,
+                        fontFamily = fontBasic(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 15.sp
+                    )
+                }
             }
         }
     }
