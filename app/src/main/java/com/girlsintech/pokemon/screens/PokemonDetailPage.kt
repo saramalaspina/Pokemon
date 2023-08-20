@@ -47,11 +47,10 @@ import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
-import kotlin.collections.List
 import kotlin.concurrent.schedule
 import kotlin.math.roundToInt
 
-@SuppressLint("UnrememberedMutableState")
+@SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @Composable
 fun PokemonDetailPage(
     dominantColor: Color,
@@ -68,11 +67,19 @@ fun PokemonDetailPage(
             mutableStateOf(null)
         }
 
-        var ability: List<AbilityDescription>? by remember {
+        var evolutionChain: Evolution? by remember {
             mutableStateOf(null)
         }
 
-        var evolutionChain: Evolution? by remember {
+        var ability1: AbilityDescription? by remember {
+            mutableStateOf(null)
+        }
+
+        var ability2: AbilityDescription? by remember {
+            mutableStateOf(null)
+        }
+
+        var ability3: AbilityDescription? by remember {
             mutableStateOf(null)
         }
 
@@ -81,10 +88,6 @@ fun PokemonDetailPage(
         }
 
         var refreshEvolution by remember {
-            mutableStateOf(MyState.Load)
-        }
-
-        var refreshAbility by remember {
             mutableStateOf(MyState.Load)
         }
 
@@ -98,40 +101,57 @@ fun PokemonDetailPage(
 
         val pokemonInfo = viewModel.pokemonInfo.observeAsState().value
 
+        val numAbility = pokemonInfo!!.abilities.size
 
-        viewModel.getSpecies(pokemonInfo!!.species.url,
+
+        viewModel.getAbility(
+            pokemonInfo.abilities[0].ability.url,
             {
                 refresh = MyState.Error
                 message = it
             },
             {
-                pokemonSpecies = it
-                refreshAbility = MyState.Success
+                ability1 = it
             }
         )
 
-        when(refreshAbility) {
-            MyState.Success -> {
-                pokemonInfo.abilities.forEach {
-                    viewModel.getAbility(
-                        it.ability.url,
-                        {
-                            refresh = MyState.Error
-                            message = it
-                        }
-                    ) {
-                        ability = listOf(it)
-                        refreshEvolution = MyState.Success
-                    }
+        if(numAbility > 1){
+            viewModel.getAbility(
+                pokemonInfo.abilities[1].ability.url,
+                {
+                    refresh = MyState.Error
+                    message = it
+                },
+                {
+                    ability2 = it
                 }
-            }
-            MyState.Error -> {
-                ErrorMessage(message = message)
-            }
-
-            MyState.Load, MyState.Init -> {}
+            )
         }
 
+        if(numAbility > 2){
+            viewModel.getAbility(
+                pokemonInfo.abilities[2].ability.url,
+                {
+                    refresh = MyState.Error
+                    message = it
+                },
+                {
+                    ability3 = it
+                }
+            )
+        }
+
+        viewModel.getSpecies(
+            pokemonInfo.species.url,
+            {
+                refreshEvolution = MyState.Error
+                message = it
+            },
+            {
+                pokemonSpecies = it
+                refreshEvolution = MyState.Success
+            }
+        )
 
         when(refreshEvolution) {
             MyState.Success -> {
@@ -143,7 +163,9 @@ fun PokemonDetailPage(
                     {
                         evolutionChain = it
                         Timer().schedule(1500) {
-                            refresh = MyState.Success
+                            if(refresh != MyState.Error){
+                                refresh = MyState.Success
+                            }
                         }
                     }
                 )
@@ -159,7 +181,6 @@ fun PokemonDetailPage(
 
         when (refresh) {
             MyState.Success -> {
-
                 TopBox(pokemonInfo = pokemonInfo, pokemon, dominantColor, viewModelDb, navController)
 
                 Column(
@@ -185,7 +206,9 @@ fun PokemonDetailPage(
                             0 -> PokemonDetailSection(
                                 pokemonInfo = pokemonInfo,
                                 pokemonSpecies = pokemonSpecies!!,
-                                ability = ability!!
+                                ability1 = ability1,
+                                ability2 = ability2,
+                                ability3 = ability3
                             )
                             1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
                             2 -> PokemonEvolutionSection(
@@ -207,6 +230,7 @@ fun PokemonDetailPage(
         }
     }
 }
+
 
 @Composable
 fun PokemonDetailStats(
@@ -532,7 +556,9 @@ fun EvolutionBox(
 fun PokemonDetailSection(
     pokemonInfo: PokemonInfo,
     pokemonSpecies: Species,
-    ability: List<AbilityDescription>
+    ability1: AbilityDescription?,
+    ability2: AbilityDescription?,
+    ability3: AbilityDescription?
 ) {
     var isDialogShown by remember {
         mutableStateOf(false)
@@ -540,6 +566,10 @@ fun PokemonDetailSection(
 
     var abilityDescription by rememberSaveable {
         mutableStateOf("")
+    }
+
+    var ability: AbilityDescription? by remember {
+        mutableStateOf(null)
     }
 
     Column(
@@ -582,28 +612,69 @@ fun PokemonDetailSection(
                     Color.Black
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    ability.forEach { ability_name ->
-                        ability_name.names.forEach {
-                            if (it.language.name == Locale.getDefault().language) {
-                                Text(
-                                    text = it.name.replaceFirstChar {
-                                        if (it.isLowerCase()) it.titlecase(
-                                            Locale.ROOT
-                                        ) else it.toString()
-                                    },
-                                    color = Color.Black,
-                                    fontSize = 15.sp,
-                                    fontFamily = fontBasic(),
-                                    modifier = Modifier
-                                        .clickable {
-                                            isDialogShown = true
-                                            abilityDescription = ability_name.name
-                                        }
-                                )
-                            }
+                    ability1!!.names.forEach { name ->
+                        if (name.language.name == Locale.getDefault().language) {
+                            Text(
+                                text = name.name.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.ROOT
+                                    ) else it.toString()
+                                },
+                                color = Color.Black,
+                                fontSize = 15.sp,
+                                fontFamily = fontBasic(),
+                                modifier = Modifier
+                                    .clickable {
+                                        isDialogShown = true
+                                        ability = ability1
+                                        abilityDescription = ability1.name
+                                    }
+                            )
+                        }
+                    }
+
+                    ability2?.names?.forEach { name ->
+                        if (name.language.name == Locale.getDefault().language) {
+                            Text(
+                                text = name.name.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.ROOT
+                                    ) else it.toString()
+                                },
+                                color = Color.Black,
+                                fontSize = 15.sp,
+                                fontFamily = fontBasic(),
+                                modifier = Modifier
+                                    .clickable {
+                                        isDialogShown = true
+                                        ability = ability2
+                                        abilityDescription = ability2.name
+                                    }
+                            )
+                        }
+                    }
+
+                    ability3?.names?.forEach { name ->
+                        if (name.language.name == Locale.getDefault().language) {
+                            Text(
+                                text = name.name.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.ROOT
+                                    ) else it.toString()
+                                },
+                                color = Color.Black,
+                                fontSize = 15.sp,
+                                fontFamily = fontBasic(),
+                                modifier = Modifier
+                                    .clickable {
+                                        isDialogShown = true
+                                        ability = ability3
+                                        abilityDescription = ability3.name
+                                    }
+                            )
                         }
                     }
                 }
@@ -630,7 +701,6 @@ fun PokemonDetailSection(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
 
-
                 val gen = pokemonSpecies.generation.name.split("-")[1]
                 TextInfo(text = gen.uppercase(), Color.Black)
 
@@ -651,9 +721,8 @@ fun PokemonDetailSection(
 
         if (isDialogShown) {
             AbilityDialog(
-                initAbility = abilityDescription,
                 onDismiss = { isDialogShown = false },
-                ability = ability
+                ability = ability!!
             )
         }
     }
@@ -661,9 +730,8 @@ fun PokemonDetailSection(
 
 @Composable
 fun AbilityDialog(
-    initAbility: String,
     onDismiss: () -> Unit,
-    ability: List<AbilityDescription>
+    ability: AbilityDescription
 ) {
     var flavorEntry: FlavorTextEntry? by remember {
         mutableStateOf(null)
@@ -686,29 +754,24 @@ fun AbilityDialog(
                     .fillMaxSize()
                     .padding(top = 10.dp, start = 5.dp, end = 5.dp)
             ) {
-
-                 ability.forEach {
-                     if(it.name == initAbility) {
-                        ability.forEach {
-                            it.flavor_text_entries.forEach {
-                                if (it.language.name == Locale.getDefault().language) {
-                                    flavorEntry = it
-                                }
-                            }
-                        }
+                ability.flavor_text_entries.forEach {
+                    if (it.language.name == Locale.getDefault().language) {
+                        flavorEntry = it
                     }
-                    Text(
-                        text = flavorEntry!!.flavor_text,
-                        color = Color.Black,
-                        fontFamily = fontBasic(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 15.sp
-                    )
                 }
+
             }
+            Text(
+                text = flavorEntry!!.flavor_text,
+                color = Color.Black,
+                fontFamily = fontBasic(),
+                textAlign = TextAlign.Center,
+                fontSize = 15.sp
+            )
         }
     }
 }
+
 
 
 @Composable
