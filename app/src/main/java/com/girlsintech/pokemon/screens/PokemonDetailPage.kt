@@ -7,7 +7,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.ArrowForward
@@ -204,6 +206,7 @@ fun PokemonDetailPage(
 
                         when (navState) {
                             0 -> PokemonDetailSection(
+                                dominantColor = dominantColor,
                                 pokemonInfo = pokemonInfo,
                                 pokemonSpecies = pokemonSpecies!!,
                                 ability1 = ability1,
@@ -554,6 +557,7 @@ fun EvolutionBox(
 
 @Composable
 fun PokemonDetailSection(
+    dominantColor: Color,
     pokemonInfo: PokemonInfo,
     pokemonSpecies: Species,
     ability1: AbilityDescription?,
@@ -721,6 +725,7 @@ fun PokemonDetailSection(
 
         if (isDialogShown) {
             AbilityDialog(
+                dominantColor = dominantColor,
                 onDismiss = { isDialogShown = false },
                 ability = ability!!
             )
@@ -730,6 +735,7 @@ fun PokemonDetailSection(
 
 @Composable
 fun AbilityDialog(
+    dominantColor: Color,
     onDismiss: () -> Unit,
     ability: AbilityDescription
 ) {
@@ -739,35 +745,37 @@ fun AbilityDialog(
     Dialog(
         onDismissRequest = { onDismiss() }
     ) {
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            backgroundColor = Color.White,
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(170.dp)
-                .width(400.dp)
+                .height(110.dp)
+                .fillMaxWidth()
                 .shadow(10.dp, RoundedCornerShape(10.dp))
+                .background(Color.White, RoundedCornerShape(10.dp))
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 10.dp, start = 5.dp, end = 5.dp)
+                    .background(dominantColor.copy(0.5f), RoundedCornerShape(10.dp))
             ) {
                 ability.flavor_text_entries.forEach {
                     if (it.language.name == Locale.getDefault().language) {
                         flavorEntry = it
                     }
                 }
-
+                Row (modifier = Modifier.padding(horizontal = 10.dp)) {
+                    Text(
+                        text = flavorEntry!!.flavor_text,
+                        color = Color.Black,
+                        fontFamily = fontBasic(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 15.sp,
+                        fontStyle = FontStyle.Italic
+                    )
+                }
             }
-            Text(
-                text = flavorEntry!!.flavor_text,
-                color = Color.Black,
-                fontFamily = fontBasic(),
-                textAlign = TextAlign.Center,
-                fontSize = 15.sp
-            )
         }
     }
 }

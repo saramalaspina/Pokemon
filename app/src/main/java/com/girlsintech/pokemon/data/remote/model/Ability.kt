@@ -4,9 +4,9 @@ import android.content.Context
 import java.io.InputStream
 
 class Ability {
-    var id: String = ""
-    var en: String = ""
-    var it: String = ""
+    var id: String = "0"
+    var en: String = "None"
+    var it: String = "Nessuna"
 }
 
 abstract class ListOfAbilities {

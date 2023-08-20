@@ -21,7 +21,7 @@
     <string name="dark">Dark</string>
     <string name="fairy">Fairy</string>
     <string name="favorites">Favorites</string>
-    <string name="selection_type">Select Type</string>
+    <string name="selection_type">Type</string>
     <string name="search">Search…</string>
     <string name="hp">HP</string>
     <string name="attack">Attack</string>
@@ -53,7 +53,7 @@
     <string name="ditto">Ditto</string>
     <string name="no_eggs">No Eggs</string>
     <string name="selection_generation">Select Generation</string>
-    <string name="search_ability">Search Ability</string>
+    <string name="search_ability">Ability</string>
     <string name="apply_filters">Apply Filters</string>
     <string name="add_filters">Add filters</string>
     <string name="fast">Fast</string>
@@ -63,4 +63,7 @@
     <string name="fast_then_vey_slow">Fast then very slow</string>
     <string name="medium">Medium</string>
     <string name="slow_then_very_fast">Slow then very fast</string>
+    <string name="flavor">Flavor Text</string>
+    <string name="selection">Add Filters</string>
+    <string name="none_ability">None</string>
 </resources>

@@ -14,9 +14,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.twotone.ArrowBack
-import androidx.compose.material.icons.twotone.Favorite
-import androidx.compose.material.icons.twotone.Search
+import androidx.compose.material.icons.twotone.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,15 +25,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.textInputServiceFactory
+import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -53,8 +49,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.airbnb.lottie.model.content.RectangleShape
 import com.girlsintech.pokemon.R
+import com.girlsintech.pokemon.data.remote.model.Ability
 import com.girlsintech.pokemon.data.remote.model.ListOfAbilities
 import com.girlsintech.pokemon.data.remote.model.SingletonListOfAbilities
 import com.girlsintech.pokemon.db.Pokemon
@@ -67,8 +63,6 @@ import com.girlsintech.pokemon.util.parseGeneration
 import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.util.parseTypeIt
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
-import com.google.android.material.textfield.TextInputEditText
-import okio.ByteString.Companion.encode
 import java.util.*
 
 
@@ -96,7 +90,11 @@ fun PokemonListPage(
             mutableStateOf("")
         }
 
-        var ability by rememberSaveable {
+        var abilityIt by rememberSaveable {
+            mutableStateOf("")
+        }
+
+        var abilityEn by rememberSaveable {
             mutableStateOf("")
         }
 
@@ -117,7 +115,13 @@ fun PokemonListPage(
         }
 
 
-        val pokemonList = viewModel.readByTag("%$filter%", if (onlyFavorite) 1 else 0, "%$type%", parseGeneration(generation), "%$ability%")
+        val pokemonList = viewModel.readByTag(
+            "%$filter%",
+            if (onlyFavorite) 1 else 0,
+            "%$type%",
+            parseGeneration(generation),
+            "%$abilityEn%"
+        )
             .observeAsState(listOf()).value
 
 
@@ -183,38 +187,57 @@ fun PokemonListPage(
                     fontFamily = fontBasic(),
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.width(135.dp))
+                Spacer(modifier = Modifier.width(90.dp))
 
-                Text(
-                    text = stringResource(id = R.string.add_filters),
-                    color = Color.Black,
-                    modifier = Modifier
-                        .clickable {
-                            isDialogShown = true
-                        },
-                    fontSize = 20.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontFamily = fontBasic()
-                )
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Icon(
+                        imageVector = Icons.TwoTone.FilterList,
+                        contentDescription = null
+                    )
 
+                    Text(
+                        text = stringResource(id = R.string.add_filters),
+                        color = Color.Black,
+                        modifier = Modifier
+                            .clickable {
+                                isDialogShown = true
+                            },
+                        fontSize = 20.sp,
+                        fontStyle = FontStyle.Italic,
+                        fontFamily = fontBasic()
+                    )
+                }
 
                 if (isDialogShown) {
                     FilterDialog(
-                        initAbility = ability,
-                        initType = parseType(type = type),
+                        initAbility = if (Locale.getDefault().language == "en") {
+                        abilityEn
+                    } else {
+                        abilityIt
+                    },
+                        initType = type,
                         initGen = generation,
                         onDismiss = {
                             isDialogShown = false
                         },
 
                         onClickType = {
-                           type = it
+                            type = it
                         },
                         onClickGeneration = {
                             generation = it
                         },
                         onClickAbility = {
-                            ability = it
+                            if(it.id == "0"){
+                                abilityEn = ""
+                                abilityIt = ""
+                            } else {
+                                abilityEn = it.en
+                                abilityIt = it.it
+                            }
                         }
                     )
                 }
@@ -287,10 +310,10 @@ fun PokemonListPage(
 }
 
 @Composable
-fun AbilitySelection (
+fun AbilitySelection(
     initAbility: String,
     listOfAbilities: ListOfAbilities,
-    onClickAbility: (String) -> Unit
+    onClickAbility: (Ability) -> Unit
 ) {
     val options = listOfAbilities.abilities
 
@@ -307,7 +330,7 @@ fun AbilitySelection (
     else
         Icons.Filled.KeyboardArrowDown
 
-    Column {
+    Column(modifier = Modifier.width(205.dp)) {
         OutlinedTextField(
             value = selection,
             onValueChange = {
@@ -366,8 +389,11 @@ fun AbilitySelection (
         //colonne che non creano tutte le righe ma solo quelle visibili
         LazyColumn(
             modifier = Modifier
-                .padding(4.dp)
-               ) {
+                .padding(top = 2.dp)
+                .fillMaxWidth()
+                .border(1.dp, Color.LightGray),
+            contentPadding = PaddingValues(start = 10.dp)
+        ) {
             val filterOpts = options.filter {
                 if (Locale.getDefault().language == "en") {
                     it.en.startsWith(
@@ -399,7 +425,7 @@ fun AbilitySelection (
                                 } else {
                                     item.it
                                 }
-                                onClickAbility(item.en)
+                                onClickAbility(item)
                                 exp = false //una volta cliccato la lista deve sparire
                                 focusManager.clearFocus()
                             })
@@ -412,16 +438,21 @@ fun AbilitySelection (
 
 @Composable
 fun FilterDialog(
-    initAbility: String,
+    initAbility: String = "",
+    itemAbility: Ability = Ability(),
     initType: String,
     initGen: String,
     onDismiss: () -> Unit,
     onClickType: (String) -> Unit,
     onClickGeneration: (String) -> Unit,
-    onClickAbility: (String) -> Unit
+    onClickAbility: (Ability) -> Unit
 ) {
 
     val noneSelection = stringResource(id = R.string.noneType)
+
+    var abilityItem by remember {
+        mutableStateOf(itemAbility)
+    }
 
     var typeSelection by rememberSaveable {
         mutableStateOf(initType)
@@ -459,7 +490,7 @@ fun FilterDialog(
 
     val generations = listOf(stringResource(id = R.string.noneType),"I","II","III","IV","V","VI","VII","VIII","IX")
 
-    var listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
+    val listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
 
     Dialog(
         onDismissRequest = { onDismiss() }
@@ -474,11 +505,29 @@ fun FilterDialog(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.Top,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 70.dp)
             ) {
+                Spacer(modifier = Modifier.height(50.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Icon(
+                        imageVector = Icons.TwoTone.FilterList,
+                        contentDescription = null
+                    )
+                    Text(
+                        text = stringResource(id = R.string.selection),
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                        fontFamily = fontBasic()
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(50.dp))
 
                 FilterSelection(
                     itemList = types,
@@ -496,6 +545,8 @@ fun FilterDialog(
                     }
                 }
 
+                Spacer(modifier = Modifier.height(35.dp))
+
                 FilterSelection(
                     itemList = generations,
                     currentSelection = generationSelection,
@@ -508,29 +559,31 @@ fun FilterDialog(
                     }
                 }
 
+                Spacer(modifier = Modifier.height(35.dp))
+
                 AbilitySelection(
-                    initAbility = initAbility,
+                    initAbility = abilitySelection,
                     listOfAbilities = listOfAbilities
                 ) {
-                    abilitySelection = if (it == noneSelection) {
-                        ""
-                    } else {
-                        it
-                    }
+                    abilityItem = it
+                  abilitySelection = if(Locale.getDefault().language == "en"){
+                      it.en
+                  } else {
+                      it.it
+                  }
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
-                
+                Spacer(modifier = Modifier.height(60.dp))
+
                 Button(
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = CardBackground),
                     modifier = Modifier
-                        .background(CardBackground, RoundedCornerShape(30.dp))
-                        .width(150.dp),
+                        .width(160.dp),
                     onClick = {
                         onClickType(typeSelection)
                         onClickGeneration(generationSelection)
-                        onClickAbility(abilitySelection)
+                        onClickAbility(abilityItem)
                         onDismiss()
                     }
                 ) {
@@ -570,7 +623,7 @@ fun FilterSelection(
                     textFieldSize = coordinates.size.toSize()
                 }
                 //.background(CardBackground, RoundedCornerShape(10.dp))
-                .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(8.dp))
+                .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(5.dp))
                 .height(50.dp)
         ) {
             Text(

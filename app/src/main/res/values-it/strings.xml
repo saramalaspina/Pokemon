@@ -54,7 +54,7 @@
     <string name="ditto">Ditto</string>
     <string name="no_eggs">Sconosciuto</string>
     <string name="selection_generation">Generazione</string>
-    <string name="search_ability">Cerca Abilità</string>
+    <string name="search_ability">Abilità</string>
     <string name="apply_filters">Applica Filtri</string>
     <string name="add_filters">Aggiungi filtri</string>
     <string name="fast">Veloce</string>
@@ -64,4 +64,7 @@
     <string name="fast_then_vey_slow">Veloce e poi molto lento</string>
     <string name="medium">Medio</string>
     <string name="slow_then_very_fast">Lento e poi molto veloce</string>
+    <string name="flavor">Testo Narrativo</string>
+    <string name="selection">Aggiungi Filtri</string>
+    <string name="none_ability">Nessuna</string>
 </resources>
