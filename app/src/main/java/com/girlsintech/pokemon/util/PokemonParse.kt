@@ -97,6 +97,7 @@ fun parseEggGroups(eggGroup: String): String {
 
 fun parseTypeIt(type: String): String {
     return when(type.lowercase(Locale.ROOT)) {
+        "nessuno" -> "None"
         "normale" -> "Normal"
         "fuoco" -> "Fire"
         "lotta" -> "Fighting"

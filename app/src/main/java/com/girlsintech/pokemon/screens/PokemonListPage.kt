@@ -702,11 +702,12 @@ fun FilterSelection(
             itemList.forEach {
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    selectedItem = if (it == noneSelection) {
+                    selectedItem = it
+                        /*if (it == noneSelection) {
                         selectionString
                     } else {
                         it
-                    }
+                    }*/
                     onItemSelected(it)
                 }) {
                     Text(text = it)
@@ -715,6 +716,7 @@ fun FilterSelection(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
