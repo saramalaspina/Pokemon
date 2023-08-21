@@ -1,6 +1,7 @@
 package com.girlsintech.pokemon.screens
 
 import android.app.Application
+import android.content.res.Configuration
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,10 +29,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -74,6 +73,7 @@ fun PokemonListPage(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
+        val configuration = LocalConfiguration.current
         val context = LocalContext.current
         val viewModel: PokemonViewModel =
             viewModel(factory = PokemonViewModel.PokemonViewModelFactory(context.applicationContext as Application))
@@ -110,7 +110,7 @@ fun PokemonListPage(
             mutableStateOf(false)
         }
 
-        var isDialogShown by remember {
+        var isDialogShown by rememberSaveable {
             mutableStateOf(false)
         }
 
@@ -139,7 +139,11 @@ fun PokemonListPage(
 
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.sfondo),
+                painter = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    painterResource(id = R.drawable.sfondo)
+                } else {
+                    painterResource(id = R.drawable.sfondoh)
+                },
                 contentDescription = "background",
                 contentScale = ContentScale.FillBounds
             )
@@ -147,55 +151,78 @@ fun PokemonListPage(
 
         Column {
             Spacer(modifier = Modifier.height(10.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Top
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pokemon_title),
-                    contentDescription = null,
-                    alignment = Alignment.TopCenter
-                )
+                when (configuration.orientation) {
+                    Configuration.ORIENTATION_PORTRAIT -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.pokemon_title),
+                            contentDescription = null,
+                            alignment = Alignment.TopCenter
+                        )
+                    }
+                    else -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.pokemon_title),
+                            contentDescription = null,
+                            alignment = Alignment.TopCenter,
+                            modifier = Modifier
+                                .requiredWidth(115.dp)
+                                .offset(y = 15.dp)
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.height(3.dp))
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                val (favorites, filters) = createRefs()
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(start = 20.dp)
-            ) {
-                Icon(
-                    Icons.TwoTone.Favorite,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .clickable {
-                            onlyFavorite = !onlyFavorite
+                        .constrainAs(favorites) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 20.dp)
                         }
-                        .size(35.dp),
-                    contentDescription = null,
-                    tint = if (onlyFavorite) Color.Red else Color.LightGray,
-                )
-                Spacer(modifier = Modifier.width(7.dp))
-                Text(
-                    text = stringResource(id = R.string.favorites),
-                    color = BlackLight,
-                    fontStyle = FontStyle.Italic,
-                    fontSize = 20.sp,
-                    fontFamily = fontBasic(),
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(modifier = Modifier.width(90.dp))
-
-                Row (
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
+                    Icon(
+                        Icons.TwoTone.Favorite,
+                        modifier = Modifier
+                            .clickable {
+                                onlyFavorite = !onlyFavorite
+                            }
+                            .size(35.dp),
+                        contentDescription = null,
+                        tint = if (onlyFavorite) Color.Red else Color.LightGray,
+                    )
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text(
+                        text = stringResource(id = R.string.favorites),
+                        color = BlackLight,
+                        fontStyle = FontStyle.Italic,
+                        fontSize = 20.sp,
+                        fontFamily = fontBasic(),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(7.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .constrainAs(filters) {
+                            top.linkTo(parent.top)
+                            end.linkTo(parent.end, 25.dp)
+                        }
+                ) {
                     Icon(
                         imageVector = Icons.TwoTone.FilterList,
-                        contentDescription = null
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
                     )
 
                     Text(
@@ -211,14 +238,13 @@ fun PokemonListPage(
                     )
                 }
 
+
                 if (isDialogShown) {
+
                     FilterDialog(
-                        initAbility = if (Locale.getDefault().language == "en") {
-                        abilityEn
-                    } else {
-                        abilityIt
-                    },
-                        initType = type,
+                        initAbilityEn = abilityEn,
+                        initAbilityIt = abilityIt,
+                        initType = parseType(type = type),
                         initGen = generation,
                         onDismiss = {
                             isDialogShown = false
@@ -230,13 +256,13 @@ fun PokemonListPage(
                         onClickGeneration = {
                             generation = it
                         },
-                        onClickAbility = {
-                            if(it.id == "0"){
+                        onClickAbility = { en, it ->
+                            if (en == "None") {
                                 abilityEn = ""
                                 abilityIt = ""
                             } else {
-                                abilityEn = it.en
-                                abilityIt = it.it
+                                abilityEn = en
+                                abilityIt = it
                             }
                         }
                     )
@@ -292,7 +318,6 @@ fun PokemonListPage(
                     )
                 }
             }
-
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -375,7 +400,7 @@ fun AbilitySelection(
 
             placeholder = {
                 Text(
-                    text = initAbility.ifBlank {
+                    text = selection.ifBlank {
                         stringResource(id = R.string.search_ability)
                     },
                     fontSize = 15.sp,
@@ -420,10 +445,14 @@ fun AbilitySelection(
                         modifier = Modifier
                             .padding(4.dp)
                             .clickable(onClick = {
-                                selection = if (Locale.getDefault().language == "en") {
-                                    item.en
+                                selection = if (item.id == "0") {
+                                    ""
                                 } else {
-                                    item.it
+                                    if (Locale.getDefault().language == "en") {
+                                        item.en
+                                    } else {
+                                        item.it
+                                    }
                                 }
                                 onClickAbility(item)
                                 exp = false //una volta cliccato la lista deve sparire
@@ -438,23 +467,19 @@ fun AbilitySelection(
 
 @Composable
 fun FilterDialog(
-    initAbility: String = "",
-    itemAbility: Ability = Ability(),
+    initAbilityEn: String,
+    initAbilityIt: String,
     initType: String,
     initGen: String,
     onDismiss: () -> Unit,
     onClickType: (String) -> Unit,
     onClickGeneration: (String) -> Unit,
-    onClickAbility: (Ability) -> Unit
+    onClickAbility: (String, String) -> Unit
 ) {
 
-    val noneSelection = stringResource(id = R.string.noneType)
+    val noneSelection = stringResource(id = R.string.none_m)
 
-    var abilityItem by remember {
-        mutableStateOf(itemAbility)
-    }
-
-    var typeSelection by rememberSaveable {
+    var typeSelection by remember {
         mutableStateOf(initType)
     }
 
@@ -462,12 +487,16 @@ fun FilterDialog(
         mutableStateOf(initGen)
     }
 
-    var abilitySelection by remember {
-        mutableStateOf(initAbility)
+    var abilitySelectionEn by remember {
+        mutableStateOf(initAbilityEn)
+    }
+
+    var abilitySelectionIt by remember {
+        mutableStateOf(initAbilityIt)
     }
 
     val types = listOf(
-        stringResource(id = R.string.noneType),
+        stringResource(id = R.string.none_m),
         stringResource(id = R.string.normal),
         stringResource(id = R.string.fire),
         stringResource(id = R.string.water),
@@ -488,19 +517,33 @@ fun FilterDialog(
         stringResource(id = R.string.fairy)
     )
 
-    val generations = listOf(stringResource(id = R.string.noneType),"I","II","III","IV","V","VI","VII","VIII","IX")
+    val generations = listOf(
+        stringResource(id = R.string.none_m),
+        "I",
+        "II",
+        "III",
+        "IV",
+        "V",
+        "VI",
+        "VII",
+        "VIII",
+        "IX"
+    )
 
     val listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
 
     Dialog(
-        onDismissRequest = { onDismiss() }
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
     ) {
         Card(
             shape = RoundedCornerShape(10.dp),
             backgroundColor = Color.White,
             modifier = Modifier
-                .height(530.dp)
-                .width(400.dp)
+                .height(400.dp)
+                .width(330.dp)
                 .shadow(10.dp, RoundedCornerShape(10.dp))
         ) {
             Column(
@@ -509,12 +552,12 @@ fun FilterDialog(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Icon(
                         imageVector = Icons.TwoTone.FilterList,
                         contentDescription = null
@@ -527,11 +570,41 @@ fun FilterDialog(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(30.dp))
+
+                AbilitySelection(
+                    initAbility = if (Locale.getDefault().language == "en") {
+                        abilitySelectionEn
+                    } else {
+                        abilitySelectionIt
+                    },
+                    listOfAbilities = listOfAbilities
+                ) {
+                    abilitySelectionEn = it.en
+                    abilitySelectionIt = it.it
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                FilterSelection(
+                    itemList = generations,
+                    currentSelection = generationSelection,
+                    noneSelection = noneSelection,
+                    selectionString = stringResource(id = R.string.selection_generation)
+                ) {
+                    generationSelection = if (it == noneSelection) {
+                        ""
+                    } else {
+                        it
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 FilterSelection(
                     itemList = types,
                     currentSelection = typeSelection,
+                    noneSelection = noneSelection,
                     selectionString = stringResource(id = R.string.selection_type)
                 ) {
                     typeSelection = if (it == noneSelection) {
@@ -545,35 +618,7 @@ fun FilterDialog(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(35.dp))
-
-                FilterSelection(
-                    itemList = generations,
-                    currentSelection = generationSelection,
-                    selectionString = stringResource(id = R.string.selection_generation)
-                ) {
-                    generationSelection = if (it == noneSelection) {
-                        ""
-                    } else {
-                        it
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(35.dp))
-
-                AbilitySelection(
-                    initAbility = abilitySelection,
-                    listOfAbilities = listOfAbilities
-                ) {
-                    abilityItem = it
-                  abilitySelection = if(Locale.getDefault().language == "en"){
-                      it.en
-                  } else {
-                      it.it
-                  }
-                }
-
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
                     shape = RoundedCornerShape(20.dp),
@@ -583,11 +628,14 @@ fun FilterDialog(
                     onClick = {
                         onClickType(typeSelection)
                         onClickGeneration(generationSelection)
-                        onClickAbility(abilityItem)
+                        onClickAbility(abilitySelectionEn, abilitySelectionIt)
                         onDismiss()
                     }
                 ) {
-                    TextInfo(text = stringResource(id = R.string.apply_filters), Color.Black)
+                    TextInfo(
+                        text = stringResource(id = R.string.apply_filters),
+                        Color.Black
+                    )
                 }
             }
         }
@@ -599,9 +647,9 @@ fun FilterSelection(
     itemList: List<String>,
     currentSelection: String,
     selectionString: String,
+    noneSelection: String,
     onItemSelected: (selectedItem: String) -> Unit
 ) {
-    val noneSelection = stringResource(id = R.string.noneType)
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -748,7 +796,7 @@ fun PokemonItem(
                 modifier = Modifier.alpha(0f)
             )
 
-            ConstraintLayout {
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (description, image, icon) = createRefs()
 
                 Column(
@@ -806,8 +854,7 @@ fun PokemonItem(
                         .constrainAs(image)
                         {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 195.dp)
-                            end.linkTo(icon.start, 9.dp)
+                            end.linkTo(icon.start, 15.dp)
                             bottom.linkTo(parent.bottom)
                         }
                         .size(90.dp)
@@ -818,7 +865,7 @@ fun PokemonItem(
                     modifier = Modifier
                         .constrainAs(icon) {
                             top.linkTo(parent.top)
-                            end.linkTo(parent.end)
+                            end.linkTo(parent.end, 20.dp)
                             bottom.linkTo(parent.bottom)
                         }
                         .clickable {

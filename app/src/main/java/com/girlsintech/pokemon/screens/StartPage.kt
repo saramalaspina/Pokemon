@@ -1,5 +1,6 @@
 package com.girlsintech.pokemon.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Bottom
@@ -12,11 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 
@@ -29,60 +32,136 @@ fun MainView(
             .fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-        Row {
-            Icon(
-                Icons.TwoTone.ArrowBack,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier
-                    .size(50.dp)
-                    .padding(top = 15.dp, start = 15.dp)
 
-            )
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.sfondo),
-                contentDescription = "background",
-                contentScale = ContentScale.FillBounds
-            )
-        }
+        val configuration = LocalConfiguration.current
 
-        Column {
-            Spacer(modifier = Modifier.height(10.dp))
-            MyImage(R.drawable.pokemon_title)
-            Spacer(modifier = Modifier.height(40.dp))
-            MyImage(R.drawable.pokemon)
-            Spacer(modifier = Modifier.height(80.dp))
-            Start(onClick)
-        }
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                Row {
+                    Icon(
+                        Icons.TwoTone.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(top = 15.dp, start = 15.dp)
+                    )
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        painter = painterResource(id = R.drawable.sfondo),
+                        contentDescription = "background",
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 25.dp, bottom = 25.dp),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Bottom
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.pokeball),
-                modifier = Modifier.size(60.dp),
-                contentDescription = null
-            )
+                ConstraintLayout {
+                    val (images, button, icon) = createRefs()
+
+                    Column (modifier = Modifier
+                        .constrainAs(images){
+                            top.linkTo(parent.top, 10.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }){
+                        MyImage(R.drawable.pokemon_title)
+                        Spacer(modifier = Modifier.height(40.dp))
+                        MyImage(R.drawable.pokemon)
+                    }
+
+                    Column (modifier = Modifier
+                        .constrainAs(button) {
+                            top.linkTo(images.bottom, 80.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                    )  {
+                        Start(onClick)
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 25.dp, bottom = 25.dp)
+                            .constrainAs(icon){
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                            },
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Bottom
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.pokeball),
+                            modifier = Modifier.size(60.dp),
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+            else -> {
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    painter = painterResource(id = R.drawable.sfondoh),
+                    contentDescription = "background",
+                    contentScale = ContentScale.FillBounds
+                )
+
+                ConstraintLayout {
+                    val (images, button, icon) = createRefs()
+
+                    Column (modifier = Modifier
+                        .constrainAs(images){
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 80.dp)
+                            bottom.linkTo(parent.bottom)
+                        }
+                    ){
+                        Image(painter = painterResource(id = R.drawable.pokemon_title),
+                            contentDescription = "image"
+                        )
+                        Spacer(modifier = Modifier.height(0.dp))
+                        Image(painter = painterResource(id = R.drawable.pokemon),
+                            contentDescription = "image"
+                        )
+                    }
+
+                    Column (modifier = Modifier
+                        .constrainAs(button) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start, 200.dp)
+                            bottom.linkTo(parent.bottom)
+                        }
+                    )  {
+                        Start(onClick)
+                    }
+
+                    Column (modifier = Modifier
+                        .constrainAs(icon) {
+                            end.linkTo(parent.end, 30.dp)
+                            bottom.linkTo(parent.bottom, 20.dp)
+                        }
+                    )  {
+                        Image(
+                            painter = painterResource(id = R.drawable.pokeball),
+                            modifier = Modifier.size(60.dp),
+                            contentDescription = null
+                        )
+                    }
+
+                }
+            }
         }
     }
 }
 
+
 @Composable
 fun Start(onClick: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.End,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         Row(
-            modifier = Modifier
-                .fillMaxWidth(), //questa riga deve occupare tutto lo schermo
             horizontalArrangement = Arrangement.SpaceBetween,  //non ci sono spazi a sinistra e a destra ma solo tra gli oggetti
             verticalAlignment = Alignment.CenterVertically  //gli oggetti sono inseriti tutti nella parte alta dell'interfaccia
         ) {
@@ -90,7 +169,6 @@ fun Start(onClick: () -> Unit) {
                 text = stringResource(id = R.string.start),
                 modifier = Modifier
                     .padding(4.dp)
-                    .fillMaxWidth()
                     .weight(1f)
                     .padding(8.dp),
                 color = BluePokemon,
@@ -105,8 +183,7 @@ fun Start(onClick: () -> Unit) {
         Button(
             modifier = Modifier
                 .wrapContentWidth()
-                .padding(end = 90.dp)
-                .padding(start = 90.dp),
+                .width(250.dp),
             onClick = onClick,
             shape = RoundedCornerShape(30),
             colors = ButtonDefaults.buttonColors(BluePokemon)
@@ -116,7 +193,6 @@ fun Start(onClick: () -> Unit) {
                     text = "Pokedex",
                     modifier = Modifier
                         .padding(4.dp)
-                        .fillMaxWidth()
                         .weight(1f)
                         .padding(8.dp),
                     color = Color.White,

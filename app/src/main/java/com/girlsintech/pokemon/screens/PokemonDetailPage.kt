@@ -1,9 +1,11 @@
 package com.girlsintech.pokemon.screens
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,11 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -65,6 +69,7 @@ fun PokemonDetailPage(
         modifier = Modifier.fillMaxSize(),
         color = dominantColor.copy(0.6f)
     ) {
+
         var pokemonSpecies: Species? by remember {
             mutableStateOf(null)
         }
@@ -117,7 +122,7 @@ fun PokemonDetailPage(
             }
         )
 
-        if(numAbility > 1){
+        if (numAbility > 1) {
             viewModel.getAbility(
                 pokemonInfo.abilities[1].ability.url,
                 {
@@ -130,7 +135,7 @@ fun PokemonDetailPage(
             )
         }
 
-        if(numAbility > 2){
+        if (numAbility > 2) {
             viewModel.getAbility(
                 pokemonInfo.abilities[2].ability.url,
                 {
@@ -155,7 +160,7 @@ fun PokemonDetailPage(
             }
         )
 
-        when(refreshEvolution) {
+        when (refreshEvolution) {
             MyState.Success -> {
                 viewModel.getEvolution(pokemonSpecies!!.evolution_chain.url,
                     {
@@ -165,7 +170,7 @@ fun PokemonDetailPage(
                     {
                         evolutionChain = it
                         Timer().schedule(1500) {
-                            if(refresh != MyState.Error){
+                            if (refresh != MyState.Error) {
                                 refresh = MyState.Success
                             }
                         }
@@ -180,48 +185,161 @@ fun PokemonDetailPage(
             MyState.Load, MyState.Init -> {}
         }
 
+        val configuration = LocalConfiguration.current
 
         when (refresh) {
             MyState.Success -> {
-                TopBox(pokemonInfo = pokemonInfo, pokemon, dominantColor, viewModelDb, navController)
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .offset(y = 330.dp)
-                        .background(Color.White, RoundedCornerShape(10))
-                ) {
-                    Spacer(modifier = Modifier.height(110.dp))
+                when (configuration.orientation) {
 
-                    NavigationBar {
-                        navState = it
-                    }
+                    Configuration.ORIENTATION_PORTRAIT -> {
 
-                    Spacer(modifier = Modifier.height(25.dp))
+                        Column {
+                            TopIcons(
+                                pokemon = pokemon,
+                                viewModel = viewModelDb,
+                                navController = navController
+                            )
 
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        when (navState) {
-                            0 -> PokemonDetailSection(
-                                dominantColor = dominantColor,
+                            TopBox(
                                 pokemonInfo = pokemonInfo,
-                                pokemonSpecies = pokemonSpecies!!,
-                                ability1 = ability1,
-                                ability2 = ability2,
-                                ability3 = ability3
+                                dominantColor
                             )
-                            1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
-                            2 -> PokemonEvolutionSection(
-                                viewModelDb = viewModelDb,
-                                evolution = evolutionChain!!
-                            )
+                        }
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .offset(y = 330.dp)
+                                .background(Color.White, RoundedCornerShape(10))
+                        ) {
+                            Spacer(modifier = Modifier.height(110.dp))
+
+                            NavigationBar {
+                                navState = it
+                            }
+
+                            Spacer(modifier = Modifier.height(25.dp))
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+
+                                when (navState) {
+                                    0 -> PokemonDetailSection(
+                                        dominantColor = dominantColor,
+                                        pokemonInfo = pokemonInfo,
+                                        pokemonSpecies = pokemonSpecies!!,
+                                        ability1 = ability1,
+                                        ability2 = ability2,
+                                        ability3 = ability3
+                                    )
+                                    1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
+                                    2 -> PokemonEvolutionSection(
+                                        viewModelDb = viewModelDb,
+                                        evolution = evolutionChain!!,
+                                        330.dp
+                                    )
+                                }
+                            }
+                        }
+                        ImageBox(
+                            pokemon.img,
+                            modifier = Modifier
+                                .size(250.dp)
+                                .offset(y = 180.dp),
+                            Alignment.TopCenter
+                        )
+                    }
+                    else -> {
+                        ConstraintLayout {
+                            val (icons, image, name, detail) = createRefs()
+
+                            Column (modifier = Modifier
+                                .constrainAs(icons){
+                                    top.linkTo(parent.top, 10.dp)
+                                    start.linkTo(parent.start, 5.dp)
+                                }) {
+                                TopIcons(
+                                    pokemon = pokemon,
+                                    viewModel = viewModelDb,
+                                    navController = navController
+                                )
+                            }
+
+                            Column (modifier = Modifier
+                                .constrainAs(name){
+                                    top.linkTo(icons.bottom)
+                                    start.linkTo(parent.start, 30.dp)
+                                }) {
+                                TopBox(
+                                    pokemonInfo = pokemonInfo,
+                                    dominantColor,
+                                )
+                            }
+
+                            Column (modifier = Modifier
+                                .constrainAs(image){
+                                    top.linkTo(name.bottom)
+                                    start.linkTo(parent.start, 30.dp)
+                                    bottom.linkTo(parent.bottom)
+                                }){
+                                ImageBox(
+                                    pokemon.img,
+                                    modifier = Modifier
+                                        .size(215.dp)
+                                        .offset(x = 15.dp),
+                                    Alignment.CenterStart
+                                )
+                            }
+
+
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .width(460.dp)
+                                    .fillMaxHeight()
+                                    .background(Color.White, RoundedCornerShape(10))
+                                    .constrainAs(detail) {
+                                        top.linkTo(parent.top, 30.dp)
+                                        start.linkTo(parent.start, 310.dp)
+                                    }
+                            ) {
+
+                                Spacer(modifier = Modifier.height(25.dp))
+
+                                NavigationBar {
+                                    navState = it
+                                }
+
+                                Spacer(modifier = Modifier.height(25.dp))
+
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+
+                                    when (navState) {
+                                        0 -> PokemonDetailSection(
+                                            dominantColor = dominantColor,
+                                            pokemonInfo = pokemonInfo,
+                                            pokemonSpecies = pokemonSpecies!!,
+                                            ability1 = ability1,
+                                            ability2 = ability2,
+                                            ability3 = ability3
+                                        )
+                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
+                                        2 -> PokemonEvolutionSection(
+                                            viewModelDb = viewModelDb,
+                                            evolution = evolutionChain!!,
+                                            20.dp
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-                ImageBox(pokemon.img)
             }
 
             MyState.Error -> {
@@ -300,61 +418,67 @@ fun PokemonDetailStats(
 }
 
 @Composable
-fun TopBox(
-    pokemonInfo: PokemonInfo,
+fun TopIcons(
     pokemon: Pokemon,
-    dominantColor: Color,
     viewModel: PokemonViewModel,
     navController: NavController
 ) {
     var fav by remember {
         mutableStateOf(pokemon.favorite)
     }
-    
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-        ) {
-            ConstraintLayout {
-                val (arrow, favorite) = createRefs()
 
-                Icon(
-                    Icons.TwoTone.ArrowBack,
-                    contentDescription = null,
-                    tint = BluePokemon,
-                    modifier = Modifier
-                        .constrainAs(arrow) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start, 15.dp)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .requiredSize(30.dp)
-                        .clickable {
-                            navController.popBackStack()
-                        }
-                )
-                Icon(
-                    Icons.TwoTone.Favorite,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .constrainAs(favorite) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start, 340.dp)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .requiredSize(30.dp)
-                        .clickable {
-                            pokemon.favorite = 1 - pokemon.favorite
-                            fav = 1 - fav
-                            viewModel.update(pokemon)
-                        }
-                        .size(30.dp),
-                    tint = if (fav == 1) Color.Red else Color.White
-                )
-            }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+    ) {
+        ConstraintLayout (modifier = Modifier.fillMaxWidth()) {
+            val (arrow, favorite) = createRefs()
+
+            Icon(
+                Icons.TwoTone.ArrowBack,
+                contentDescription = null,
+                tint = BluePokemon,
+                modifier = Modifier
+                    .constrainAs(arrow) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start, 15.dp)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .requiredSize(33.dp)
+                    .clickable {
+                        navController.popBackStack()
+                    }
+            )
+            Icon(
+                Icons.TwoTone.Favorite,
+                contentDescription = null,
+                modifier = Modifier
+                    .constrainAs(favorite) {
+                        top.linkTo(parent.top, 2.dp)
+                        end.linkTo(parent.end, 25.dp)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .requiredSize(33.dp)
+                    .clickable {
+                        pokemon.favorite = 1 - pokemon.favorite
+                        fav = 1 - fav
+                        viewModel.update(pokemon)
+                    }
+                    .size(30.dp),
+                tint = if (fav == 1) Color.Red else Color.White
+            )
         }
+    }
+}
+
+@Composable
+fun TopBox(
+    pokemonInfo: PokemonInfo,
+    dominantColor: Color,
+) {
+
+    Column {
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -402,21 +526,19 @@ fun TopBox(
 
 @Composable
 fun ImageBox(
-    imgUrl: String
+    imgUrl: String,
+    modifier: Modifier,
+    alignment: Alignment
 ) {
     Box(
-        contentAlignment = Alignment.TopCenter,
-        modifier = Modifier
-            .fillMaxSize()
+        contentAlignment = alignment
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imgUrl)
                 .build(),
             contentDescription = null,
-            modifier = Modifier
-                .size(250.dp)
-                .offset(y = 180.dp)
+            modifier = modifier
         )
     }
 }
@@ -440,14 +562,15 @@ fun PokemonStatSection(
 @Composable
 fun PokemonEvolutionSection(
     viewModelDb: PokemonViewModel,
-    evolution: Evolution
+    evolution: Evolution,
+    bottomPadding: Dp
 ) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize(1f)
-            .padding(start = 25.dp, end = 25.dp, bottom = 330.dp)
+            .padding(start = 25.dp, end = 25.dp, bottom = bottomPadding)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally

@@ -3,7 +3,7 @@
     <string name="app_name">Pokemon</string>
     <string name="start">Iniziamo!</string>
     <string name="normal">Normale</string>
-    <string name="noneType">Nessuno</string>
+    <string name="none_m">Nessuno</string>
     <string name="fire">Fuoco</string>
     <string name="water">Acqua</string>
     <string name="grass">Erba</string>
@@ -66,5 +66,5 @@
     <string name="slow_then_very_fast">Lento e poi molto veloce</string>
     <string name="flavor">Testo Narrativo</string>
     <string name="selection">Aggiungi Filtri</string>
-    <string name="none_ability">Nessuna</string>
+    <string name="none_f">Nessuna</string>
 </resources>
