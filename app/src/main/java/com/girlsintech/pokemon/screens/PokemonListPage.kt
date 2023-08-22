@@ -591,7 +591,6 @@ fun FilterDialog(
                 FilterSelection(
                     itemList = generations,
                     currentSelection = generationSelection,
-                    noneSelection = noneSelection,
                     selectionString = stringResource(id = R.string.selection_generation)
                 ) {
                     generationSelection = if (it == noneSelection) {
@@ -606,7 +605,6 @@ fun FilterDialog(
                 FilterSelection(
                     itemList = types,
                     currentSelection = typeSelection,
-                    noneSelection = noneSelection,
                     selectionString = stringResource(id = R.string.selection_type)
                 ) {
                     typeSelection = if (it == noneSelection) {
@@ -649,7 +647,6 @@ fun FilterSelection(
     itemList: List<String>,
     currentSelection: String,
     selectionString: String,
-    noneSelection: String,
     onItemSelected: (String) -> Unit
 ) {
 
