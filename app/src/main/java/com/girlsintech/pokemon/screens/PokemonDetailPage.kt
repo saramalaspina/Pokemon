@@ -258,7 +258,7 @@ fun PokemonDetailPage(
 
                             Column (modifier = Modifier
                                 .constrainAs(icons){
-                                    top.linkTo(parent.top, 10.dp)
+                                    top.linkTo(parent.top)
                                     start.linkTo(parent.start, 5.dp)
                                 }) {
                                 TopIcons(
@@ -270,8 +270,8 @@ fun PokemonDetailPage(
 
                             Column (modifier = Modifier
                                 .constrainAs(name){
-                                    top.linkTo(icons.bottom)
-                                    start.linkTo(parent.start, 30.dp)
+                                    top.linkTo(parent.top, 40.dp)
+                                    start.linkTo(parent.start, 20.dp)
                                 }) {
                                 TopBox(
                                     pokemonInfo = pokemonInfo,
@@ -282,7 +282,7 @@ fun PokemonDetailPage(
                             Column (modifier = Modifier
                                 .constrainAs(image){
                                     top.linkTo(name.bottom)
-                                    start.linkTo(parent.start, 30.dp)
+                                    start.linkTo(parent.start, 20.dp)
                                     bottom.linkTo(parent.bottom)
                                 }){
                                 ImageBox(
@@ -302,8 +302,8 @@ fun PokemonDetailPage(
                                     .fillMaxHeight()
                                     .background(Color.White, RoundedCornerShape(10))
                                     .constrainAs(detail) {
-                                        top.linkTo(parent.top, 30.dp)
-                                        start.linkTo(parent.start, 310.dp)
+                                        top.linkTo(parent.top, 20.dp)
+                                        start.linkTo(parent.start, 290.dp)
                                     }
                             ) {
 
@@ -731,7 +731,7 @@ fun PokemonDetailSection(
                 Column(
                     modifier = Modifier.
                     constrainAs(detailCol2) {
-                        start.linkTo(parent.start, 115.dp)
+                        start.linkTo(parent.start, 130.dp)
                         top.linkTo(parent.top)
                     },
                     horizontalAlignment = Alignment.Start,
@@ -848,7 +848,7 @@ fun PokemonDetailSection(
 
                 Column(
                     modifier = Modifier.constrainAs(detailCol2) {
-                        start.linkTo(parent.start, 115.dp)
+                        start.linkTo(parent.start, 130.dp)
                         top.linkTo(parent.top, 20.dp)
                     },
                     horizontalAlignment = Alignment.Start,
