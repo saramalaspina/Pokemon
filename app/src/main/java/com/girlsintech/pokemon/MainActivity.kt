@@ -21,6 +21,7 @@ import com.girlsintech.pokemon.ui.theme.PokemonTheme
 import com.girlsintech.pokemon.util.SelectedPokemon
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
+import java.util.*
 
 class MainActivity : ComponentActivity() {
 

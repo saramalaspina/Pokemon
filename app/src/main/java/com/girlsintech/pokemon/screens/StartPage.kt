@@ -2,6 +2,7 @@ package com.girlsintech.pokemon.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,12 +21,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.girlsintech.pokemon.MainActivity
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.ui.theme.BluePokemon
+import java.util.*
 
 @Composable
 fun MainView(
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -153,7 +156,6 @@ fun MainView(
         }
     }
 }
-
 
 @Composable
 fun Start(onClick: () -> Unit) {
