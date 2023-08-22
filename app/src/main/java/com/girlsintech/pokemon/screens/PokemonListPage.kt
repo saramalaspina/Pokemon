@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -284,6 +285,7 @@ fun PokemonListPage(
                     onValueChange = {
                         filter = it
                     },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     maxLines = 1,
                     singleLine = true,
                     textStyle = TextStyle(color = Color.Black),
