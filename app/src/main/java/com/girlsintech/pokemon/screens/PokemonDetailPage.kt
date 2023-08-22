@@ -708,7 +708,17 @@ fun PokemonDetailSection(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+            ConstraintLayout(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                val (detailCol1, detailCol2) = createRefs()
+
             Column(
+                modifier = Modifier.
+                constrainAs(detailCol1) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                },
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -718,101 +728,116 @@ fun PokemonDetailSection(
                 TextInfo(text = stringResource(id = R.string.abilities))
             }
 
-            Spacer(modifier = Modifier.width(76.dp))
-
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                pokemonSpecies.genera.forEach {
-                    if (it.language.name == Locale.getDefault().language) {
-                        TextInfo(text = it.genus, Color.Black)
-                    }
-                }
-
-                TextInfo(
-                    text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
-                    Color.Black
-                )
-                TextInfo(
-                    text = "${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg",
-                    Color.Black
-                )
-
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.
+                    constrainAs(detailCol2) {
+                        start.linkTo(parent.start, 115.dp)
+                        top.linkTo(parent.top)
+                    },
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    ability1!!.names.forEach { name ->
-                        if (name.language.name == Locale.getDefault().language) {
-                            Text(
-                                text = name.name.replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(
-                                        Locale.ROOT
-                                    ) else it.toString()
-                                },
-                                color = Color.Black,
-                                fontSize = 15.sp,
-                                fontFamily = fontBasic(),
-                                modifier = Modifier
-                                    .clickable {
-                                        isDialogShown = true
-                                        ability = ability1
-                                        abilityDescription = ability1.name
-                                    }
-                            )
+                    pokemonSpecies.genera.forEach {
+                        if (it.language.name == Locale.getDefault().language) {
+                            TextInfo(text = it.genus, Color.Black)
                         }
                     }
 
-                    ability2?.names?.forEach { name ->
-                        if (name.language.name == Locale.getDefault().language) {
-                            Text(
-                                text = name.name.replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(
-                                        Locale.ROOT
-                                    ) else it.toString()
-                                },
-                                color = Color.Black,
-                                fontSize = 15.sp,
-                                fontFamily = fontBasic(),
-                                modifier = Modifier
-                                    .clickable {
-                                        isDialogShown = true
-                                        ability = ability2
-                                        abilityDescription = ability2.name
-                                    }
-                            )
-                        }
-                    }
+                    TextInfo(
+                        text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
+                        Color.Black
+                    )
+                    TextInfo(
+                        text = "${(pokemonInfo.weight * 100f).roundToInt() / 1000f} kg",
+                        Color.Black
+                    )
 
-                    ability3?.names?.forEach { name ->
-                        if (name.language.name == Locale.getDefault().language) {
-                            Text(
-                                text = name.name.replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(
-                                        Locale.ROOT
-                                    ) else it.toString()
-                                },
-                                color = Color.Black,
-                                fontSize = 15.sp,
-                                fontFamily = fontBasic(),
-                                modifier = Modifier
-                                    .clickable {
-                                        isDialogShown = true
-                                        ability = ability3
-                                        abilityDescription = ability3.name
-                                    }
-                            )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        ability1!!.names.forEach { name ->
+                            if (name.language.name == Locale.getDefault().language) {
+                                Text(
+                                    text = name.name.replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.ROOT
+                                        ) else it.toString()
+                                    },
+                                    color = Color.Black,
+                                    fontStyle = FontStyle.Italic,
+                                    fontSize = 15.sp,
+                                    fontFamily = fontBasic(),
+                                    modifier = Modifier
+                                        .clickable {
+                                            isDialogShown = true
+                                            ability = ability1
+                                            abilityDescription = ability1.name
+                                        }
+                                )
+                            }
+                        }
+
+                        ability2?.names?.forEach { name ->
+                            if (name.language.name == Locale.getDefault().language) {
+                                Text(
+                                    text = name.name.replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.ROOT
+                                        ) else it.toString()
+                                    },
+                                    color = Color.Black,
+                                    fontStyle = FontStyle.Italic,
+                                    fontSize = 15.sp,
+                                    fontFamily = fontBasic(),
+                                    modifier = Modifier
+                                        .clickable {
+                                            isDialogShown = true
+                                            ability = ability2
+                                            abilityDescription = ability2.name
+                                        }
+                                )
+                            }
+                        }
+
+                        ability3?.names?.forEach { name ->
+                            if (name.language.name == Locale.getDefault().language) {
+                                Text(
+                                    text = name.name.replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.ROOT
+                                        ) else it.toString()
+                                    },
+                                    color = Color.Black,
+                                    fontStyle = FontStyle.Italic,
+                                    fontSize = 15.sp,
+                                    fontFamily = fontBasic(),
+                                    modifier = Modifier
+                                        .clickable {
+                                            isDialogShown = true
+                                            ability = ability3
+                                            abilityDescription = ability3.name
+                                        }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            ConstraintLayout(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                val (detailCol1, detailCol2) = createRefs()
             Column(
+                modifier = Modifier.
+                constrainAs(detailCol1) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top, 20.dp)
+                },
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -821,26 +846,29 @@ fun PokemonDetailSection(
                 TextInfo(text = stringResource(id = R.string.egg_groups))
             }
 
-            Spacer(modifier = Modifier.width(35.dp))
-
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-
-                val gen = pokemonSpecies.generation.name.split("-")[1]
-                TextInfo(text = gen.uppercase(), Color.Black)
-
-                TextInfo(
-                    text = parseGrowthRate(growthRate = (pokemonSpecies.growth_rate.name)),
-                    Color.Black
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Column(
+                    modifier = Modifier.constrainAs(detailCol2) {
+                        start.linkTo(parent.start, 115.dp)
+                        top.linkTo(parent.top, 20.dp)
+                    },
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    pokemonSpecies.egg_groups.forEach {
-                        TextInfo(text = parseEggGroups(eggGroup = it.name), Color.Black)
+
+                    val gen = pokemonSpecies.generation.name.split("-")[1]
+                    TextInfo(text = gen.uppercase(), Color.Black)
+
+                    TextInfo(
+                        text = parseGrowthRate(growthRate = (pokemonSpecies.growth_rate.name)),
+                        Color.Black
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        pokemonSpecies.egg_groups.forEach {
+                            TextInfo(text = parseEggGroups(eggGroup = it.name), Color.Black)
+                        }
                     }
                 }
             }
