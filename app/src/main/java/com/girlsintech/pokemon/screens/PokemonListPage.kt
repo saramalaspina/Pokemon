@@ -610,11 +610,7 @@ fun FilterDialog(
                     typeSelection = if (it == noneSelection) {
                         ""
                     } else {
-                        if (Locale.getDefault().language == "en") {
-                            it
-                        } else {
-                            parseTypeIt(type = it)
-                        }
+                        it
                     }
                 }
 
@@ -626,7 +622,11 @@ fun FilterDialog(
                     modifier = Modifier
                         .width(160.dp),
                     onClick = {
-                        onClickType(typeSelection)
+                        if (Locale.getDefault().language == "en") {
+                            onClickType(typeSelection)
+                        } else {
+                            onClickType(parseTypeIt(typeSelection))
+                        }
                         onClickGeneration(generationSelection)
                         onClickAbility(abilitySelectionEn, abilitySelectionIt)
                         onDismiss()
@@ -648,7 +648,7 @@ fun FilterSelection(
     currentSelection: String,
     selectionString: String,
     noneSelection: String,
-    onItemSelected: (selectedItem: String) -> Unit
+    onItemSelected: (String) -> Unit
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -703,11 +703,6 @@ fun FilterSelection(
                 DropdownMenuItem(onClick = {
                     expanded = false
                     selectedItem = it
-                        /*if (it == noneSelection) {
-                        selectionString
-                    } else {
-                        it
-                    }*/
                     onItemSelected(it)
                 }) {
                     Text(text = it)
