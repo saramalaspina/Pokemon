@@ -12,6 +12,7 @@ val BlackLight = Color(0xFF222324)
 val Yellow = Color(0xFFF3C952)
 val Discover = Color(0xFF673AB7)
 
+
 //Stats Color
 
 val hpColor = Color(0xFFEEE16C)

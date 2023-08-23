@@ -1,12 +1,18 @@
 package com.girlsintech.pokemon.screens
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.animation.*
-import androidx.compose.foundation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Favorite
@@ -24,23 +30,20 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.db.Pokemon
-import com.girlsintech.pokemon.ui.theme.*
+import com.girlsintech.pokemon.ui.theme.BluePokemon
+import com.girlsintech.pokemon.ui.theme.Discover
+import com.girlsintech.pokemon.ui.theme.Yellow
 import com.girlsintech.pokemon.util.parseGenerationFromInt
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
 
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PokemonDiscoverPage(
     navController: NavController,
@@ -144,7 +147,7 @@ fun DiscoveredPokemon(
             Box(
                 modifier = Modifier
                     .verticalScroll(scrollState)
-                    .background(Discover.copy(0.7f), RoundedCornerShape(20.dp))
+                    .background(BluePokemon.copy(0.8f), RoundedCornerShape(20.dp))
                     .width(withBox)
             ) {
 
