@@ -14,14 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,10 +27,8 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
-import com.girlsintech.pokemon.data.remote.model.Ability
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.*
-import com.girlsintech.pokemon.util.parseGeneration
 import com.girlsintech.pokemon.util.parseGenerationFromInt
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -43,7 +37,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
-import kotlin.math.roundToInt
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -167,7 +160,8 @@ fun DiscoveredPokemon(
                         .padding(8.dp)
                         .constrainAs(name) {
                             top.linkTo(parent.top, 43.dp)
-                            start.linkTo(parent.start, 15.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
                         },
                     color = BluePokemon,
                     fontSize = 25.sp,
@@ -217,7 +211,7 @@ fun DiscoveredPokemon(
                             modifier = Modifier
                                 .constrainAs(col1) {
                                     top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
+                                    start.linkTo(parent.start, 20.dp)
                                 }
                         ) {
                             TextInfo(text = stringResource(id = R.string.selection_type))
@@ -226,7 +220,7 @@ fun DiscoveredPokemon(
                             modifier = Modifier
                                 .constrainAs(col2) {
                                     top.linkTo(parent.top)
-                                    start.linkTo(parent.start, 120.dp)
+                                    start.linkTo(parent.start, 130.dp)
                                 }
                         ) {
                             val delimType = ", "
@@ -245,7 +239,7 @@ fun DiscoveredPokemon(
                             modifier = Modifier
                                 .constrainAs(col1) {
                                     top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
+                                    start.linkTo(parent.start, 20.dp)
                                 }
                         ) {
                             TextInfo(text = stringResource(id = R.string.search_ability))
@@ -254,7 +248,7 @@ fun DiscoveredPokemon(
                             modifier = Modifier
                                 .constrainAs(col2) {
                                     top.linkTo(parent.top)
-                                    start.linkTo(parent.start, 120.dp)
+                                    start.linkTo(parent.start, 130.dp)
                                 }
                         ) {
                             val delimAbility = ","
@@ -276,7 +270,7 @@ fun DiscoveredPokemon(
                             modifier = Modifier
                                 .constrainAs(col1) {
                                     top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
+                                    start.linkTo(parent.start, 20.dp)
                                 }
                         ) {
                             TextInfo(text = stringResource(id = R.string.generation))
@@ -285,7 +279,7 @@ fun DiscoveredPokemon(
                             modifier = Modifier
                                 .constrainAs(col2) {
                                     top.linkTo(parent.top)
-                                    start.linkTo(parent.start, 120.dp)
+                                    start.linkTo(parent.start, 130.dp)
                                 }
                         ) {
                             TextInfo(
