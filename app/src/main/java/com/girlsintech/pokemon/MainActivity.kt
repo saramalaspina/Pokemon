@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                         PokemonListPage(navController = navController)
                     }
                     composable("pokemon_discover_screen") {
-                        PokemonDiscoverPage(navController = navController)
+                        PokemonDiscoverPage(navController = navController, viewModel)
                     }
                     composable("pokemon_detail_screen") {
 

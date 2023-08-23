@@ -196,7 +196,7 @@ fun Start(
            ) {
                Row {
                    Text(
-                       text = "Pokedex",
+                       text = "Pokédex",
                        modifier = Modifier
                            .padding(4.dp)
                            .weight(1f)
