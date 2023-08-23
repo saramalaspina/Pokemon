@@ -22,9 +22,11 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.ui.theme.BluePokemon
+import com.girlsintech.pokemon.ui.theme.Yellow
 
 @Composable
 fun MainView(
+    onClickDiscover: () -> Unit,
     onClick: () -> Unit
 ) {
     Surface(
@@ -70,19 +72,19 @@ fun MainView(
 
                     Column (modifier = Modifier
                         .constrainAs(button) {
-                            top.linkTo(images.bottom, 80.dp)
+                            top.linkTo(images.bottom, 50.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
                     )  {
-                        Start(onClick)
+                        Start(onClickDiscover, onClick)
                     }
 
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 25.dp, bottom = 25.dp)
-                            .constrainAs(icon){
+                            .constrainAs(icon) {
                                 bottom.linkTo(parent.bottom)
                                 end.linkTo(parent.end)
                             },
@@ -128,11 +130,11 @@ fun MainView(
                     Column (modifier = Modifier
                         .constrainAs(button) {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 200.dp)
+                            start.linkTo(parent.start, 165.dp)
                             bottom.linkTo(parent.bottom)
                         }
                     )  {
-                        Start(onClick)
+                        Start(onClickDiscover, onClick)
                     }
 
                     Column (modifier = Modifier
@@ -155,7 +157,10 @@ fun MainView(
 }
 
 @Composable
-fun Start(onClick: () -> Unit) {
+fun Start(
+    onClickDiscover: () -> Unit,
+    onClick: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -177,37 +182,74 @@ fun Start(onClick: () -> Unit) {
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-        Button(
-            modifier = Modifier
-                .wrapContentWidth()
-                .width(250.dp),
-            onClick = onClick,
-            shape = RoundedCornerShape(30),
-            colors = ButtonDefaults.buttonColors(BluePokemon)
-        ) {
-            Row {
-                Text(
-                    text = "Pokedex",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1f)
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    textAlign = TextAlign.Center,
-                    fontFamily = fontPokemon()
-                )
+       Column {
 
-                Image(painter = painterResource(id = R.drawable.grey_pokeball),
-                    contentDescription = "pokeball",
-                    modifier = Modifier
-                        .requiredSize(45.dp)
-                        .align(Alignment.CenterVertically)
-                )
-            }
-        }
+           Button(
+               modifier = Modifier
+                   .wrapContentWidth()
+                   .width(250.dp),
+               onClick = onClick,
+               shape = RoundedCornerShape(30),
+               colors = ButtonDefaults.buttonColors(BluePokemon)
+           ) {
+               Row {
+                   Text(
+                       text = "Pokedex",
+                       modifier = Modifier
+                           .padding(4.dp)
+                           .weight(1f)
+                           .padding(8.dp),
+                       color = Color.White,
+                       fontSize = 25.sp,
+                       textAlign = TextAlign.Center,
+                       fontFamily = fontPokemon()
+                   )
+
+                   Image(
+                       painter = painterResource(id = R.drawable.grey_pokeball),
+                       contentDescription = "pokeball",
+                       modifier = Modifier
+                           .requiredSize(45.dp)
+                           .align(Alignment.CenterVertically)
+                   )
+               }
+           }
+
+           Spacer(modifier = Modifier.height(20.dp))
+
+           Button(
+               modifier = Modifier
+                   .wrapContentWidth()
+                   .width(250.dp),
+               onClick = onClickDiscover,
+               shape = RoundedCornerShape(30),
+               colors = ButtonDefaults.buttonColors(Yellow)
+           ) {
+               Row {
+                   Text(
+                       text = stringResource(id = R.string.discover),
+                       modifier = Modifier
+                           .padding(4.dp)
+                           .weight(1f)
+                           .padding(8.dp),
+                       color = Color.White,
+                       fontSize = 25.sp,
+                       textAlign = TextAlign.Center,
+                       fontFamily = fontPokemon()
+                   )
+
+                   Image(
+                       painter = painterResource(id = R.drawable.grey_pokeball),
+                       contentDescription = "pokeball",
+                       modifier = Modifier
+                           .requiredSize(45.dp)
+                           .align(Alignment.CenterVertically)
+                   )
+               }
+           }
+       }
     }
 }
 

@@ -13,10 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.girlsintech.pokemon.screens.ErrorMessage
-import com.girlsintech.pokemon.screens.MainView
-import com.girlsintech.pokemon.screens.PokemonDetailPage
-import com.girlsintech.pokemon.screens.PokemonListPage
+import com.girlsintech.pokemon.screens.*
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
 import com.girlsintech.pokemon.util.SelectedPokemon
 import com.girlsintech.pokemon.viewmodel.MyState
@@ -45,18 +42,27 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf("")
                 }
 
-
                 val navController = rememberNavController()
 
-                NavHost(navController = navController,
-                    startDestination = "pokemon_homepage"){
-                    composable("pokemon_homepage"){
-                        MainView { navController.navigate("pokemon_list_screen") }
+                NavHost(
+                    navController = navController,
+                    startDestination = "pokemon_homepage"
+                ) {
+                    composable("pokemon_homepage") {
+                        MainView(
+                            {
+                                navController.navigate("pokemon_discover_screen")
+                            }, {
+                                navController.navigate("pokemon_list_screen")
+                            })
                     }
-                    composable("pokemon_list_screen"){
+                    composable("pokemon_list_screen") {
                         PokemonListPage(navController = navController)
                     }
-                    composable("pokemon_detail_screen"){
+                    composable("pokemon_discover_screen") {
+                        PokemonDiscoverPage(navController = navController)
+                    }
+                    composable("pokemon_detail_screen") {
 
                         viewModel.getData(SelectedPokemon.pokemonSelected.value!!.url) {
                             refresh = MyState.Error

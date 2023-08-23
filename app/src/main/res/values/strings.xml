@@ -66,4 +66,5 @@
     <string name="flavor">Flavor Text</string>
     <string name="selection">Add Filters</string>
     <string name="none_f">None</string>
+    <string name="discover">Discover</string>
 </resources>
