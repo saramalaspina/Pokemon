@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.girlsintech.pokemon.ui.theme.BluePokemon
+import com.girlsintech.pokemon.ui.theme.Yellow
+import com.girlsintech.pokemon.ui.theme.hpColor
 import com.girlsintech.pokemon.viewmodel.MyState
 import java.util.*
 import kotlin.concurrent.schedule
@@ -23,7 +25,7 @@ fun PokemonDiscoverPage(
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = Yellow.copy(0.4f)
     ) {
 
         var discover by remember {
