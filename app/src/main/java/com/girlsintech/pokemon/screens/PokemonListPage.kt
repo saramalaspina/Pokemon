@@ -68,16 +68,14 @@ import java.util.*
 
 @Composable
 fun PokemonListPage(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokemonViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         val configuration = LocalConfiguration.current
-        val context = LocalContext.current
-        val viewModel: PokemonViewModel =
-            viewModel(factory = PokemonViewModel.PokemonViewModelFactory(context.applicationContext as Application))
 
         var filter by remember {
             mutableStateOf("")

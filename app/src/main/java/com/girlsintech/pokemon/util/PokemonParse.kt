@@ -48,6 +48,21 @@ fun parseGeneration(number: String): Int {
     }
 }
 
+fun parseGenerationFromInt(number: Int): String {
+    return when(number){
+        1 -> "I"
+        2-> "II"
+        3-> "III"
+        4-> "IV"
+        5 -> "V"
+        6 -> "VI"
+        7 -> "VII"
+        8 -> "VIII"
+        9 -> "IX"
+        else -> ""
+    }
+}
+
 @Composable
 fun parseType(type: String): String {
     return when(type.lowercase(Locale.ROOT)) {

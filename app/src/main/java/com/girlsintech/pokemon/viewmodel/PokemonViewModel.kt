@@ -30,6 +30,10 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
             return repository.getImageFromName(s)
         }
 
+        fun getRandomPokemon(): Pokemon? {
+            return repository.getRandomPokemon()
+        }
+
         fun update(item: Pokemon) {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.update(item)

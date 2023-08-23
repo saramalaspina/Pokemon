@@ -18,6 +18,7 @@ import com.girlsintech.pokemon.ui.theme.PokemonTheme
 import com.girlsintech.pokemon.util.SelectedPokemon
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
+import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -29,7 +30,10 @@ class MainActivity : ComponentActivity() {
                 val context = LocalContext.current
                 val owner = this
 
-                val viewModel: PokemonDetailViewModel =
+                val viewModel: PokemonViewModel =
+                    viewModel(factory = PokemonViewModel.PokemonViewModelFactory(context.applicationContext as Application))
+
+                val viewModelDetail: PokemonDetailViewModel =
                     viewModel(
                         factory = PokemonDetailViewModel.PokemonDetailViewModelFactory(context.applicationContext as Application)
                     )
@@ -57,18 +61,18 @@ class MainActivity : ComponentActivity() {
                             })
                     }
                     composable("pokemon_list_screen") {
-                        PokemonListPage(navController = navController)
+                        PokemonListPage(navController = navController, viewModel = viewModel)
                     }
                     composable("pokemon_discover_screen") {
-                        PokemonDiscoverPage(navController = navController, viewModel)
+                        PokemonDiscoverPage(navController = navController, viewModel = viewModel)
                     }
                     composable("pokemon_detail_screen") {
 
-                        viewModel.getData(SelectedPokemon.pokemonSelected.value!!.url) {
+                        viewModelDetail.getData(SelectedPokemon.pokemonSelected.value!!.url) {
                             refresh = MyState.Error
                             message = it
                         }
-                        viewModel.pokemonInfo.observe(owner) {
+                        viewModelDetail.pokemonInfo.observe(owner) {
                             refresh = MyState.Success
                         }
 
@@ -77,7 +81,7 @@ class MainActivity : ComponentActivity() {
                                 PokemonDetailPage(
                                     dominantColor = SelectedPokemon.color.value,
                                     pokemon = SelectedPokemon.pokemonSelected.value!!,
-                                    viewModel = viewModel,
+                                    viewModel = viewModelDetail,
                                     viewModelDb = SelectedPokemon.viewModel.value!!,
                                     navController = navController
                                 )

@@ -72,7 +72,7 @@ fun MainView(
 
                     Column (modifier = Modifier
                         .constrainAs(button) {
-                            top.linkTo(images.bottom, 50.dp)
+                            top.linkTo(images.bottom, 30.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }

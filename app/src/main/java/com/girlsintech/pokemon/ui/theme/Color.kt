@@ -9,7 +9,8 @@ val Teal200 = Color(0xFF03DAC5)
 val BluePokemon = Color(0xFF2E4595)
 val CardBackground = Color(0xFFF2F3F7)
 val BlackLight = Color(0xFF222324)
-val Yellow = Color(0xFFF0BE32)
+val Yellow = Color(0xFFF3C952)
+val Discover = Color(0xFF673AB7)
 
 //Stats Color
 

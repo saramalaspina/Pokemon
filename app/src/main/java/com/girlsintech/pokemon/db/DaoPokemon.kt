@@ -19,9 +19,15 @@ interface DaoPokemon {
     @Delete
     fun delete(pokemon: Pokemon)
 
-    //con LIMIT 1 estraggo solo il primo elemento della lista
-    @Query("SELECT * FROM Pokemon ORDER BY RANDOM() LIMIT 1")
-    suspend fun getRandomPokemon(): Pokemon  //query da usare se vogliamo fare la funzionalità aggiuntiva della sfida
+    @Query(
+        """
+        SELECT * FROM Pokemon
+            WHERE favorite = 0
+            ORDER BY RANDOM()
+            LIMIT 1
+    """
+    )
+    fun getRandomPokemon(): Pokemon?  //query per funzionalità aggiuntiva
 
     @RawQuery(observedEntities = [Pokemon::class])
     fun getImageFromName(query: SupportSQLiteQuery): LiveData<String>
