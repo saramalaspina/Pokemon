@@ -47,7 +47,7 @@ fun PokemonDiscoverPage(
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Discover.copy(0.5f)
+        color = Color.White.copy()
     ) {
 
         var visibility by remember {
@@ -134,6 +134,19 @@ fun DiscoveredPokemon(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        ConstraintLayout() {
+            val (imageBox) = createRefs()
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = 100.dp)
+            ) {
+                DiscoveredImage(url = pokemon.img)
+            }
+        }
         Card(
             elevation = 15.dp,
             shape = RoundedCornerShape(20.dp)
@@ -141,9 +154,10 @@ fun DiscoveredPokemon(
         Box(
             modifier = Modifier
                 .verticalScroll(scrollState)
-                .background(CardBackground, RoundedCornerShape(20.dp))
+                .background(Discover.copy(0.5f), RoundedCornerShape(20.dp))
                 .width(withBox)
         ) {
+
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -156,11 +170,11 @@ fun DiscoveredPokemon(
                         .padding(4.dp)
                         .padding(8.dp)
                         .constrainAs(name) {
-                            top.linkTo(parent.top, 43.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
+                            top.linkTo(parent.top, 260.dp)
+                            start.linkTo(parent.start, 20.dp)
+                            //end.linkTo(parent.end)
                         },
-                    color = BluePokemon,
+                    color = Color.White,
                     fontSize = 25.sp,
                     textAlign = TextAlign.Center,
                     fontFamily = fontPokemon()
@@ -181,19 +195,10 @@ fun DiscoveredPokemon(
                             viewModel.update(pokemon)
                         }
                         .size(30.dp),
-                    tint = if (fav == 1) Color.Red else Color.LightGray
+                    tint = if (fav == 1) Color.Red else Color.White
                 )
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 110.dp)
-            ) {
-                DiscoveredImage(url = pokemon.img)
-            }
 
             Column(
                 modifier = Modifier
@@ -211,7 +216,7 @@ fun DiscoveredPokemon(
                                     start.linkTo(parent.start, 20.dp)
                                 }
                         ) {
-                            TextInfo(text = stringResource(id = R.string.selection_type))
+                            TextInfo(text = stringResource(id = R.string.selection_type), Color.White)
                         }
                         Column(
                             modifier = Modifier
@@ -222,7 +227,7 @@ fun DiscoveredPokemon(
                         ) {
                             val delimType = ", "
                             pokemon.type.split(delimType).forEach {
-                                TextInfo(text = "$it\n", color = Color.Black)
+                                TextInfo(text = "$it\n", color = Color.White)
                             }
                         }
                     }
@@ -239,7 +244,7 @@ fun DiscoveredPokemon(
                                     start.linkTo(parent.start, 20.dp)
                                 }
                         ) {
-                            TextInfo(text = stringResource(id = R.string.search_ability))
+                            TextInfo(text = stringResource(id = R.string.search_ability), Color.White)
                         }
                         Column(
                             modifier = Modifier
@@ -251,7 +256,7 @@ fun DiscoveredPokemon(
                             val delimAbility = ","
                             pokemon.ability.split(delimAbility).forEach {
                                 if (it.isNotBlank()) {
-                                    TextInfo(text = "$it\n", color = Color.Black)
+                                    TextInfo(text = "$it\n", color = Color.White)
                                 }
                             }
                         }
@@ -270,7 +275,7 @@ fun DiscoveredPokemon(
                                     start.linkTo(parent.start, 20.dp)
                                 }
                         ) {
-                            TextInfo(text = stringResource(id = R.string.generation))
+                            TextInfo(text = stringResource(id = R.string.generation), Color.White)
                         }
                         Column(
                             modifier = Modifier
@@ -281,7 +286,7 @@ fun DiscoveredPokemon(
                         ) {
                             TextInfo(
                                 text = parseGenerationFromInt(pokemon.generation),
-                                color = Color.Black
+                                color = Color.White
                             )
                         }
                     }
