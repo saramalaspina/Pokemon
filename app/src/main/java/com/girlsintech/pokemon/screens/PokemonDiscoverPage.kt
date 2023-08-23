@@ -63,9 +63,7 @@ fun PokemonDiscoverPage(
         }
 
         if(pokemon == null) {
-            CoroutineScope(Dispatchers.IO).launch {
-                pokemon = viewModel.getRandomPokemon()
-            }
+            pokemon = viewModel.randomPokemon
         }
 
         if (pokemon != null) {
@@ -73,7 +71,6 @@ fun PokemonDiscoverPage(
                 discover = MyState.Success
             }
         }
-
 
 
         when (discover) {

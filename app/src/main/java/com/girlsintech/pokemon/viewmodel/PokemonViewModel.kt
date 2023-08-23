@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 class PokemonViewModel(application: Application) : AndroidViewModel(application) {
 
         private val repository: Repository
+        var randomPokemon: Pokemon? = null
 
         init {
             val dao = DbPokemon.getInstance(application).pokemonDao()
@@ -30,8 +31,10 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
             return repository.getImageFromName(s)
         }
 
-        fun getRandomPokemon(): Pokemon? {
-            return repository.getRandomPokemon()
+        fun getRandomPokemon() {
+            viewModelScope.launch(Dispatchers.IO) {
+                randomPokemon = repository.getRandomPokemon()
+            }
         }
 
         fun update(item: Pokemon) {

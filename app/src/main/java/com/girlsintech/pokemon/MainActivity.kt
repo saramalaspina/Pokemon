@@ -64,6 +64,7 @@ class MainActivity : ComponentActivity() {
                         PokemonListPage(navController = navController, viewModel = viewModel)
                     }
                     composable("pokemon_discover_screen") {
+                        viewModel.getRandomPokemon()
                         PokemonDiscoverPage(navController = navController, viewModel = viewModel)
                     }
                     composable("pokemon_detail_screen") {
