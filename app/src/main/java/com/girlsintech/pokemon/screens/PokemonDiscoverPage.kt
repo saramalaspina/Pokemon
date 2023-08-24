@@ -147,12 +147,15 @@ fun PokemonDiscoverPage(
                             ) {
                                 DiscoveredPokemon(pokemon!!, viewModel)
                             }
+                            DiscoveredImage(url = pokemon!!.img)
                         }
                     }
                     else -> {
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 20.dp)
+                        Row(modifier = Modifier.padding(
+                            top = 20.dp,
+                            start = 30.dp,
+                            end = 30.dp
+                            )
                         ){
                             Text(
                                 text = stringResource(id = R.string.discover_text),
@@ -172,6 +175,7 @@ fun PokemonDiscoverPage(
                         ) {
                             DiscoveredPokemon(pokemon!!, viewModel)
                         }
+                        DiscoveredImage(url = pokemon!!.img)
                     }
                 }
 
@@ -368,8 +372,6 @@ fun DiscoveredPokemon(
             }
         }
     }
-
-    DiscoveredImage(url = pokemon.img)
 }
 
 @Composable
