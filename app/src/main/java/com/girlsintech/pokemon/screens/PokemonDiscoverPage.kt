@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -146,9 +147,13 @@ fun PokemonDiscoverPage(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
-                                DiscoveredPokemon(pokemon!!, viewModel)
+                                DiscoveredPokemon(pokemon!!, viewModel, 350.dp, 100.dp, 170.dp)
                             }
-                            DiscoveredImage(url = pokemon!!.img)
+                            DiscoveredImage(
+                                url = pokemon!!.img,
+                                modifier = Modifier
+                                .size(250.dp)
+                                .offset(y = 180.dp))
                         }
                     }
                     else -> {
@@ -173,13 +178,17 @@ fun PokemonDiscoverPage(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 85.dp, start = 70.dp),
-                                horizontalAlignment = Alignment.Start,
+                                    .padding(top = 70.dp, start = 132.dp, end = 60.dp),
                                 verticalArrangement = Arrangement.Top
                             ) {
-                                DiscoveredPokemon(pokemon!!, viewModel)
+                                DiscoveredPokemon(pokemon!!, viewModel, 550.dp, 20.dp, 80.dp)
                             }
-                            DiscoveredImage(url = pokemon!!.img)
+                            DiscoveredImage(
+                                url = pokemon!!.img,
+                                modifier = Modifier
+                                    .size(250.dp)
+                                    .offset(y = 130.dp, x = 150.dp)
+                            )
                         }
                     }
                 }
@@ -198,27 +207,11 @@ fun PokemonDiscoverPage(
 @Composable
 fun DiscoveredPokemon(
     pokemon: Pokemon,
-    viewModel: PokemonViewModel
+    viewModel: PokemonViewModel,
+    widthBox: Dp,
+    namePadding: Dp,
+    titlePadding: Dp
 ) {
-    val configuration = LocalConfiguration.current
-
-    val widthBox = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        350.dp
-    } else {
-        450.dp
-    }
-
-    val namePadding = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        100.dp
-    } else {
-        20.dp
-    }
-
-    val titlePadding = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        170.dp
-    } else {
-        80.dp
-    }
 
     var fav by remember {
         mutableStateOf(pokemon.favorite)
@@ -284,7 +277,7 @@ fun DiscoveredPokemon(
 
             Column(
                 modifier = Modifier
-                    .padding(top = titlePadding, start = 25.dp, bottom = 50.dp),
+                    .padding(top = titlePadding, start = 25.dp, bottom = 30.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
@@ -391,15 +384,13 @@ fun DiscoveredPokemon(
 }
 
 @Composable
-fun DiscoveredImage(url: String){
+fun DiscoveredImage(
+    url: String,
+    modifier: Modifier
+){
 
     val configuration = LocalConfiguration.current
 
-    val offset = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        180.dp
-    } else {
-        0.dp
-    }
 
     Box(
         contentAlignment = Alignment.TopCenter
@@ -409,9 +400,7 @@ fun DiscoveredImage(url: String){
                 .data(url)
                 .build(),
             contentDescription = null,
-            modifier = Modifier
-                .size(250.dp)
-                .offset(y = offset)
+            modifier = modifier
         )
     }
 }

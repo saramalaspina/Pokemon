@@ -193,70 +193,89 @@ fun PokemonDetailPage(
 
                     Configuration.ORIENTATION_PORTRAIT -> {
 
-                        Column {
-                            TopIcons(
-                                pokemon = pokemon,
-                                viewModel = viewModelDb,
-                                navController = navController
-                            )
+                        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
 
-                            TopBox(
-                                pokemonInfo = pokemonInfo,
-                                dominantColor
-                            )
-                        }
+                            val (first, image, detail) = createRefs()
 
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .offset(y = 330.dp)
-                                .background(Color.White, RoundedCornerShape(10))
-                        ) {
-                            Spacer(modifier = Modifier.height(110.dp))
+                            Column(modifier = Modifier
+                                .constrainAs(first) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                })
+                            {
+                                TopIcons(
+                                    pokemon = pokemon,
+                                    viewModel = viewModelDb,
+                                    navController = navController
+                                )
 
-                            NavigationBar {
-                                navState = it
+                                TopBox(
+                                    pokemonInfo = pokemonInfo,
+                                    dominantColor
+                                )
                             }
-
-                            Spacer(modifier = Modifier.height(25.dp))
 
                             Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .offset(y = 140.dp)
+                                    .background(Color.White, RoundedCornerShape(10))
+                                    .constrainAs(detail) {
+                                        top.linkTo(first.bottom)
+                                        start.linkTo(parent.start)
+                                    }
                             ) {
+                                Spacer(modifier = Modifier.height(110.dp))
 
-                                when (navState) {
-                                    0 -> PokemonDetailSection(
-                                        dominantColor = dominantColor,
-                                        pokemonInfo = pokemonInfo,
-                                        pokemonSpecies = pokemonSpecies!!,
-                                        ability1 = ability1,
-                                        ability2 = ability2,
-                                        ability3 = ability3
-                                    )
-                                    1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
-                                    2 -> PokemonEvolutionSection(
-                                        viewModelDb = viewModelDb,
-                                        evolution = evolutionChain!!,
-                                        330.dp
-                                    )
+                                NavigationBar {
+                                    navState = it
+                                }
+
+                                Spacer(modifier = Modifier.height(25.dp))
+
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+
+                                    when (navState) {
+                                        0 -> PokemonDetailSection(
+                                            dominantColor = dominantColor,
+                                            pokemonInfo = pokemonInfo,
+                                            pokemonSpecies = pokemonSpecies!!,
+                                            ability1 = ability1,
+                                            ability2 = ability2,
+                                            ability3 = ability3
+                                        )
+                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
+                                        2 -> PokemonEvolutionSection(
+                                            viewModelDb = viewModelDb,
+                                            evolution = evolutionChain!!,
+                                            330.dp
+                                        )
+                                    }
                                 }
                             }
+                            Column(modifier = Modifier
+                                .constrainAs(image) {
+                                    top.linkTo(first.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                }) {
+                                ImageBox(
+                                    pokemon.img,
+                                    modifier = Modifier
+                                        .size(250.dp),
+                                )
+                            }
                         }
-                        ImageBox(
-                            pokemon.img,
-                            modifier = Modifier
-                                .size(250.dp)
-                                .offset(y = 180.dp),
-                            Alignment.TopCenter
-                        )
                     }
                     else -> {
                         ConstraintLayout {
                             val (icons, image, name, detail) = createRefs()
 
-                            Column (modifier = Modifier
-                                .constrainAs(icons){
+                            Column(modifier = Modifier
+                                .constrainAs(icons) {
                                     top.linkTo(parent.top)
                                     start.linkTo(parent.start, 5.dp)
                                 }) {
@@ -267,8 +286,8 @@ fun PokemonDetailPage(
                                 )
                             }
 
-                            Column (modifier = Modifier
-                                .constrainAs(name){
+                            Column(modifier = Modifier
+                                .constrainAs(name) {
                                     top.linkTo(parent.top, 40.dp)
                                     start.linkTo(parent.start, 20.dp)
                                 }) {
@@ -278,18 +297,17 @@ fun PokemonDetailPage(
                                 )
                             }
 
-                            Column (modifier = Modifier
-                                .constrainAs(image){
+                            Column(modifier = Modifier
+                                .constrainAs(image) {
                                     top.linkTo(name.bottom)
                                     start.linkTo(parent.start, 20.dp)
                                     bottom.linkTo(parent.bottom)
-                                }){
+                                }) {
                                 ImageBox(
                                     pokemon.img,
                                     modifier = Modifier
                                         .size(215.dp)
                                         .offset(x = 15.dp),
-                                    Alignment.CenterStart
                                 )
                             }
 
@@ -483,7 +501,7 @@ fun TopBox(
 
         Box {
 
-            Column (modifier = Modifier.padding(start = 25.dp, top = 5.dp)){
+            Column (modifier = Modifier.padding(start = 25.dp, top = 5.dp, end = 25.dp)){
                 Text(
                     text = "N° ${pokemonInfo.id}",
                     fontFamily = fontPokemon(),
@@ -527,11 +545,8 @@ fun TopBox(
 fun ImageBox(
     imgUrl: String,
     modifier: Modifier,
-    alignment: Alignment
 ) {
-    Box(
-        contentAlignment = alignment
-    ) {
+    Box() {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imgUrl)
@@ -546,8 +561,13 @@ fun ImageBox(
 fun PokemonStatSection(
     pokemonInfo: PokemonInfo
 ) {
+    val scrollState = rememberScrollState()
+    Column (
+        modifier = Modifier
+        .fillMaxSize(1f)
+        .verticalScroll(scrollState)
+    ){
     pokemonInfo.stats.forEach { stat ->
-        Spacer(modifier = Modifier.height(20.dp))
         PokemonDetailStats(
             statName = parseStatToAbbr(stat),
             statValue = stat.base_stat,
@@ -555,7 +575,9 @@ fun PokemonStatSection(
             statColor = parseStatToColor(stat),
             animDelay = 500
         )
+        Spacer(modifier = Modifier.height(20.dp))
     }
+}
 }
 
 @Composable
