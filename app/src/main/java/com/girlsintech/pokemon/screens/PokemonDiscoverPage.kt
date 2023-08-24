@@ -2,6 +2,7 @@ package com.girlsintech.pokemon.screens
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -112,12 +113,12 @@ fun PokemonDiscoverPage(
                     )
                 }
 
+                Timer().schedule(600) {
+                    visibility = true
+                }
+
                 when (configuration.orientation) {
                     Configuration.ORIENTATION_PORTRAIT -> {
-                        Timer().schedule(600) {
-                            visibility = true
-                        }
-
                         AnimatedVisibility(
                             visible = visibility,
                             enter = expandVertically(),
@@ -151,31 +152,35 @@ fun PokemonDiscoverPage(
                         }
                     }
                     else -> {
-                        Row(modifier = Modifier.padding(
-                            top = 20.dp,
-                            start = 30.dp,
-                            end = 30.dp
-                            )
-                        ){
-                            Text(
-                                text = stringResource(id = R.string.discover_text),
-                                textAlign = TextAlign.Center,
-                                fontFamily = fontPokemon(),
-                                fontSize = 25.sp,
-                                color = Color.White
-                            )
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 50.dp, start = 30.dp),
-                            horizontalAlignment = Alignment.Start,
-                            verticalArrangement = Arrangement.Top
+                        AnimatedVisibility(
+                            visible = visibility,
+                            enter = expandHorizontally(),
                         ) {
-                            DiscoveredPokemon(pokemon!!, viewModel)
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                                    .padding(top = 20.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.discover_text),
+                                    fontFamily = fontPokemon(),
+                                    fontSize = 25.sp,
+                                    color = Color.White
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 85.dp, start = 70.dp),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                DiscoveredPokemon(pokemon!!, viewModel)
+                            }
+                            DiscoveredImage(url = pokemon!!.img)
                         }
-                        DiscoveredImage(url = pokemon!!.img)
                     }
                 }
 
@@ -200,9 +205,20 @@ fun DiscoveredPokemon(
     val widthBox = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         350.dp
     } else {
-        500.dp
+        450.dp
     }
 
+    val namePadding = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        100.dp
+    } else {
+        20.dp
+    }
+
+    val titlePadding = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        170.dp
+    } else {
+        80.dp
+    }
 
     var fav by remember {
         mutableStateOf(pokemon.favorite)
@@ -237,7 +253,7 @@ fun DiscoveredPokemon(
                     },
                     modifier = Modifier
                         .constrainAs(name) {
-                            top.linkTo(parent.top, 100.dp)
+                            top.linkTo(parent.top, namePadding)
                             start.linkTo(parent.start)
                         },
                     color = Color.White,
@@ -268,7 +284,7 @@ fun DiscoveredPokemon(
 
             Column(
                 modifier = Modifier
-                    .padding(top = 170.dp, start = 25.dp, bottom = 50.dp),
+                    .padding(top = titlePadding, start = 25.dp, bottom = 50.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
