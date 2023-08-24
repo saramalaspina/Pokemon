@@ -67,5 +67,6 @@
     <string name="flavor">Testo Narrativo</string>
     <string name="selection">Aggiungi Filtri</string>
     <string name="none_f">Nessuna</string>
-    <string name="discover">Discover</string>
+    <string name="discover">Scopri</string>
+    <string name="discover_text">Hai scoperto un nuovo Pokémon!</string>
 </resources>

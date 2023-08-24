@@ -3,12 +3,9 @@ package com.girlsintech.pokemon.screens
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -21,8 +18,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +34,7 @@ import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
+import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.ui.theme.Discover
 import com.girlsintech.pokemon.ui.theme.Yellow
 import com.girlsintech.pokemon.util.parseGenerationFromInt
@@ -53,6 +53,15 @@ fun PokemonDiscoverPage(
         modifier = Modifier.fillMaxSize(),
         color = Discover.copy(0.3f)
     ) {
+
+        Row {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = R.drawable.sfondo_discover),
+                contentDescription = "background",
+                contentScale = ContentScale.FillBounds
+            )
+        }
 
         var visibility by remember {
             mutableStateOf(false)
@@ -101,6 +110,15 @@ fun PokemonDiscoverPage(
                     visible = visibility,
                     enter =  expandVertically(),
                 ) {
+                    Row(modifier = Modifier.padding(top = 80.dp, start = 30.dp, end = 30.dp)){
+                        Text(
+                            text = stringResource(id = R.string.discover_text),
+                            textAlign = TextAlign.Center,
+                            fontFamily = fontPokemon(),
+                            fontSize = 25.sp,
+                            color = Color.White
+                        )
+                    }
                     DiscoveredPokemon(pokemon!!, viewModel)
                 }
             }
@@ -121,10 +139,16 @@ fun DiscoveredPokemon(
 ) {
     val configuration = LocalConfiguration.current
 
-    val withBox = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+    val widthBox = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         350.dp
     } else {
         500.dp
+    }
+
+    val topPadding = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        330.dp
+    } else {
+        0.dp
     }
 
     var fav by remember {
@@ -136,7 +160,7 @@ fun DiscoveredPokemon(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 250.dp),
+            .padding(top = topPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -147,8 +171,8 @@ fun DiscoveredPokemon(
             Box(
                 modifier = Modifier
                     .verticalScroll(scrollState)
-                    .background(BluePokemon.copy(0.8f), RoundedCornerShape(20.dp))
-                    .width(withBox)
+                    .background(CardBackground, RoundedCornerShape(20.dp))
+                    .width(widthBox)
             ) {
 
                 ConstraintLayout(
@@ -170,7 +194,7 @@ fun DiscoveredPokemon(
                                 top.linkTo(parent.top, 90.dp)
                                 start.linkTo(parent.start, 20.dp)
                             },
-                        color = Color.White,
+                        color = BluePokemon,
                         fontSize = 25.sp,
                         textAlign = TextAlign.Center,
                         fontFamily = fontPokemon()
@@ -215,7 +239,7 @@ fun DiscoveredPokemon(
                             ) {
                                 TextInfo(
                                     text = stringResource(id = R.string.selection_type),
-                                    Color.White
+                                    BluePokemon
                                 )
                             }
                             Column(
@@ -247,7 +271,7 @@ fun DiscoveredPokemon(
                             ) {
                                 TextInfo(
                                     text = stringResource(id = R.string.search_ability),
-                                    Color.White
+                                    BluePokemon
                                 )
                             }
                             Column(
@@ -282,7 +306,7 @@ fun DiscoveredPokemon(
                             ) {
                                 TextInfo(
                                     text = stringResource(id = R.string.generation),
-                                    Color.White
+                                    BluePokemon
                                 )
                             }
                             Column(
@@ -294,7 +318,7 @@ fun DiscoveredPokemon(
                             ) {
                                 TextInfo(
                                     text = parseGenerationFromInt(pokemon.generation),
-                                    color = Color.White
+                                    BluePokemon
                                 )
                             }
                         }
@@ -318,7 +342,7 @@ fun DiscoveredImage(url: String){
             contentDescription = null,
             modifier = Modifier
                 .size(250.dp)
-                .offset(y = 90.dp)
+                .offset(y = 180.dp)
         )
     }
 }
