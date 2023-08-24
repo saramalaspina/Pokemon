@@ -19,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -261,7 +262,14 @@ fun DiscoveredPokemon(
             Box(
                 modifier = Modifier
                     .verticalScroll(scrollState)
-                    .background(Discover.copy(1f), RoundedCornerShape(20.dp))
+                    .background(
+                        Brush.verticalGradient(
+                        listOf(
+                            Discover.copy(1f),
+                            Discover.copy(0.9f),
+                            Discover.copy(0.7f)
+                        )
+                    ), RoundedCornerShape(20.dp))
                     .width(widthBox)
             ) {
 
