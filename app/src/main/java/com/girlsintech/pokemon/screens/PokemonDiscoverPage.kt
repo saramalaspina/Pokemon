@@ -112,25 +112,69 @@ fun PokemonDiscoverPage(
                     )
                 }
 
-                Timer().schedule(600) {
-                    visibility = true
+                when (configuration.orientation) {
+                    Configuration.ORIENTATION_PORTRAIT -> {
+                        Timer().schedule(600) {
+                            visibility = true
+                        }
+
+                        AnimatedVisibility(
+                            visible = visibility,
+                            enter = expandVertically(),
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(
+                                    top = 80.dp,
+                                    start = 30.dp,
+                                    end = 30.dp
+                                )
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.discover_text),
+                                    textAlign = TextAlign.Center,
+                                    fontFamily = fontPokemon(),
+                                    fontSize = 25.sp,
+                                    color = Color.White
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 330.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                DiscoveredPokemon(pokemon!!, viewModel)
+                            }
+                        }
+                    }
+                    else -> {
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp)
+                        ){
+                            Text(
+                                text = stringResource(id = R.string.discover_text),
+                                textAlign = TextAlign.Center,
+                                fontFamily = fontPokemon(),
+                                fontSize = 25.sp,
+                                color = Color.White
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 50.dp, start = 30.dp),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            DiscoveredPokemon(pokemon!!, viewModel)
+                        }
+                    }
                 }
 
-                AnimatedVisibility(
-                    visible = visibility,
-                    enter =  expandVertically(),
-                ) {
-                    Row(modifier = Modifier.padding(top = 80.dp, start = 30.dp, end = 30.dp)){
-                        Text(
-                            text = stringResource(id = R.string.discover_text),
-                            textAlign = TextAlign.Center,
-                            fontFamily = fontPokemon(),
-                            fontSize = 25.sp,
-                            color = Color.White
-                        )
-                    }
-                    DiscoveredPokemon(pokemon!!, viewModel)
-                }
             }
 
             MyState.Error -> {}
@@ -155,11 +199,6 @@ fun DiscoveredPokemon(
         500.dp
     }
 
-    val topPadding = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        330.dp
-    } else {
-        80.dp
-    }
 
     var fav by remember {
         mutableStateOf(pokemon.favorite)
@@ -167,175 +206,169 @@ fun DiscoveredPokemon(
 
     var scrollState = rememberScrollState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = topPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+
+    Card(
+        elevation = 15.dp,
+        shape = RoundedCornerShape(20.dp)
     ) {
-        Card(
-            elevation = 15.dp,
-            shape = RoundedCornerShape(20.dp)
+        Box(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .background(Discover.copy(1f), RoundedCornerShape(20.dp))
+                .width(widthBox)
         ) {
-            Box(
+
+            ConstraintLayout(
                 modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .background(Discover.copy(1f), RoundedCornerShape(20.dp))
-                    .width(widthBox)
+                    .fillMaxWidth()
+                    .padding(start = 25.dp, end = 25.dp)
+            ) {
+                val (name, favorite) = createRefs()
+
+                Text(
+                    text = pokemon.name.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.ROOT
+                        ) else it.toString()
+                    },
+                    modifier = Modifier
+                        .constrainAs(name) {
+                            top.linkTo(parent.top, 100.dp)
+                            start.linkTo(parent.start)
+                        },
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontPokemon()
+                )
+
+                Icon(
+                    Icons.TwoTone.Favorite,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .constrainAs(favorite) {
+                            top.linkTo(parent.top, 20.dp)
+                            end.linkTo(parent.end)
+                        }
+                        .requiredSize(33.dp)
+                        .clickable {
+                            pokemon.favorite = 1 - pokemon.favorite
+                            fav = 1 - fav
+                            viewModel.update(pokemon)
+                        }
+                        .size(30.dp),
+                    tint = if (fav == 1) Color.Red else Color.White
+                )
+            }
+
+
+            Column(
+                modifier = Modifier
+                    .padding(top = 170.dp, start = 25.dp, bottom = 50.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
 
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 25.dp, end = 25.dp)
-                ) {
-                    val (name, favorite) = createRefs()
-
-                    Text(
-                        text = pokemon.name.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString()
-                        },
-                        modifier = Modifier
-                            .constrainAs(name) {
-                                top.linkTo(parent.top, 100.dp)
-                                start.linkTo(parent.start)
-                            },
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        textAlign = TextAlign.Center,
-                        fontFamily = fontPokemon()
-                    )
-
-                    Icon(
-                        Icons.TwoTone.Favorite,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .constrainAs(favorite) {
-                                top.linkTo(parent.top, 20.dp)
-                                end.linkTo(parent.end)
+                Row {
+                    ConstraintLayout {
+                        val (col1, col2) = createRefs()
+                        Column(
+                            modifier = Modifier
+                                .constrainAs(col1) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                }
+                        ) {
+                            TextInfo(
+                                text = stringResource(id = R.string.selection_type),
+                                Color.White
+                            )
+                        }
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            modifier = Modifier
+                                .constrainAs(col2) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start, 130.dp)
+                                }
+                        ) {
+                            val delimType = ", "
+                            pokemon.type.split(delimType).forEach {
+                                TextInfo(text = it, color = Color.White)
                             }
-                            .requiredSize(33.dp)
-                            .clickable {
-                                pokemon.favorite = 1 - pokemon.favorite
-                                fav = 1 - fav
-                                viewModel.update(pokemon)
-                            }
-                            .size(30.dp),
-                        tint = if (fav == 1) Color.Red else Color.White
-                    )
+                        }
+                    }
                 }
 
+                Row {
+                    ConstraintLayout {
+                        val (col1, col2) = createRefs()
 
-                Column(
-                    modifier = Modifier
-                        .padding(top = 170.dp, start = 25.dp, bottom = 50.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-
-                    Row {
-                        ConstraintLayout {
-                            val (col1, col2) = createRefs()
-                            Column(
-                                modifier = Modifier
-                                    .constrainAs(col1) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start)
-                                    }
-                            ) {
-                                TextInfo(
-                                    text = stringResource(id = R.string.selection_type),
-                                    Color.White
-                                )
-                            }
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(5.dp),
-                                modifier = Modifier
-                                    .constrainAs(col2) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start, 130.dp)
-                                    }
-                            ) {
-                                val delimType = ", "
-                                pokemon.type.split(delimType).forEach {
+                        Column(
+                            modifier = Modifier
+                                .constrainAs(col1) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                }
+                        ) {
+                            TextInfo(
+                                text = stringResource(id = R.string.search_ability),
+                                Color.White
+                            )
+                        }
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            modifier = Modifier
+                                .constrainAs(col2) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start, 130.dp)
+                                }
+                        ) {
+                            val delimAbility = ","
+                            pokemon.ability.split(delimAbility).forEach {
+                                if (it.isNotBlank()) {
                                     TextInfo(text = it, color = Color.White)
                                 }
                             }
                         }
                     }
 
-                    Row {
-                        ConstraintLayout {
-                            val (col1, col2) = createRefs()
+                }
 
-                            Column(
-                                modifier = Modifier
-                                    .constrainAs(col1) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start)
-                                    }
-                            ) {
-                                TextInfo(
-                                    text = stringResource(id = R.string.search_ability),
-                                    Color.White
-                                )
-                            }
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(5.dp),
-                                modifier = Modifier
-                                    .constrainAs(col2) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start, 130.dp)
-                                    }
-                            ) {
-                                val delimAbility = ","
-                                pokemon.ability.split(delimAbility).forEach {
-                                    if (it.isNotBlank()) {
-                                        TextInfo(text = it, color = Color.White)
-                                    }
+                Row {
+                    ConstraintLayout {
+                        val (col1, col2) = createRefs()
+
+                        Column(
+                            modifier = Modifier
+                                .constrainAs(col1) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
                                 }
-                            }
+                        ) {
+                            TextInfo(
+                                text = stringResource(id = R.string.generation),
+                                Color.White
+                            )
                         }
-
-                    }
-
-                    Row {
-                        ConstraintLayout {
-                            val (col1, col2) = createRefs()
-
-                            Column(
-                                modifier = Modifier
-                                    .constrainAs(col1) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start)
-                                    }
-                            ) {
-                                TextInfo(
-                                    text = stringResource(id = R.string.generation),
-                                    Color.White
-                                )
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .constrainAs(col2) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start, 130.dp)
-                                    }
-                            ) {
-                                TextInfo(
-                                    text = parseGenerationFromInt(pokemon.generation),
-                                    Color.White
-                                )
-                            }
+                        Column(
+                            modifier = Modifier
+                                .constrainAs(col2) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start, 130.dp)
+                                }
+                        ) {
+                            TextInfo(
+                                text = parseGenerationFromInt(pokemon.generation),
+                                Color.White
+                            )
                         }
                     }
                 }
             }
         }
     }
+
     DiscoveredImage(url = pokemon.img)
 }
 
