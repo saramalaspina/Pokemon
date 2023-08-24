@@ -54,12 +54,22 @@ fun PokemonDiscoverPage(
         color = Discover.copy(0.3f)
     ) {
 
+        val configuration = LocalConfiguration.current
+
+        val sfondo = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            R.drawable.img
+        } else {
+            R.drawable.sfondo_discover_h
+        }
+
+
         Row {
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.sfondo_discover),
+                painter = painterResource(id = sfondo),
                 contentDescription = "background",
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillBounds,
+                alpha = 0.8f
             )
         }
 
@@ -148,7 +158,7 @@ fun DiscoveredPokemon(
     val topPadding = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         330.dp
     } else {
-        0.dp
+        80.dp
     }
 
     var fav by remember {
@@ -171,13 +181,14 @@ fun DiscoveredPokemon(
             Box(
                 modifier = Modifier
                     .verticalScroll(scrollState)
-                    .background(CardBackground, RoundedCornerShape(20.dp))
+                    .background(Discover.copy(1f), RoundedCornerShape(20.dp))
                     .width(widthBox)
             ) {
 
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 25.dp, end = 25.dp)
                 ) {
                     val (name, favorite) = createRefs()
 
@@ -188,13 +199,11 @@ fun DiscoveredPokemon(
                             ) else it.toString()
                         },
                         modifier = Modifier
-                            .padding(4.dp)
-                            .padding(8.dp)
                             .constrainAs(name) {
-                                top.linkTo(parent.top, 90.dp)
-                                start.linkTo(parent.start, 20.dp)
+                                top.linkTo(parent.top, 100.dp)
+                                start.linkTo(parent.start)
                             },
-                        color = BluePokemon,
+                        color = Color.White,
                         fontSize = 25.sp,
                         textAlign = TextAlign.Center,
                         fontFamily = fontPokemon()
@@ -206,7 +215,7 @@ fun DiscoveredPokemon(
                         modifier = Modifier
                             .constrainAs(favorite) {
                                 top.linkTo(parent.top, 20.dp)
-                                end.linkTo(parent.end, 20.dp)
+                                end.linkTo(parent.end)
                             }
                             .requiredSize(33.dp)
                             .clickable {
@@ -222,7 +231,7 @@ fun DiscoveredPokemon(
 
                 Column(
                     modifier = Modifier
-                        .padding(top = 170.dp, start = 20.dp, bottom = 50.dp),
+                        .padding(top = 170.dp, start = 25.dp, bottom = 50.dp),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
@@ -234,12 +243,12 @@ fun DiscoveredPokemon(
                                 modifier = Modifier
                                     .constrainAs(col1) {
                                         top.linkTo(parent.top)
-                                        start.linkTo(parent.start, 20.dp)
+                                        start.linkTo(parent.start)
                                     }
                             ) {
                                 TextInfo(
                                     text = stringResource(id = R.string.selection_type),
-                                    BluePokemon
+                                    Color.White
                                 )
                             }
                             Column(
@@ -266,12 +275,12 @@ fun DiscoveredPokemon(
                                 modifier = Modifier
                                     .constrainAs(col1) {
                                         top.linkTo(parent.top)
-                                        start.linkTo(parent.start, 20.dp)
+                                        start.linkTo(parent.start)
                                     }
                             ) {
                                 TextInfo(
                                     text = stringResource(id = R.string.search_ability),
-                                    BluePokemon
+                                    Color.White
                                 )
                             }
                             Column(
@@ -301,12 +310,12 @@ fun DiscoveredPokemon(
                                 modifier = Modifier
                                     .constrainAs(col1) {
                                         top.linkTo(parent.top)
-                                        start.linkTo(parent.start, 20.dp)
+                                        start.linkTo(parent.start)
                                     }
                             ) {
                                 TextInfo(
                                     text = stringResource(id = R.string.generation),
-                                    BluePokemon
+                                    Color.White
                                 )
                             }
                             Column(
@@ -318,7 +327,7 @@ fun DiscoveredPokemon(
                             ) {
                                 TextInfo(
                                     text = parseGenerationFromInt(pokemon.generation),
-                                    BluePokemon
+                                    Color.White
                                 )
                             }
                         }
@@ -332,6 +341,15 @@ fun DiscoveredPokemon(
 
 @Composable
 fun DiscoveredImage(url: String){
+
+    val configuration = LocalConfiguration.current
+
+    val offset = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        180.dp
+    } else {
+        0.dp
+    }
+
     Box(
         contentAlignment = Alignment.TopCenter
     ) {
@@ -342,7 +360,7 @@ fun DiscoveredImage(url: String){
             contentDescription = null,
             modifier = Modifier
                 .size(250.dp)
-                .offset(y = 180.dp)
+                .offset(y = offset)
         )
     }
 }

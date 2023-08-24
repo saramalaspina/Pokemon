@@ -56,23 +56,6 @@ fun MainView(
                     )
                 }
 
-                Row {
-                    Icon(
-                        Icons.TwoTone.ArrowBack,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(top = 15.dp, start = 15.dp)
-                    )
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(id = R.drawable.sfondo),
-                        contentDescription = "background",
-                        contentScale = ContentScale.FillBounds
-                    )
-                }
-
                 ConstraintLayout {
                     val (images, button, icon) = createRefs()
 
