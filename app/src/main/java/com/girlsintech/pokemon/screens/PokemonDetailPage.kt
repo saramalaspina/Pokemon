@@ -288,8 +288,8 @@ fun PokemonDetailPage(
 
                             Column(modifier = Modifier
                                 .constrainAs(name) {
-                                    top.linkTo(parent.top, 40.dp)
-                                    start.linkTo(parent.start, 20.dp)
+                                    top.linkTo(parent.top, 12.dp)
+                                    start.linkTo(parent.start, 80.dp)
                                 }) {
                                 TopBox(
                                     pokemonInfo = pokemonInfo,
@@ -306,8 +306,8 @@ fun PokemonDetailPage(
                                 ImageBox(
                                     pokemon.img,
                                     modifier = Modifier
-                                        .size(215.dp)
-                                        .offset(x = 15.dp),
+                                        .size(250.dp)
+                                        .offset(x = 40.dp),
                                 )
                             }
 
@@ -315,12 +315,12 @@ fun PokemonDetailPage(
                             Column(
                                 horizontalAlignment = Alignment.Start,
                                 modifier = Modifier
-                                    .width(460.dp)
-                                    .fillMaxHeight()
+                                    .width(420.dp)
+                                    .height(350.dp)
                                     .background(Color.White, RoundedCornerShape(10))
                                     .constrainAs(detail) {
-                                        top.linkTo(parent.top, 20.dp)
-                                        start.linkTo(parent.start, 290.dp)
+                                        top.linkTo(parent.top, 80.dp)
+                                        start.linkTo(parent.start, 350.dp)
                                     }
                             ) {
 
@@ -349,7 +349,7 @@ fun PokemonDetailPage(
                                         2 -> PokemonEvolutionSection(
                                             viewModelDb = viewModelDb,
                                             evolution = evolutionChain!!,
-                                            20.dp
+                                            50.dp
                                         )
                                     }
                                 }
@@ -494,31 +494,86 @@ fun TopBox(
     pokemonInfo: PokemonInfo,
     dominantColor: Color,
 ) {
+    val configuration = LocalConfiguration.current
 
-    Column {
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_PORTRAIT -> {
+            Column {
 
-        Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-        Box {
+                Box {
 
-            Column (modifier = Modifier.padding(start = 25.dp, top = 5.dp, end = 25.dp)){
-                Text(
-                    text = "N° ${pokemonInfo.id}",
-                    fontFamily = fontPokemon(),
-                    fontSize = 25.sp,
-                    color = Color.White
-                )
+                    Column(modifier = Modifier.padding(start = 25.dp, top = 5.dp, end = 25.dp)) {
+                        Text(
+                            text = "N° ${pokemonInfo.id}",
+                            fontFamily = fontPokemon(),
+                            fontSize = 25.sp,
+                            color = Color.White
+                        )
 
-                Text(
-                    text = pokemonInfo.name.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(
-                            Locale.ROOT
-                        ) else it.toString()
-                    },
-                    fontFamily = fontPokemon(),
-                    fontSize = 30.sp,
-                    color = Color.White
-                )
+                        Text(
+                            text = pokemonInfo.name.replaceFirstChar {
+                                if (it.isLowerCase()) it.titlecase(
+                                    Locale.ROOT
+                                ) else it.toString()
+                            },
+                            fontFamily = fontPokemon(),
+                            fontSize = 30.sp,
+                            color = Color.White
+                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            pokemonInfo.types.forEach {
+                                Text(
+                                    text = parseType(type = it.type.name),
+                                    fontFamily = fontPokemon(),
+                                    fontSize = 20.sp,
+                                    color = Color.White,
+                                    modifier = Modifier
+                                        .background(
+                                            dominantColor.copy(0.8f),
+                                            RoundedCornerShape(50)
+                                        )
+                                        .padding(horizontal = 8.dp)
+                                )
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else -> {
+            Column {
+                Spacer(modifier = Modifier.height(2.dp))
+                Row() {
+                    Text(
+                        text = "N° ${pokemonInfo.id}",
+                        fontFamily = fontPokemon(),
+                        fontSize = 30.sp,
+                        color = Color.White
+                    )
+
+                    Spacer(modifier = Modifier .width(20.dp))
+
+                    Text(
+                        text = pokemonInfo.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(
+                                Locale.ROOT
+                            ) else it.toString()
+                        },
+                        fontFamily = fontPokemon(),
+                        fontSize = 30.sp,
+                        color = Color.White
+                    )
+
+                }
+            }
+
+            Spacer(modifier = Modifier .height(20.dp))
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -530,14 +585,16 @@ fun TopBox(
                             fontSize = 20.sp,
                             color = Color.White,
                             modifier = Modifier
-                                .background(dominantColor.copy(0.8f), RoundedCornerShape(50))
+                                .background(
+                                    dominantColor.copy(0.8f),
+                                    RoundedCornerShape(50)
+                                )
                                 .padding(horizontal = 8.dp)
                         )
 
                     }
                 }
             }
-        }
     }
 }
 
@@ -577,6 +634,7 @@ fun PokemonStatSection(
         )
         Spacer(modifier = Modifier.height(20.dp))
     }
+        Spacer(modifier = Modifier.height(50.dp))
 }
 }
 
@@ -720,10 +778,13 @@ fun PokemonDetailSection(
         mutableStateOf(null)
     }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 25.dp)
+            .verticalScroll(scrollState)
     ) {
         Row(
             modifier = Modifier
@@ -902,6 +963,7 @@ fun PokemonDetailSection(
                 ability = ability!!
             )
         }
+        Spacer(modifier = Modifier.height(70.dp))
     }
 }
 

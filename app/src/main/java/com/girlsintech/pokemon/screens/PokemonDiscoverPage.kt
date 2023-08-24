@@ -36,9 +36,7 @@ import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
-import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.ui.theme.Discover
-import com.girlsintech.pokemon.ui.theme.Yellow
 import com.girlsintech.pokemon.util.parseGenerationFromInt
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -147,7 +145,7 @@ fun PokemonDiscoverPage(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
-                                DiscoveredPokemon(pokemon!!, viewModel, 350.dp, 100.dp, 170.dp)
+                                DiscoveredPokemon(pokemon!!, viewModel, 350.dp, 100.dp, 20.dp)
                             }
                             DiscoveredImage(
                                 url = pokemon!!.img,
@@ -236,7 +234,7 @@ fun DiscoveredPokemon(
                     .fillMaxWidth()
                     .padding(start = 25.dp, end = 25.dp)
             ) {
-                val (name, favorite) = createRefs()
+                val (name, favorite, detail) = createRefs()
 
                 Text(
                     text = pokemon.name.replaceFirstChar {
@@ -272,12 +270,16 @@ fun DiscoveredPokemon(
                         .size(30.dp),
                     tint = if (fav == 1) Color.Red else Color.White
                 )
-            }
 
 
             Column(
                 modifier = Modifier
-                    .padding(top = titlePadding, start = 25.dp, bottom = 30.dp),
+                    .padding(top = titlePadding, bottom = 30.dp)
+                    .constrainAs(detail) {
+                        top.linkTo(name.bottom)
+                        start.linkTo(name.start)
+
+                    },
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
@@ -379,6 +381,7 @@ fun DiscoveredPokemon(
                     }
                 }
             }
+        }
         }
     }
 }
