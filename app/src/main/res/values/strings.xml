@@ -68,4 +68,6 @@
     <string name="none_f">None</string>
     <string name="discover">Discover</string>
     <string name="discover_text">You have discovered a new Pokémon!</string>
+    <string name="no_flavor">No flavor text available</string>
+    <string name="no_available">No available</string>
 </resources>

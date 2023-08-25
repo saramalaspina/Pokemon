@@ -621,8 +621,8 @@ fun PokemonStatSection(
     val scrollState = rememberScrollState()
     Column (
         modifier = Modifier
-        .fillMaxSize(1f)
-        .verticalScroll(scrollState)
+            .fillMaxSize(1f)
+            .verticalScroll(scrollState)
     ){
     pokemonInfo.stats.forEach { stat ->
         PokemonDetailStats(
@@ -766,6 +766,11 @@ fun PokemonDetailSection(
     ability2: AbilityDescription?,
     ability3: AbilityDescription?
 ) {
+    val noSpecies = stringResource(id = R.string.no_available)
+    var species by remember {
+        mutableStateOf(noSpecies)
+    }
+
     var isDialogShown by remember {
         mutableStateOf(false)
     }
@@ -821,9 +826,11 @@ fun PokemonDetailSection(
                 ) {
                     pokemonSpecies.genera.forEach {
                         if (it.language.name == Locale.getDefault().language) {
-                            TextInfo(text = it.genus, Color.Black)
+                            species = it.genus
                         }
                     }
+
+                    TextInfo(text = species, Color.Black)
 
                     TextInfo(
                         text = "${(pokemonInfo.height * 100f).roundToInt() / 1000f} m",
@@ -973,8 +980,9 @@ fun AbilityDialog(
     onDismiss: () -> Unit,
     ability: AbilityDescription
 ) {
-    var flavorEntry: FlavorTextEntry? by remember {
-        mutableStateOf(null)
+    val noFlavor = stringResource(id = R.string.no_flavor)
+    var flavorEntry by remember {
+        mutableStateOf(noFlavor)
     }
     Dialog(
         onDismissRequest = { onDismiss() }
@@ -996,12 +1004,12 @@ fun AbilityDialog(
             ) {
                 ability.flavor_text_entries.forEach {
                     if (it.language.name == Locale.getDefault().language) {
-                        flavorEntry = it
+                        flavorEntry = it.flavor_text
                     }
                 }
                 Row (modifier = Modifier.padding(horizontal = 10.dp)) {
                     Text(
-                        text = flavorEntry!!.flavor_text,
+                        text = flavorEntry,
                         color = Color.Black,
                         fontFamily = fontBasic(),
                         textAlign = TextAlign.Center,

@@ -39,10 +39,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
+import com.girlsintech.pokemon.data.remote.model.SingletonListOfAbilities
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.Discover
 import com.girlsintech.pokemon.util.parseGenerationFromInt
+import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
@@ -243,7 +245,7 @@ fun DiscoveredPokemon(
                 modifier = Modifier
                     .background(Color.White, RoundedCornerShape(20.dp))
                     .width(with(LocalDensity.current) { boxSize.width.toDp() })
-                    .height(with(LocalDensity.current) { boxSize.height.toDp()})
+                    .height(with(LocalDensity.current) { boxSize.height.toDp() })
             )
         }
 
@@ -264,12 +266,13 @@ fun DiscoveredPokemon(
                     .verticalScroll(scrollState)
                     .background(
                         Brush.verticalGradient(
-                        listOf(
-                            Discover.copy(1f),
-                            Discover.copy(0.9f),
-                            Discover.copy(0.7f)
-                        )
-                    ), RoundedCornerShape(20.dp))
+                            listOf(
+                                Discover.copy(1f),
+                                Discover.copy(0.9f),
+                                Discover.copy(0.7f)
+                            )
+                        ), RoundedCornerShape(20.dp)
+                    )
                     .width(widthBox)
             ) {
 
@@ -353,7 +356,7 @@ fun DiscoveredPokemon(
                                 ) {
                                     val delimType = ", "
                                     pokemon.type.split(delimType).forEach {
-                                        TextInfo(text = it, color = Color.White)
+                                        TextInfo(text = parseType(type = it), color = Color.White)
                                     }
                                 }
                             }
@@ -430,6 +433,16 @@ fun DiscoveredPokemon(
         }
     }
 }
+@Composable
+fun GetAbility(
+    ability: String
+) {
+    val listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
+    listOfAbilities.abilities.forEach {
+        if (ability == it.en){}
+    }
+}
+
 
 @Composable
 fun DiscoveredImage(

@@ -69,4 +69,6 @@
     <string name="none_f">Nessuna</string>
     <string name="discover">Scopri</string>
     <string name="discover_text">Hai scoperto un nuovo Pokémon!</string>
+    <string name="no_flavor">Descrizione non disponibile</string>
+    <string name="no_available">Non disponibile</string>
 </resources>
