@@ -24,7 +24,7 @@
     <string name="favorites">Preferiti</string>
     <string name="selection_type">Tipo</string>
     <string name="search">Cerca…</string>
-    <string name="hp">HP</string>
+    <string name="hp">PS</string>
     <string name="attack">Attacco</string>
     <string name="defense">Difesa</string>
     <string name="special_attack">Attacco Speciale</string>
@@ -36,7 +36,7 @@
     <string name="weight">Peso</string>
     <string name="height">Altezza</string>
     <string name="generation">Generazione</string>
-    <string name="growth_rate">Crescita</string>
+    <string name="growth_rate">Tasso di crescita</string>
     <string name="egg_groups">Gruppi uova</string>
     <string name="loading">Caricamento Pokemon</string>
     <string name="evolutions">Evoluzioni</string>
