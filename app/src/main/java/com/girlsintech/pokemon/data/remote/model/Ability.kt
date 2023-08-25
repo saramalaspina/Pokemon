@@ -17,16 +17,13 @@ class SingletonListOfAbilities : ListOfAbilities() {
     companion object {
         private var listOfAbilities: SingletonListOfAbilities? = null
 
-        //creo se necessario l'oggetto
         fun getInstance(context: Context): SingletonListOfAbilities =
             listOfAbilities ?: synchronized(this) {
                 listOfAbilities ?: readFile(context).also { listOfAbilities = it}
             }
 
-        //legge il file nel folder assets
         private fun readFile(context: Context): SingletonListOfAbilities {
             val listOfAbilities = SingletonListOfAbilities()
-            //la cartella assets è una speciale cartella gestita dal SO, non presente fisicamente sul dispositivo mobile ma sul cabinet apk veicolato
             val assets = context.assets
             val inputStream: InputStream = assets.open("abilities.csv")
 
