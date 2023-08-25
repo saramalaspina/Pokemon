@@ -6,7 +6,7 @@ import java.io.InputStream
 class Ability {
     var id: String = "0"
     var en: String = "None"
-    var it: String = "Nessuna"
+    var it: String = "Nessuno"
 }
 
 abstract class ListOfAbilities {

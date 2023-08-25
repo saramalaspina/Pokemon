@@ -654,6 +654,8 @@ fun FilterSelection(
 
     var selectedItem by rememberSaveable { mutableStateOf(currentSelection) }
 
+    val noneSelection = stringResource(id = R.string.none_m)
+
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
     else
@@ -699,7 +701,11 @@ fun FilterSelection(
             itemList.forEach {
                 DropdownMenuItem(onClick = {
                     expanded = false
-                    selectedItem = it
+                    selectedItem = if(it == noneSelection){
+                        ""
+                    } else {
+                        it
+                    }
                     onItemSelected(it)
                 }) {
                     Text(text = it)

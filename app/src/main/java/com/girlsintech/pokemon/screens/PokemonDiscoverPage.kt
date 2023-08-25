@@ -389,7 +389,11 @@ fun DiscoveredPokemon(
                                     val delimAbility = ","
                                     pokemon.ability.split(delimAbility).forEach {
                                         if (it.isNotBlank()) {
-                                            TextInfo(text = it, color = Color.White)
+                                            if(Locale.getDefault().language == "en") {
+                                                TextInfo(text = it, color = Color.White)
+                                            } else {
+                                                GetAbility(ability = it)
+                                            }
                                         }
                                     }
                                 }
@@ -437,9 +441,20 @@ fun DiscoveredPokemon(
 fun GetAbility(
     ability: String
 ) {
+    var abilityIt by remember {
+        mutableStateOf("")
+    }
+    
     val listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
     listOfAbilities.abilities.forEach {
-        if (ability == it.en){}
+        if (ability == it.en){
+            abilityIt = it.it
+        }
+    }
+    if(abilityIt.isNotBlank()) {
+        TextInfo(text = abilityIt, color = Color.White)
+    } else {
+        TextInfo(text = ability, color = Color.White)
     }
 }
 
