@@ -20,6 +20,7 @@ import com.girlsintech.pokemon.viewmodel.MyState
 import com.girlsintech.pokemon.viewmodel.PokemonDetailViewModel
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
+//Activity in cui le attività vengono avviate tramite la funzione OnCreate utilizzata nella versione Compose
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 val context = LocalContext.current
                 val owner = this
 
+                //creazione tramite factory dei due ViewModel in associazione con l'attività
                 val viewModel: PokemonViewModel =
                     viewModel(factory = PokemonViewModel.PokemonViewModelFactory(context.applicationContext as Application))
 
@@ -46,8 +48,10 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf("")
                 }
 
+                //per navigare da una schermata all'altra abbiamo utilizzato un Nav Controller
                 val navController = rememberNavController()
 
+                //definizione dei composable di tutte le schermate
                 NavHost(
                     navController = navController,
                     startDestination = "pokemon_homepage"
@@ -69,14 +73,17 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("pokemon_detail_screen") {
 
+                        //tramite il metodo getData acquisisco le informazioni all'interno dell'url principale del Pokémon selezionato
                         viewModelDetail.getData(SelectedPokemon.pokemonSelected.value!!.url) {
                             refresh = MyState.Error
                             message = it
                         }
+
                         viewModelDetail.pokemonInfo.observe(owner) {
                             refresh = MyState.Success
                         }
 
+                        //la pagina di dettaglio viene caricata quando l'acquisizione dei dati è andata a buon fine
                         when (refresh) {
                             MyState.Success -> {
                                 PokemonDetailPage(

@@ -11,7 +11,9 @@ import com.android.volley.toolbox.Volley
 import com.girlsintech.pokemon.data.remote.species.Species
 import org.json.JSONObject
 
+//API per l'utilizzo della classe Volley
 class APIRequest (context: Context){
+    //RequestQueue viene usata per mettere in coda le richieste e gestire le risposte ed è responsabile della gestione dei thread di lavoro
     private var request: RequestQueue
 
     companion object {

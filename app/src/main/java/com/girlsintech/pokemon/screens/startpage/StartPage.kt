@@ -65,9 +65,17 @@ fun MainView(
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }){
-                        MyImage(R.drawable.pokemon_title)
+                        Image(painter = painterResource(id = R.drawable.pokemon_title),
+                            contentDescription = "image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
                         Spacer(modifier = Modifier.height(40.dp))
-                        MyImage(R.drawable.pokemon)
+                        Image(painter = painterResource(id = R.drawable.pokemon),
+                            contentDescription = "image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
                     }
 
                     Column (modifier = Modifier

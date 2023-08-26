@@ -2,7 +2,7 @@ package com.girlsintech.pokemon.db
 
 import androidx.lifecycle.LiveData
 
-//permette di creare thread per accedere al database senza toccare il main thread che non dovrebbe accedere al disco
+//classe che fornisce un’API per accedere ai dati nel database separando il codice dall’architettura
 class Repository(private val dao: DaoPokemon) {
 
      fun update(pokemon: Pokemon) {

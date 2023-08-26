@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
+//classe che corrisponde alla tabella Pokémon nel database
 @Parcelize
 @Entity
 data class Pokemon(
@@ -18,3 +19,5 @@ data class Pokemon(
     var generation: Int,
     var ability: String
 ) : Parcelable
+
+//è una classe parcelizzabile in quanto è necessario mantenerne lo stato tra le ricomposizioni

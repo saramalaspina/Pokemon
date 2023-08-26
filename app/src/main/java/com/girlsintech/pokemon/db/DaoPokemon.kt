@@ -5,6 +5,7 @@ import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 
+//interfaccia @Dao per accedere ai dati nel database
 @Dao
 interface DaoPokemon {
     @Insert
@@ -19,6 +20,7 @@ interface DaoPokemon {
     @Delete
     fun delete(pokemon: Pokemon)
 
+    //query per generare in modo casuale un Pokémon nella funzionalità Discover
     @Query(
         """
         SELECT * FROM Pokemon
@@ -27,8 +29,9 @@ interface DaoPokemon {
             LIMIT 1
     """
     )
-    fun getRandomPokemon(): Pokemon?  //query per funzionalità aggiuntiva
+    fun getRandomPokemon(): Pokemon?
 
+    //query per ricavare l'url dell'immagine di un Pokémon conoscendo il nome
     @RawQuery(observedEntities = [Pokemon::class])
     fun getImageFromName(query: SupportSQLiteQuery): LiveData<String>
 
@@ -38,6 +41,7 @@ interface DaoPokemon {
         return getImageFromName(simpleSQLiteQuery)
     }
 
+    //query usata per la ricerca filtrata della lista mostrata nel Pokédex
     @RawQuery(observedEntities = [Pokemon::class])
     fun getAllByTagAndFavorite(query: SupportSQLiteQuery): LiveData<MutableList<Pokemon>>
 
