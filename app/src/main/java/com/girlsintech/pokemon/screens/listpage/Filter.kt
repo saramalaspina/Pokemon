@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -262,7 +261,6 @@ fun AbilitySelection(
                 .height(50.dp)
                 .shadow(5.dp, spotColor = CardBackground),
             enabled = true,
-            keyboardActions = KeyboardActions { },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done   //tasto di spunta
             ),
