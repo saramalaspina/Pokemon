@@ -46,136 +46,6 @@ import com.girlsintech.pokemon.util.TextInfo
 import com.girlsintech.pokemon.util.parseTypeIt
 import java.util.*
 
-@Composable
-fun AbilitySelection(
-    initAbility: String,
-    listOfAbilities: ListOfAbilities,
-    onClickAbility: (Ability) -> Unit
-) {
-    val options = listOfAbilities.abilities
-
-    var exp by remember { mutableStateOf(false) }
-
-    val focusManager = LocalFocusManager.current
-
-    var selection by remember {
-        mutableStateOf(initAbility)
-    }
-
-    val icon = if (exp)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-
-    Column(modifier = Modifier.width(205.dp)) {
-        OutlinedTextField(
-            value = selection,
-            onValueChange = {
-                selection = it
-                exp = true
-            },
-            modifier = Modifier
-                .width(205.dp)
-                .height(50.dp)
-                .shadow(5.dp, spotColor = CardBackground),
-            enabled = true,
-            keyboardActions = KeyboardActions { },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done   //tasto di spunta
-            ),
-            singleLine = true,
-
-            textStyle = TextStyle(
-                color = Color.Black,
-                fontFamily = fontBasic(),
-                textAlign = TextAlign.Start,
-                fontSize = 15.sp
-            ),
-            shape = RoundedCornerShape(5.dp),
-
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.LightGray,
-                unfocusedBorderColor = Color.LightGray,
-                disabledBorderColor = Color.LightGray
-            ),
-
-            trailingIcon = {
-                Icon(
-                    icon,
-                    contentDescription = null,
-                    tint = BlackLight,
-                    modifier = Modifier.clickable {
-                        exp = !exp
-                    }
-                )
-            },
-
-            placeholder = {
-                Text(
-                    text = selection.ifBlank {
-                        stringResource(id = R.string.search_ability)
-                    },
-                    fontSize = 15.sp,
-                    fontFamily = fontBasic(),
-                    color = Color.Black,
-                    textAlign = TextAlign.Start
-                )
-            }
-        )
-
-        //colonne che non creano tutte le righe ma solo quelle visibili
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = 2.dp)
-                .fillMaxWidth()
-                .border(1.dp, Color.LightGray),
-            contentPadding = PaddingValues(start = 10.dp)
-        ) {
-            val filterOpts = options.filter {
-                if (Locale.getDefault().language == "en") {
-                    it.en.startsWith(
-                        selection,
-                        ignoreCase = true  //evita il problema delle maiuscole e delle minuscole
-                    )
-                } else {
-                    it.it.startsWith(
-                        selection,
-                        ignoreCase = true
-                    )
-                }
-            }
-
-            if (exp) {
-                //lista di LazyColumn a cui passo la lista di oggetti
-                itemsIndexed(filterOpts) { _, item ->
-                    Text(
-                        text = if (Locale.getDefault().language == "en") {
-                            item.en
-                        } else {
-                            item.it
-                        },
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .clickable(onClick = {
-                                selection = if (item.id == "0") {
-                                    ""
-                                } else {
-                                    if (Locale.getDefault().language == "en") {
-                                        item.en
-                                    } else {
-                                        item.it
-                                    }
-                                }
-                                onClickAbility(item)
-                                exp = false //una volta cliccato la lista deve sparire
-                                focusManager.clearFocus()
-                            })
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun FilterDialog(
@@ -349,6 +219,140 @@ fun FilterDialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun AbilitySelection(
+    initAbility: String,
+    listOfAbilities: ListOfAbilities,
+    onClickAbility: (Ability) -> Unit
+) {
+    val options = listOfAbilities.abilities
+
+    var exp by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+
+    var selection by remember {
+        mutableStateOf(initAbility)
+    }
+
+    val icon = if (exp)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+    Column(modifier = Modifier.width(205.dp)) {
+        OutlinedTextField(
+            value = selection,
+            onValueChange = {
+                selection = it
+                exp = true
+            },
+            modifier = Modifier
+                .width(205.dp)
+                .height(50.dp)
+                .shadow(5.dp, spotColor = CardBackground),
+            enabled = true,
+            keyboardActions = KeyboardActions { },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done   //tasto di spunta
+            ),
+            singleLine = true,
+
+            textStyle = TextStyle(
+                color = Color.Black,
+                fontFamily = fontBasic(),
+                textAlign = TextAlign.Start,
+                fontSize = 15.sp
+            ),
+            shape = RoundedCornerShape(5.dp),
+
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                disabledBorderColor = Color.LightGray
+            ),
+
+            trailingIcon = {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = BlackLight,
+                    modifier = Modifier.clickable {
+                        exp = !exp
+                    }
+                )
+            },
+
+            placeholder = {
+                Text(
+                    text = selection.ifBlank {
+                        stringResource(id = R.string.search_ability)
+                    },
+                    fontSize = 15.sp,
+                    fontFamily = fontBasic(),
+                    color = Color.Black,
+                    textAlign = TextAlign.Start
+                )
+            }
+        )
+
+        Card(elevation =  if(exp) 5.dp else 0.dp) {
+        //colonne che non creano tutte le righe ma solo quelle visibili
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(start = 5.dp)
+        ) {
+            val filterOpts = options.filter {
+                if (Locale.getDefault().language == "en") {
+                    it.en.startsWith(
+                        selection,
+                        ignoreCase = true  //evita il problema delle maiuscole e delle minuscole
+                    )
+                } else {
+                    it.it.startsWith(
+                        selection,
+                        ignoreCase = true
+                    )
+                }
+            }
+
+            if (exp) {
+                //lista di LazyColumn a cui passo la lista di oggetti
+                itemsIndexed(filterOpts) { _, item ->
+                    Text(
+                        text = if (Locale.getDefault().language == "en") {
+                            item.en
+                        } else {
+                            item.it
+                        },
+                        fontFamily = fontBasic(),
+                        fontSize = 15.sp,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .clickable(onClick = {
+                                selection = if (item.id == "0") {
+                                    ""
+                                } else {
+                                    if (Locale.getDefault().language == "en") {
+                                        item.en
+                                    } else {
+                                        item.it
+                                    }
+                                }
+                                onClickAbility(item)
+                                exp = false //una volta cliccato la lista deve sparire
+                                focusManager.clearFocus()
+                            })
+                    )
+                }
+            }
+        }
+    }
     }
 }
 
