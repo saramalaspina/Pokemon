@@ -50,7 +50,7 @@ fun PokemonItem(
                 .clip(RoundedCornerShape(20.dp))
                 .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
-                    SelectedPokemon.selectPokemon(dominantColor, pokemon, viewModel)
+                    SelectedPokemon.selectPokemon(dominantColor, pokemon)
                     navController.navigate("pokemon_detail_screen")
                 }
                 .fillMaxWidth()

@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
                                     dominantColor = SelectedPokemon.color.value,
                                     pokemon = SelectedPokemon.pokemonSelected.value!!,
                                     viewModel = viewModelDetail,
-                                    viewModelDb = SelectedPokemon.viewModel.value!!,
+                                    viewModelDb = viewModel,
                                     navController = navController
                                 )
                             }
