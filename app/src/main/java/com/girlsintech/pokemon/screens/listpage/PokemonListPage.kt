@@ -48,7 +48,7 @@ import com.girlsintech.pokemon.util.parseGeneration
 import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
-
+//pagina che mostra l'elenco completo dei pokemon
 @Composable
 fun PokemonListPage(
     navController: NavController,
@@ -88,15 +88,11 @@ fun PokemonListPage(
             mutableStateOf(false)
         }
 
-        var isHintDisplayed by remember {
-            mutableStateOf(false)
-        }
-
         var isDialogShown by rememberSaveable {
             mutableStateOf(false)
         }
 
-
+        //ottengo la lista filtrata in base ai parametri inseriti
         val pokemonList = viewModel.readByTag(
             "%$filter%",
             if (onlyFavorite) 1 else 0,
@@ -138,6 +134,7 @@ fun PokemonListPage(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Top
             ) {
+                //la pagina viene composta diversamente a seconda dell'orientamento
                 when (configuration.orientation) {
                     Configuration.ORIENTATION_PORTRAIT -> {
                         Image(
@@ -223,6 +220,7 @@ fun PokemonListPage(
 
                 if (isDialogShown) {
 
+                    //invocazione dialog che mostra i filtri applicabili per la ricerca
                     FilterDialog(
                         initAbilityEn = abilityEn,
                         initAbilityIt = abilityIt,
@@ -254,56 +252,12 @@ fun PokemonListPage(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Box(
-                modifier = Modifier
-                    .background(CardBackground, CircleShape)
-                    .clip(RoundedCornerShape(20.dp))
-                    .padding(horizontal = 10.dp, vertical = 5.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                BasicTextField(
-                    value = filter,
-                    onValueChange = {
-                        filter = it
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    maxLines = 1,
-                    singleLine = true,
-                    textStyle = TextStyle(color = Color.Black),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(5.dp, CircleShape)
-                        .background(Color.White, CircleShape)
-                        .padding(horizontal = 45.dp, vertical = 12.dp)
-                        .onFocusChanged {
-                            isHintDisplayed = it.isFocused != true
-                        }
-                )
-
-                Icon(
-                    imageVector = Icons.TwoTone.Search,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp, vertical = 12.dp)
-                )
-
-                Spacer(modifier = Modifier.width(15.dp))
-
-                if (isHintDisplayed) {
-                    Text(
-                        text = stringResource(id = R.string.search),
-                        color = Color.LightGray,
-                        modifier = Modifier
-                            .padding(horizontal = 50.dp, vertical = 12.dp),
-                        fontSize = 18.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontFamily = fontBasic()
-                    )
-                }
-            }
+            //invocazione della search bar per la ricerca basata sul nome
+            SearchBar(filter = filter, onValueChange = { filter = it })
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            //invocazione della lista dei Pokémon da mostrare
             PokemonList(
                 list = pokemonList,
                 refresh = refresh,

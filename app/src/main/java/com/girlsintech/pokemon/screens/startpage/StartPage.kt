@@ -18,8 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.girlsintech.pokemon.R
 
+//pagina iniziale che viene mostrata all'avvio dell'applicazione
 @Composable
-fun MainView(
+fun StartPage(
     onClickDiscover: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -30,7 +31,7 @@ fun MainView(
     ) {
 
         val configuration = LocalConfiguration.current
-
+        //la pagina viene composta diversamente a seconda dell'orientamento
         when (configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 Row {
@@ -151,7 +152,6 @@ fun MainView(
                             contentDescription = null
                         )
                     }
-
                 }
             }
         }

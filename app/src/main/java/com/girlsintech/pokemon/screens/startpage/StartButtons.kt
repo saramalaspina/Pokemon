@@ -20,10 +20,11 @@ import com.girlsintech.pokemon.screens.fontPokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.Yellow
 
+//component della StartPage contente i bottoni per le funzionalità Pokédex e Discover
 @Composable
 fun Start(
     onClickDiscover: () -> Unit,
-    onClick: () -> Unit
+    onClickPokedex: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -54,7 +55,7 @@ fun Start(
                 modifier = Modifier
                     .wrapContentWidth()
                     .width(250.dp),
-                onClick = onClick,
+                onClick = onClickPokedex,
                 shape = RoundedCornerShape(30),
                 colors = ButtonDefaults.buttonColors(BluePokemon)
             ) {

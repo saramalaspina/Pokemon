@@ -8,6 +8,8 @@ import com.girlsintech.pokemon.data.remote.responses.Stat
 import com.girlsintech.pokemon.ui.theme.*
 import java.util.*
 
+//in questo file sono contenuti i parser utilizzati per semplicare le conversioni tra valori
+
 fun parseStatToColor(stat: Stat): Color {
     return when(stat.stat.name.lowercase(Locale.ROOT)) {
         "hp" -> hpColor.copy(0.8f)

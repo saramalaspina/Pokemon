@@ -31,6 +31,8 @@ import com.girlsintech.pokemon.util.parseGrowthRate
 import java.util.*
 import kotlin.math.roundToInt
 
+//component che mostra le informazioni generali di un Pokèmon, tra cui
+// specie, altezza, peso, abilità, generazione, tasso di crescita e gruppo uova
 @Composable
 fun PokemonDetailSection(
     dominantColor: Color,
@@ -40,9 +42,10 @@ fun PokemonDetailSection(
     ability2: AbilityDescription?,
     ability3: AbilityDescription?
 ) {
-    val noSpecies = stringResource(id = R.string.no_available)
+    val noAvailable = stringResource(id = R.string.no_available)
+
     var species by remember {
-        mutableStateOf(noSpecies)
+        mutableStateOf(noAvailable)
     }
 
     var isDialogShown by remember {
@@ -99,6 +102,7 @@ fun PokemonDetailSection(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     pokemonSpecies.genera.forEach {
+                        //in base alla localizzazione assegno la specie con la traduzione corretta
                         if (it.language.name == Locale.getDefault().language) {
                             species = it.genus
                         }
@@ -118,69 +122,28 @@ fun PokemonDetailSection(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        ability1!!.names.forEach { name ->
-                            if (name.language.name == Locale.getDefault().language) {
-                                Text(
-                                    text = name.name.replaceFirstChar {
-                                        if (it.isLowerCase()) it.titlecase(
-                                            Locale.ROOT
-                                        ) else it.toString()
-                                    },
-                                    color = Color.Black,
-                                    fontStyle = FontStyle.Italic,
-                                    fontSize = 15.sp,
-                                    fontFamily = fontBasic(),
-                                    modifier = Modifier
-                                        .clickable {
-                                            isDialogShown = true
-                                            ability = ability1
-                                            abilityDescription = ability1.name
-                                        }
-                                )
+                        //non controllo se l'abilità esiste in quanto tutti i Pokèmon hanno almeno un'abilità
+                        setAbility(ability = ability1!!) {
+                            isDialogShown = true
+                            ability = ability1
+                            abilityDescription = ability1.name
+                        }
+
+                        //controllo l'esistenza della seconda abilità poichè è facoltativa
+                        if(ability2 != null){
+                            setAbility(ability = ability2) {
+                                isDialogShown = true
+                                ability = ability2
+                                abilityDescription = ability2.name
                             }
                         }
 
-                        ability2?.names?.forEach { name ->
-                            if (name.language.name == Locale.getDefault().language) {
-                                Text(
-                                    text = name.name.replaceFirstChar {
-                                        if (it.isLowerCase()) it.titlecase(
-                                            Locale.ROOT
-                                        ) else it.toString()
-                                    },
-                                    color = Color.Black,
-                                    fontStyle = FontStyle.Italic,
-                                    fontSize = 15.sp,
-                                    fontFamily = fontBasic(),
-                                    modifier = Modifier
-                                        .clickable {
-                                            isDialogShown = true
-                                            ability = ability2
-                                            abilityDescription = ability2.name
-                                        }
-                                )
-                            }
-                        }
-
-                        ability3?.names?.forEach { name ->
-                            if (name.language.name == Locale.getDefault().language) {
-                                Text(
-                                    text = name.name.replaceFirstChar {
-                                        if (it.isLowerCase()) it.titlecase(
-                                            Locale.ROOT
-                                        ) else it.toString()
-                                    },
-                                    color = Color.Black,
-                                    fontStyle = FontStyle.Italic,
-                                    fontSize = 15.sp,
-                                    fontFamily = fontBasic(),
-                                    modifier = Modifier
-                                        .clickable {
-                                            isDialogShown = true
-                                            ability = ability3
-                                            abilityDescription = ability3.name
-                                        }
-                                )
+                        //controllo l'esistenza della terza abilità poichè è facoltativa
+                        if(ability3 != null){
+                            setAbility(ability = ability3) {
+                                isDialogShown = true
+                                ability = ability3
+                                abilityDescription = ability3.name
                             }
                         }
                     }
@@ -229,6 +192,10 @@ fun PokemonDetailSection(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        if (pokemonSpecies.egg_groups.isEmpty()){
+                            TextInfo(text = noAvailable, Color.Black)
+                        }
+
                         pokemonSpecies.egg_groups.forEach {
                             TextInfo(text = parseEggGroups(eggGroup = it.name), Color.Black)
                         }
@@ -248,6 +215,34 @@ fun PokemonDetailSection(
     }
 }
 
+//component usata per mostrare l'abilità nella lingua richiesta
+@Composable
+fun setAbility(
+    ability: AbilityDescription,
+    onClick: () -> Unit
+){
+    ability.names.forEach { name ->
+        if (name.language.name == Locale.getDefault().language) {
+            Text(
+                text = name.name.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.ROOT
+                    ) else it.toString()
+                },
+                color = Color.Black,
+                fontStyle = FontStyle.Italic,
+                fontSize = 15.sp,
+                fontFamily = fontBasic(),
+                modifier = Modifier
+                    .clickable {
+                        onClick()
+                    }
+            )
+        }
+    }
+}
+
+//dialog che mostra il flavor text di un'abilità quando questa viene cliccata
 @Composable
 fun AbilityDialog(
     dominantColor: Color,
@@ -276,6 +271,7 @@ fun AbilityDialog(
                     .fillMaxSize()
                     .background(dominantColor.copy(0.5f), RoundedCornerShape(10.dp))
             ) {
+                //la descrizione viene mostrata nella lingua di default di sistema
                 ability.flavor_text_entries.forEach {
                     if (it.language.name == Locale.getDefault().language) {
                         flavorEntry = it.flavor_text

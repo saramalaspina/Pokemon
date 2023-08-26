@@ -19,6 +19,7 @@ import com.girlsintech.pokemon.screens.fontPokemon
 import com.girlsintech.pokemon.util.parseType
 import java.util.*
 
+//component che mostra il nome, il numero e il tipo del Pokémon
 @Composable
 fun TopBox(
     pokemonInfo: PokemonInfo,
@@ -128,6 +129,7 @@ fun TopBox(
     }
 }
 
+//box che contiene l'immagine del Pokémon
 @Composable
 fun ImageBox(
     imgUrl: String,

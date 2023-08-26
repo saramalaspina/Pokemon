@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.screens.fontBasic
 
+//la barra di navigazione permette di navigare tra le diverse caratteristiche del pokemon
 @Composable
 fun NavigationBar(
     onClick: (Int) -> Unit
@@ -43,7 +44,7 @@ fun NavigationBar(
                     selectedAbout = true
                     selectedStats = false
                     selectedEvolution = false
-                    onClick(0)
+                    onClick(0) //mostra le informazioni generali
                 }
         ) {
             Text(
@@ -60,7 +61,7 @@ fun NavigationBar(
                     selectedStats = true
                     selectedAbout = false
                     selectedEvolution = false
-                    onClick(1)
+                    onClick(1) //mostra le statistiche
                 }
         ) {
             Text(
@@ -77,7 +78,7 @@ fun NavigationBar(
                     selectedEvolution = true
                     selectedAbout = false
                     selectedStats = false
-                    onClick(2)
+                    onClick(2) //mostra le evoluzioni
                 }
         ) {
             Text(

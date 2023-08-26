@@ -18,6 +18,7 @@ import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.screens.fontBasic
 
+//messaggio da mostrare in caso di errore
 @Composable
 fun ErrorMessage(message: String) {
     ConstraintLayout {
@@ -40,6 +41,7 @@ fun ErrorMessage(message: String) {
     }
 }
 
+//animazione del caricamento della pagina di dettaglio
 @Composable
 fun Loading() {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.pokeball_animation))
@@ -71,6 +73,7 @@ fun Loading() {
     }
 }
 
+//animazione del caricamento della pagina di discover
 @Composable
 fun LoadingGift() {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.gift_animation))

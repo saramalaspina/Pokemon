@@ -16,6 +16,7 @@ import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
+//component che mostra l'icona per tornare al Pokédex e l'icona dei preferiti per poter aggiungere il Pokémon mostrato
 @Composable
 fun TopIcons(
     pokemon: Pokemon,
@@ -46,6 +47,7 @@ fun TopIcons(
                     }
                     .requiredSize(33.dp)
                     .clickable {
+                        //cliccando l'icona torno alla schermata precedente
                         navController.popBackStack()
                     }
             )
@@ -60,8 +62,10 @@ fun TopIcons(
                     }
                     .requiredSize(33.dp)
                     .clickable {
+                        //cliccando l'icona il Pokémon viene aggiunto ai preferiti o rimosso se è già presente
                         pokemon.favorite = 1 - pokemon.favorite
                         fav = 1 - fav
+                        //l'entità viene aggiornata nel database
                         viewModel.update(pokemon)
                     }
                     .size(30.dp),

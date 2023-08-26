@@ -23,6 +23,7 @@ import com.girlsintech.pokemon.screens.fontBasic
 import com.girlsintech.pokemon.util.parseStatToAbbr
 import com.girlsintech.pokemon.util.parseStatToColor
 
+//component che contiene una data statistica di cui viene mostrato il valore e il nome
 @Composable
 fun PokemonDetailStats(
     statName: String,
@@ -36,6 +37,7 @@ fun PokemonDetailStats(
         mutableStateOf(false)
     }
 
+    //il valore e la barra della statistica vengono incrementati tramite un'animazione
     val curPercent = animateFloatAsState(
         targetValue = if (animationPlayed) {
             statValue / statMaxValue.toFloat()
@@ -45,7 +47,6 @@ fun PokemonDetailStats(
             animDelay
         )
     )
-
 
     LaunchedEffect(key1 = true) {
         animationPlayed = true
@@ -66,13 +67,7 @@ fun PokemonDetailStats(
             .fillMaxWidth()
             .height(25.dp)
             .clip(CircleShape)
-            .background(
-                if (isSystemInDarkTheme()) {
-                    Color(0xFF505050)
-                } else {
-                    Color.LightGray
-                }
-            )
+            .background(Color.LightGray)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -102,7 +97,7 @@ fun PokemonDetailStats(
     }
 }
 
-
+//component che mostra tutte le statische del Pokémon
 @Composable
 fun PokemonStatSection(
     pokemonInfo: PokemonInfo
@@ -111,6 +106,7 @@ fun PokemonStatSection(
     Column (
         modifier = Modifier
             .fillMaxSize(1f)
+            //la colonna deve essere scrollabile verticalmente nella orientazione landscape
             .verticalScroll(scrollState)
     ){
         pokemonInfo.stats.forEach { stat ->

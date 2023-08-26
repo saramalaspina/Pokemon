@@ -36,7 +36,7 @@ import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 import kotlin.concurrent.schedule
 
-
+//pagina in cui vengono mostrate le principali caratteristiche di un Pokèmon estratto casualmente
 @Composable
 fun PokemonDiscoverPage(
     navController: NavController,
@@ -54,7 +54,6 @@ fun PokemonDiscoverPage(
         } else {
             R.drawable.sfondo_discover_h
         }
-
 
         Row {
             Image(
@@ -83,6 +82,7 @@ fun PokemonDiscoverPage(
         }
 
         if (pokemon != null) {
+            //timer utilizzato per permettere il completamento dell'animazione di caricamento
             Timer().schedule(3800) {
                 discover = MyState.Success
             }
@@ -105,10 +105,12 @@ fun PokemonDiscoverPage(
                     )
                 }
 
-                Timer().schedule(500) {
+                //timer utilizzato per rendere visibile l'animazione che mostra il Pokémon
+                Timer().schedule(100) {
                     visibility = true
                 }
 
+                //la pagina viene composta diversamente a seconda dell'orientamento
                 when (configuration.orientation) {
                     Configuration.ORIENTATION_PORTRAIT -> {
                         AnimatedVisibility(

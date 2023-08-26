@@ -46,7 +46,7 @@ import com.girlsintech.pokemon.util.TextInfo
 import com.girlsintech.pokemon.util.parseTypeIt
 import java.util.*
 
-
+//menu dei filtri applicabili alla ricerca di un Pokémon
 @Composable
 fun FilterDialog(
     initAbilityEn: String,
@@ -112,6 +112,8 @@ fun FilterDialog(
         "IX"
     )
 
+    //la lista delle abilità viene ricavata dal file abilities.csv mantenuto nel folder assest
+    //e ottenuto tramite il metodo getInstance
     val listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
 
     Dialog(
@@ -154,6 +156,7 @@ fun FilterDialog(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
+                //invocazione filtro per selezionare l'abilità
                 AbilitySelection(
                     initAbility = if (Locale.getDefault().language == "en") {
                         abilitySelectionEn
@@ -168,6 +171,7 @@ fun FilterDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //invocazione filtro per selezionare la generazione
                 FilterSelection(
                     itemList = generations,
                     currentSelection = generationSelection,
@@ -182,6 +186,7 @@ fun FilterDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //invocazione filtro per selezionare il tipo
                 FilterSelection(
                     itemList = types,
                     currentSelection = typeSelection,
@@ -222,6 +227,7 @@ fun FilterDialog(
     }
 }
 
+//filtro per selezionare l'abilità
 @Composable
 fun AbilitySelection(
     initAbility: String,
@@ -244,6 +250,7 @@ fun AbilitySelection(
         Icons.Filled.KeyboardArrowDown
 
     Column(modifier = Modifier.width(205.dp)) {
+        //è presente un text field per cercare velocemente un'abilità specifica da voler selezionare
         OutlinedTextField(
             value = selection,
             onValueChange = {
@@ -299,63 +306,64 @@ fun AbilitySelection(
             }
         )
 
-        Card(elevation =  if(exp) 5.dp else 0.dp) {
-        //colonne che non creano tutte le righe ma solo quelle visibili
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = 2.dp)
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(start = 5.dp)
-        ) {
-            val filterOpts = options.filter {
-                if (Locale.getDefault().language == "en") {
-                    it.en.startsWith(
-                        selection,
-                        ignoreCase = true  //evita il problema delle maiuscole e delle minuscole
-                    )
-                } else {
-                    it.it.startsWith(
-                        selection,
-                        ignoreCase = true
-                    )
+        Card(elevation = if (exp) 5.dp else 0.dp) {
+            //colonne che non creano tutte le righe ma solo quelle visibili, in base all'input del text field
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 2.dp)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(start = 5.dp)
+            ) {
+                val filterOpts = options.filter {
+                    if (Locale.getDefault().language == "en") {
+                        it.en.startsWith(
+                            selection,
+                            ignoreCase = true  //evita il problema delle maiuscole e delle minuscole
+                        )
+                    } else {
+                        it.it.startsWith(
+                            selection,
+                            ignoreCase = true
+                        )
+                    }
                 }
-            }
 
-            if (exp) {
-                //lista di LazyColumn a cui passo la lista di oggetti
-                itemsIndexed(filterOpts) { _, item ->
-                    Text(
-                        text = if (Locale.getDefault().language == "en") {
-                            item.en
-                        } else {
-                            item.it
-                        },
-                        fontFamily = fontBasic(),
-                        fontSize = 15.sp,
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .clickable(onClick = {
-                                selection = if (item.id == "0") {
-                                    ""
-                                } else {
-                                    if (Locale.getDefault().language == "en") {
-                                        item.en
+                if (exp) {
+                    //lista di LazyColumn a cui passo la lista di oggetti
+                    itemsIndexed(filterOpts) { _, item ->
+                        Text(
+                            text = if (Locale.getDefault().language == "en") {
+                                item.en
+                            } else {
+                                item.it
+                            },
+                            fontFamily = fontBasic(),
+                            fontSize = 15.sp,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable(onClick = {
+                                    selection = if (item.id == "0") {
+                                        ""
                                     } else {
-                                        item.it
+                                        if (Locale.getDefault().language == "en") {
+                                            item.en
+                                        } else {
+                                            item.it
+                                        }
                                     }
-                                }
-                                onClickAbility(item)
-                                exp = false //una volta cliccato la lista deve sparire
-                                focusManager.clearFocus()
-                            })
-                    )
+                                    onClickAbility(item)
+                                    exp = false //una volta cliccato la lista deve sparire
+                                    focusManager.clearFocus()
+                                })
+                        )
+                    }
                 }
             }
         }
     }
-    }
 }
 
+//component che viene usata per selezione sia il tipo che la generazione all'interno del menù dei filtri
 @Composable
 fun FilterSelection(
     itemList: List<String>,
@@ -363,7 +371,6 @@ fun FilterSelection(
     selectionString: String,
     onItemSelected: (String) -> Unit
 ) {
-
     var expanded by remember { mutableStateOf(false) }
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -382,10 +389,9 @@ fun FilterSelection(
             onClick = { expanded = !expanded },
             modifier = Modifier
                 .onGloballyPositioned { coordinates ->
-                    //This value is used to assign to the DropDown the same width
+
                     textFieldSize = coordinates.size.toSize()
                 }
-                //.background(CardBackground, RoundedCornerShape(10.dp))
                 .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(5.dp))
                 .height(50.dp)
         ) {
@@ -411,6 +417,7 @@ fun FilterSelection(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
+                    //il dropdown menu deve avere la stessa larghezza del bottone
                 .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
                 .height(with(LocalDensity.current) { textFieldSize.height.toDp() + 255.dp })
         ) {

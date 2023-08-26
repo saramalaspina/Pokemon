@@ -17,6 +17,7 @@ import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
 
+//lista dei Pokémon mostrata all'interno della ListPage
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PokemonList(
@@ -39,6 +40,7 @@ fun PokemonList(
             itemsIndexed(list) { _, pokemon ->
                 ListItem(
                     text = {
+                        // invocazione dell'item che compone la lista
                         PokemonItem(
                             pokemon = pokemon,
                             refresh = refresh,

@@ -27,6 +27,7 @@ import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 import kotlin.concurrent.schedule
 
+//pagina di dettaglio del Pokémon
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @Composable
 fun PokemonDetailPage(
@@ -82,6 +83,7 @@ fun PokemonDetailPage(
         val numAbility = pokemonInfo!!.abilities.size
 
 
+        //richiesta della prima abilità nelle PokeAPI
         viewModel.getAbility(
             pokemonInfo.abilities[0].ability.url,
             {
@@ -93,6 +95,7 @@ fun PokemonDetailPage(
             }
         )
 
+        //richiesta della seconda abilità nelle PokeAPI
         if (numAbility > 1) {
             viewModel.getAbility(
                 pokemonInfo.abilities[1].ability.url,
@@ -106,6 +109,7 @@ fun PokemonDetailPage(
             )
         }
 
+        //richiesta della della terza abilità nelle PokeAPI
         if (numAbility > 2) {
             viewModel.getAbility(
                 pokemonInfo.abilities[2].ability.url,
@@ -119,6 +123,7 @@ fun PokemonDetailPage(
             )
         }
 
+        //richiesta della specie nelle PokeAPI
         viewModel.getSpecies(
             pokemonInfo.species.url,
             {
@@ -133,6 +138,7 @@ fun PokemonDetailPage(
 
         when (refreshEvolution) {
             MyState.Success -> {
+                //dalle informazioni riguardanti la specie ottengo l'url per effettuare la richiesta delle evoluzioni nelle PokeAPI
                 viewModel.getEvolution(pokemonSpecies!!.evolution_chain.url,
                     {
                         refresh = MyState.Error
@@ -140,8 +146,10 @@ fun PokemonDetailPage(
                     },
                     {
                         evolutionChain = it
+                        //timer utilizzato per mostrate l'animazione di caricamento
                         Timer().schedule(1500) {
                             if (refresh != MyState.Error) {
+                                //se non ci sono stati errori nelle richieste effettuate per le precedenti informazioni la richiesta può andare a buon fine
                                 refresh = MyState.Success
                             }
                         }
@@ -162,7 +170,7 @@ fun PokemonDetailPage(
             MyState.Success -> {
 
                 when (configuration.orientation) {
-
+                    //la pagina viene composta diversamente a seconda dell'orientamento
                     Configuration.ORIENTATION_PORTRAIT -> {
 
                         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -210,6 +218,7 @@ fun PokemonDetailPage(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
 
+                                    //a seconda della pagina richiesta nella navigation bar vengono mostrate informazioni diverse
                                     when (navState) {
                                         0 -> PokemonDetailSection(
                                             dominantColor = dominantColor,
@@ -308,6 +317,7 @@ fun PokemonDetailPage(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
 
+                                    //a seconda della pagina richiesta nella navigation bar vengono mostrate informazioni diverse
                                     when (navState) {
                                         0 -> PokemonDetailSection(
                                             dominantColor = dominantColor,

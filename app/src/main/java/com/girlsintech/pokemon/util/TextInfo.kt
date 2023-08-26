@@ -7,6 +7,8 @@ import androidx.compose.ui.unit.sp
 import com.girlsintech.pokemon.screens.fontBasic
 import java.util.*
 
+
+//text utilizzato per mostrare dettagli del pokemon
 @Composable
 fun TextInfo(
     text : String,

@@ -25,12 +25,12 @@ import coil.request.ImageRequest
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.screens.fontPokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
-import com.girlsintech.pokemon.util.Constants
 import com.girlsintech.pokemon.util.SelectedPokemon
 import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 
+//item di un Pokémon all'interno della lista, contenente il nome, l'immagine, il tipo e il bottone dei preferiti
 @Composable
 fun PokemonItem(
     pokemon: Pokemon,
@@ -50,6 +50,7 @@ fun PokemonItem(
                 .clip(RoundedCornerShape(20.dp))
                 .background(dominantColor.copy(alpha = 0.6f))
                 .clickable {
+                    //cliccando sull'item si apre la schermata di dettaglio
                     SelectedPokemon.selectPokemon(dominantColor, pokemon)
                     navController.navigate("pokemon_detail_screen")
                 }
@@ -63,7 +64,7 @@ fun PokemonItem(
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("${Constants.IMAGE_URL}$idImage.png")
+                    .data("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$idImage.png")
                     .diskCacheKey("pokemon_color_${pokemon.id}")
                     .listener { _, result ->
                         viewModel.calcDominantColor(result.drawable) { color ->

@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.girlsintech.pokemon.screens.detailpage.PokemonDetailPage
 import com.girlsintech.pokemon.screens.discoverpage.PokemonDiscoverPage
 import com.girlsintech.pokemon.screens.listpage.PokemonListPage
-import com.girlsintech.pokemon.screens.startpage.MainView
+import com.girlsintech.pokemon.screens.startpage.StartPage
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
 import com.girlsintech.pokemon.util.ErrorMessage
 import com.girlsintech.pokemon.util.SelectedPokemon
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     startDestination = "pokemon_homepage"
                 ) {
                     composable("pokemon_homepage") {
-                        MainView(
+                        StartPage(
                             {
                                 navController.navigate("pokemon_discover_screen")
                             }, {

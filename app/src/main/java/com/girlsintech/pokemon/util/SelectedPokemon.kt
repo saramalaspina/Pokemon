@@ -7,6 +7,7 @@ import com.girlsintech.pokemon.data.remote.ability.AbilityDescription
 import com.girlsintech.pokemon.db.Pokemon
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
+//object utilizzato per memorizzare quale pokemon è stato selezionato per poterne mostrare la pagina di dettaglio
 object SelectedPokemon {
     var color: MutableState<Color> = mutableStateOf(Color.White)
     var pokemonSelected: MutableState<Pokemon?> = mutableStateOf(null)
@@ -15,5 +16,4 @@ object SelectedPokemon {
         color.value = dominantColor
         pokemonSelected.value = pokemon
     }
-
 }

@@ -30,6 +30,7 @@ import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.util.TextInfo
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 
+//component che mostra la lista delle evoluzioni di un Pokémon
 @Composable
 fun PokemonEvolutionSection(
     viewModelDb: PokemonViewModel,
@@ -42,12 +43,14 @@ fun PokemonEvolutionSection(
         modifier = Modifier
             .fillMaxSize(1f)
             .padding(start = 25.dp, end = 25.dp, bottom = bottomPadding)
+            //la colonna deve essere scrollabile verticalmente nella orientazione landscape
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val evolutionFirst = evolution.chain.species.name
 
+        //controllo che esistano delle evoluzioni per il Pokémon
         if(evolution.chain.evolves_to.isEmpty()) {
             Text(
                 text = stringResource(id = R.string.no_evolution),
@@ -62,6 +65,7 @@ fun PokemonEvolutionSection(
             )
         }
 
+        //scorro tutte le evoluzioni del Pokémon mostrato nella pagina di dettaglio
         evolution.chain.evolves_to.forEach { evolves_to ->
 
             val evolutionSecond = evolves_to.species.name
@@ -88,6 +92,7 @@ fun PokemonEvolutionSection(
                 }
                 EvolutionBox(viewModelDb = viewModelDb, text = evolutionSecond)
             }
+            //per ogni evoluzione, scorro le successive
             evolves_to.evolves_to.forEach {
                 Row(
                     modifier = Modifier
@@ -117,6 +122,7 @@ fun PokemonEvolutionSection(
     }
 }
 
+//content che mostra il nome della specie nell'evoluzione e la sua immagine
 @Composable
 fun EvolutionBox(
     viewModelDb: PokemonViewModel,
@@ -135,6 +141,7 @@ fun EvolutionBox(
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(
+                        //ottengo l'url dell'immagine dal nome della specie evoluta, mantenuta nel database
                         viewModelDb.getImageFromName(text).observeAsState().value
                     )
                     .build(),

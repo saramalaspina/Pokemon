@@ -40,6 +40,8 @@ import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
 import java.util.*
 
+//component che mostra una card con all'interno le caratteristiche principali del Pokémon scoperto, tra cui
+//immagine, nome, tipo, abilità e generazione
 @Composable
 fun DiscoveredPokemon(
     pokemon: Pokemon,
@@ -268,6 +270,7 @@ fun DiscoveredPokemon(
     }
 }
 
+
 @Composable
 fun GetAbility(
     ability: String
@@ -276,6 +279,7 @@ fun GetAbility(
         mutableStateOf("")
     }
 
+    //se la lingua è impostata in italiano è necessario ricavare dalla lista delle abilità la corretta traduzione
     val listOfAbilities = SingletonListOfAbilities.getInstance(LocalContext.current)
     listOfAbilities.abilities.forEach {
         if (ability == it.en){
@@ -289,7 +293,7 @@ fun GetAbility(
     }
 }
 
-
+//box contenente l'immagine dei Pokémon
 @Composable
 fun DiscoveredImage(
     url: String,
