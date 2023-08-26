@@ -1,4 +1,4 @@
-package com.girlsintech.pokemon.screens
+package com.girlsintech.pokemon.screens.discoverpage
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -41,6 +41,8 @@ import com.airbnb.lottie.compose.*
 import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.data.remote.model.SingletonListOfAbilities
 import com.girlsintech.pokemon.db.Pokemon
+import com.girlsintech.pokemon.screens.detailpage.TextInfo
+import com.girlsintech.pokemon.screens.fontPokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.Discover
 import com.girlsintech.pokemon.util.parseGenerationFromInt

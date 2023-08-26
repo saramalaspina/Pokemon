@@ -1,6 +1,5 @@
-package com.girlsintech.pokemon.screens
+package com.girlsintech.pokemon.screens.listpage
 
-import android.app.Application
 import android.content.res.Configuration
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -44,7 +43,6 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
@@ -54,6 +52,9 @@ import com.girlsintech.pokemon.data.remote.model.Ability
 import com.girlsintech.pokemon.data.remote.model.ListOfAbilities
 import com.girlsintech.pokemon.data.remote.model.SingletonListOfAbilities
 import com.girlsintech.pokemon.db.Pokemon
+import com.girlsintech.pokemon.screens.detailpage.TextInfo
+import com.girlsintech.pokemon.screens.fontBasic
+import com.girlsintech.pokemon.screens.fontPokemon
 import com.girlsintech.pokemon.ui.theme.BlackLight
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground

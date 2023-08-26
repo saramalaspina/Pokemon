@@ -13,7 +13,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.girlsintech.pokemon.screens.*
+import com.girlsintech.pokemon.screens.detailpage.ErrorMessage
+import com.girlsintech.pokemon.screens.detailpage.PokemonDetailPage
+import com.girlsintech.pokemon.screens.discoverpage.PokemonDiscoverPage
+import com.girlsintech.pokemon.screens.listpage.PokemonListPage
+import com.girlsintech.pokemon.screens.startpage.MainView
 import com.girlsintech.pokemon.ui.theme.PokemonTheme
 import com.girlsintech.pokemon.util.SelectedPokemon
 import com.girlsintech.pokemon.viewmodel.MyState

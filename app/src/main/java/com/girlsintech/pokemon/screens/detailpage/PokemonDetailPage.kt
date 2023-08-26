@@ -1,4 +1,4 @@
-package com.girlsintech.pokemon.screens
+package com.girlsintech.pokemon.screens.detailpage
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -49,6 +49,8 @@ import com.girlsintech.pokemon.data.remote.evolution.Evolution
 import com.girlsintech.pokemon.data.remote.responses.PokemonInfo
 import com.girlsintech.pokemon.data.remote.species.Species
 import com.girlsintech.pokemon.db.Pokemon
+import com.girlsintech.pokemon.screens.fontBasic
+import com.girlsintech.pokemon.screens.fontPokemon
 import com.girlsintech.pokemon.ui.theme.BluePokemon
 import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.util.*
