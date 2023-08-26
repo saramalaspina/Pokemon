@@ -22,9 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
@@ -382,6 +386,7 @@ fun PokemonDetailStats(
     var animationPlayed by remember {
         mutableStateOf(false)
     }
+
     val curPercent = animateFloatAsState(
         targetValue = if (animationPlayed) {
             statValue / statMaxValue.toFloat()
@@ -391,9 +396,21 @@ fun PokemonDetailStats(
             animDelay
         )
     )
+
+
     LaunchedEffect(key1 = true) {
         animationPlayed = true
     }
+
+    Row(modifier = Modifier.padding(start = 30.dp)){
+        Text(
+            text = statName,
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp,
+            fontFamily = fontBasic()
+        )
+    }
+
     Box(
         modifier = Modifier
             .padding(start = 25.dp, end = 45.dp)
@@ -418,18 +435,20 @@ fun PokemonDetailStats(
                 .background(statColor)
                 .padding(horizontal = 10.dp)
         ) {
-            Text(
-                text = statName,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                fontFamily = fontBasic()
-            )
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                val (num) = createRefs()
             Text(
                 text = (curPercent.value * statMaxValue).toInt().toString(),
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
-                fontFamily = fontBasic()
+                fontFamily = fontBasic(),
+                modifier = Modifier.constrainAs(num){
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end, 5.dp)
+                }
             )
+            }
         }
     }
 }
@@ -632,9 +651,9 @@ fun PokemonStatSection(
             statColor = parseStatToColor(stat),
             animDelay = 500
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(6.dp))
     }
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(60.dp))
 }
 }
 
@@ -1028,15 +1047,15 @@ fun AbilityDialog(
 fun NavigationBar(
     onClick: (Int) -> Unit
 ) {
-    var selectedAbout by rememberSaveable {
+    var selectedAbout by remember {
         mutableStateOf(true)
     }
 
-    var selectedStats by rememberSaveable {
+    var selectedStats by remember {
         mutableStateOf(false)
     }
 
-    var selectedEvolution by rememberSaveable {
+    var selectedEvolution by remember {
         mutableStateOf(false)
     }
 
