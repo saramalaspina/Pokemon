@@ -13,6 +13,7 @@ import com.girlsintech.pokemon.db.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+//classe responsabile per la gestione dei dati ottenuti dal database
 class PokemonViewModel(application: Application) : AndroidViewModel(application) {
 
         private val repository: Repository
@@ -23,26 +24,31 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
             repository = Repository(dao)
         }
 
+        // metodo per richiamare la query di ricerca dei Pokémon
         fun readByTag(s: String, f: Int, t: String, g: Int, a: String): LiveData<MutableList<Pokemon>> {
             return repository.readByTag("%$s%", f, "%$t%", g, "%$a%")
         }
 
+        // metodo per richiamare la query che ricava l'immagine di un Pokémon dal nome
         fun getImageFromName(s: String): LiveData<String> {
             return repository.getImageFromName(s)
         }
 
+        // metodo per richiamare la query che genera in maniera casuale un Pokémon
         fun getRandomPokemon() {
             viewModelScope.launch(Dispatchers.IO) {
                 randomPokemon = repository.getRandomPokemon()
             }
         }
 
+        // metodo per richiamare la query che modifica i dati di un Pokèmon nel database
         fun update(item: Pokemon) {
             viewModelScope.launch(Dispatchers.IO) {
                 repository.update(item)
             }
         }
 
+    // classe Factory incaricata di creare l'istanza del ViewModel
     @Suppress("UNCHECKED_CAST")
     class PokemonViewModelFactory(
         private val application: Application
@@ -52,6 +58,7 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    // funzione per calcolare il colore dominante a partire da un'immagine
     fun calcDominantColor(drawable: Drawable, onFinish: (Color) -> Unit) {
         val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
