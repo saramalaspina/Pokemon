@@ -157,10 +157,10 @@ fun FilterDialog(
 
                 //invocazione filtro per selezionare l'abilità
                 AbilitySelection(
-                    initAbility = if (Locale.getDefault().language == "en") {
-                        abilitySelectionEn
-                    } else {
+                    initAbility = if (Locale.getDefault().language == "it") {
                         abilitySelectionIt
+                    } else {
+                        abilitySelectionEn
                     },
                     listOfAbilities = listOfAbilities
                 ) {
@@ -206,10 +206,10 @@ fun FilterDialog(
                     modifier = Modifier
                         .width(160.dp),
                     onClick = {
-                        if (Locale.getDefault().language == "en") {
-                            onClickType(typeSelection)
-                        } else {
+                        if (Locale.getDefault().language == "it") {
                             onClickType(parseTypeIt(typeSelection))
+                        } else {
+                            onClickType(typeSelection)
                         }
                         onClickGeneration(generationSelection)
                         onClickAbility(abilitySelectionEn, abilitySelectionIt)
@@ -313,13 +313,13 @@ fun AbilitySelection(
                 contentPadding = PaddingValues(start = 5.dp)
             ) {
                 val filterOpts = options.filter {
-                    if (Locale.getDefault().language == "en") {
-                        it.en.startsWith(
+                    if (Locale.getDefault().language == "it") {
+                        it.it.startsWith(
                             selection,
                             ignoreCase = true  //evita il problema delle maiuscole e delle minuscole
                         )
                     } else {
-                        it.it.startsWith(
+                        it.en.startsWith(
                             selection,
                             ignoreCase = true
                         )
@@ -330,10 +330,10 @@ fun AbilitySelection(
                     //lista di LazyColumn a cui passo la lista di oggetti
                     itemsIndexed(filterOpts) { _, item ->
                         Text(
-                            text = if (Locale.getDefault().language == "en") {
-                                item.en
-                            } else {
+                            text = if (Locale.getDefault().language == "it") {
                                 item.it
+                            } else {
+                                item.en
                             },
                             fontFamily = fontBasic(),
                             fontSize = 15.sp,
@@ -343,10 +343,10 @@ fun AbilitySelection(
                                     selection = if (item.id == "0") {
                                         ""
                                     } else {
-                                        if (Locale.getDefault().language == "en") {
-                                            item.en
-                                        } else {
+                                        if (Locale.getDefault().language == "it") {
                                             item.it
+                                        } else {
+                                            item.en
                                         }
                                     }
                                     onClickAbility(item)

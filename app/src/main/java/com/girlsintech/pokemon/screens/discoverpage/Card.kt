@@ -221,10 +221,10 @@ fun DiscoveredPokemon(
                                     val delimAbility = ","
                                     pokemon.ability.split(delimAbility).forEach {
                                         if (it.isNotBlank()) {
-                                            if(Locale.getDefault().language == "en") {
-                                                TextInfo(text = it, color = Color.White)
-                                            } else {
+                                            if(Locale.getDefault().language == "it") {
                                                 GetAbility(ability = it)
+                                            } else {
+                                                TextInfo(text = it, color = Color.White)
                                             }
                                         }
                                     }

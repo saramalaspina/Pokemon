@@ -28,7 +28,6 @@ fun Start(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ){
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,  //non ci sono spazi a sinistra e a destra ma solo tra gli oggetti
@@ -37,9 +36,8 @@ fun Start(
             Text(
                 text = stringResource(id = R.string.start),
                 modifier = Modifier
-                    .padding(4.dp)
                     .weight(1f)
-                    .padding(8.dp),
+                    .padding(10.dp),
                 color = BluePokemon,
                 fontSize = 30.sp,
                 textAlign = TextAlign.Center,
@@ -47,7 +45,7 @@ fun Start(
             )
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Column {
 
@@ -63,9 +61,8 @@ fun Start(
                     Text(
                         text = "Pokédex",
                         modifier = Modifier
-                            .padding(4.dp)
                             .weight(1f)
-                            .padding(8.dp),
+                            .padding(12.dp),
                         color = Color.White,
                         fontSize = 25.sp,
                         textAlign = TextAlign.Center,
@@ -96,9 +93,8 @@ fun Start(
                     Text(
                         text = stringResource(id = R.string.discover),
                         modifier = Modifier
-                            .padding(4.dp)
                             .weight(1f)
-                            .padding(8.dp),
+                            .padding(12.dp),
                         color = Color.White,
                         fontSize = 25.sp,
                         textAlign = TextAlign.Center,

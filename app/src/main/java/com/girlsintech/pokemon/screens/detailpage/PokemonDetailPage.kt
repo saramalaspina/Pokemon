@@ -226,9 +226,10 @@ fun PokemonDetailPage(
                                             pokemonSpecies = pokemonSpecies!!,
                                             ability1 = ability1,
                                             ability2 = ability2,
-                                            ability3 = ability3
+                                            ability3 = ability3,
+                                            330.dp
                                         )
-                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
+                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo, 330.dp)
                                         2 -> PokemonEvolutionSection(
                                             viewModelDb = viewModelDb,
                                             evolution = evolutionChain!!,
@@ -325,9 +326,10 @@ fun PokemonDetailPage(
                                             pokemonSpecies = pokemonSpecies!!,
                                             ability1 = ability1,
                                             ability2 = ability2,
-                                            ability3 = ability3
+                                            ability3 = ability3,
+                                            50.dp
                                         )
-                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo)
+                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo, 50.dp)
                                         2 -> PokemonEvolutionSection(
                                             viewModelDb = viewModelDb,
                                             evolution = evolutionChain!!,

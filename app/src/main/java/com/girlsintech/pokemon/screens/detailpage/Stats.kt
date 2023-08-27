@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -100,7 +101,8 @@ fun PokemonDetailStats(
 //component che mostra tutte le statische del Pokémon
 @Composable
 fun PokemonStatSection(
-    pokemonInfo: PokemonInfo
+    pokemonInfo: PokemonInfo,
+    bottomPadding: Dp
 ) {
     val scrollState = rememberScrollState()
     Column (
@@ -108,6 +110,7 @@ fun PokemonStatSection(
             .fillMaxSize(1f)
             //la colonna deve essere scrollabile verticalmente nella orientazione landscape
             .verticalScroll(scrollState)
+            .padding(bottom =  bottomPadding)
     ){
         pokemonInfo.stats.forEach { stat ->
             PokemonDetailStats(
@@ -119,6 +122,6 @@ fun PokemonStatSection(
             )
             Spacer(modifier = Modifier.height(6.dp))
         }
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }

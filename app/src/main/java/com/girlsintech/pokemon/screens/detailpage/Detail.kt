@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -40,7 +41,8 @@ fun PokemonDetailSection(
     pokemonSpecies: Species,
     ability1: AbilityDescription?,
     ability2: AbilityDescription?,
-    ability3: AbilityDescription?
+    ability3: AbilityDescription?,
+    bottomPadding: Dp
 ) {
     val noAvailable = stringResource(id = R.string.no_available)
 
@@ -65,7 +67,7 @@ fun PokemonDetailSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 25.dp)
+            .padding(start = 25.dp, bottom = bottomPadding)
             .verticalScroll(scrollState)
     ) {
         Row(
@@ -101,9 +103,15 @@ fun PokemonDetailSection(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
+                    val language = if(Locale.getDefault().language == "it"){
+                        "it"
+                    } else {
+                        "en"
+                    }
+
                     pokemonSpecies.genera.forEach {
                         //in base alla localizzazione assegno la specie con la traduzione corretta
-                        if (it.language.name == Locale.getDefault().language) {
+                        if (it.language.name == language) {
                             species = it.genus
                         }
                     }
@@ -123,7 +131,7 @@ fun PokemonDetailSection(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         //non controllo se l'abilità esiste in quanto tutti i Pokèmon hanno almeno un'abilità
-                        setAbility(ability = ability1!!) {
+                        SetAbility(ability = ability1!!) {
                             isDialogShown = true
                             ability = ability1
                             abilityDescription = ability1.name
@@ -131,7 +139,7 @@ fun PokemonDetailSection(
 
                         //controllo l'esistenza della seconda abilità poichè è facoltativa
                         if(ability2 != null){
-                            setAbility(ability = ability2) {
+                            SetAbility(ability = ability2) {
                                 isDialogShown = true
                                 ability = ability2
                                 abilityDescription = ability2.name
@@ -140,7 +148,7 @@ fun PokemonDetailSection(
 
                         //controllo l'esistenza della terza abilità poichè è facoltativa
                         if(ability3 != null){
-                            setAbility(ability = ability3) {
+                            SetAbility(ability = ability3) {
                                 isDialogShown = true
                                 ability = ability3
                                 abilityDescription = ability3.name
@@ -211,18 +219,24 @@ fun PokemonDetailSection(
                 ability = ability!!
             )
         }
-        Spacer(modifier = Modifier.height(70.dp))
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 
 //component usata per mostrare l'abilità nella lingua richiesta
 @Composable
-fun setAbility(
+fun SetAbility(
     ability: AbilityDescription,
     onClick: () -> Unit
 ){
+    val language = if(Locale.getDefault().language == "it"){
+        "it"
+    } else {
+        "en"
+    }
+
     ability.names.forEach { name ->
-        if (name.language.name == Locale.getDefault().language) {
+        if (name.language.name == language) {
             Text(
                 text = name.name.replaceFirstChar {
                     if (it.isLowerCase()) it.titlecase(
@@ -249,6 +263,12 @@ fun AbilityDialog(
     onDismiss: () -> Unit,
     ability: AbilityDescription
 ) {
+    val language = if(Locale.getDefault().language == "it"){
+        "it"
+    } else {
+        "en"
+    }
+
     val noFlavor = stringResource(id = R.string.no_flavor)
     var flavorEntry by remember {
         mutableStateOf(noFlavor)
@@ -273,7 +293,7 @@ fun AbilityDialog(
             ) {
                 //la descrizione viene mostrata nella lingua di default di sistema
                 ability.flavor_text_entries.forEach {
-                    if (it.language.name == Locale.getDefault().language) {
+                    if (it.language.name == language) {
                         flavorEntry = it.flavor_text
                     }
                 }
