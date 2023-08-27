@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pokemon</string>
+    <string name="app_name">Pokémon</string>
     <string name="start">Let\'s Start!</string>
     <string name="normal">Normal</string>
     <string name="none_m">None</string>
@@ -29,7 +29,7 @@
     <string name="special_attack">Special Attack</string>
     <string name="special_defense">Special Defense</string>
     <string name="speed">Speed</string>
-    <string name="no_evolution">This Pokemon doesn\'t have evolution</string>
+    <string name="no_evolution">This Pokémon doesn\'t have evolution</string>
     <string name="species">Species</string>
     <string name="abilities">Abilities</string>
     <string name="weight">Weight</string>
@@ -37,7 +37,7 @@
     <string name="generation">Generation</string>
     <string name="growth_rate">Growth rate</string>
     <string name="egg_groups">Egg groups</string>
-    <string name="loading">Loading Pokemon</string>
+    <string name="loading">Loading Pokémon</string>
     <string name="evolutions">Evolutions</string>
     <string name="stats">Base Stats</string>
     <string name="about">About</string>

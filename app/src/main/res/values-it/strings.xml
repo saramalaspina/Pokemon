@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Pokemon</string>
+    <string name="app_name">Pokémon</string>
     <string name="start">Iniziamo!</string>
     <string name="normal">Normale</string>
     <string name="none_m">Nessuno</string>
@@ -30,7 +30,7 @@
     <string name="special_attack">Attacco Speciale</string>
     <string name="special_defense">Difesa Speciale</string>
     <string name="speed">Velocità</string>
-    <string name="no_evolution">Questo Pokemon non si evolve</string>
+    <string name="no_evolution">Questo Pokémon non si evolve</string>
     <string name="species">Specie</string>
     <string name="abilities">Abilità</string>
     <string name="weight">Peso</string>
@@ -38,7 +38,7 @@
     <string name="generation">Generazione</string>
     <string name="growth_rate">Tasso di crescita</string>
     <string name="egg_groups">Gruppi uova</string>
-    <string name="loading">Caricamento Pokemon</string>
+    <string name="loading">Caricamento Pokémon</string>
     <string name="evolutions">Evoluzioni</string>
     <string name="stats">Statistiche</string>
     <string name="about">Informazioni</string>
