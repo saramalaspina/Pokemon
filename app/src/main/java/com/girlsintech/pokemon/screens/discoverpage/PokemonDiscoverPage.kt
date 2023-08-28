@@ -50,7 +50,7 @@ fun PokemonDiscoverPage(
         val configuration = LocalConfiguration.current
 
         val sfondo = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            R.drawable.img
+            R.drawable.sfondo_discover
         } else {
             R.drawable.sfondo_discover_h
         }
@@ -172,8 +172,9 @@ fun PokemonDiscoverPage(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 70.dp, start = 132.dp, end = 60.dp),
-                                verticalArrangement = Arrangement.Top
+                                    .padding(top = 70.dp),
+                                verticalArrangement = Arrangement.Top,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 DiscoveredPokemon(pokemon!!, viewModel, 550.dp, 20.dp, 20.dp)
                             }

@@ -5,12 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -35,14 +32,6 @@ fun StartPage(
         when (configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 Row {
-                    Icon(
-                        Icons.TwoTone.ArrowBack,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(top = 15.dp, start = 15.dp)
-                    )
                     Image(
                         modifier = Modifier.fillMaxSize(),
                         painter = painterResource(id = R.drawable.sfondo),

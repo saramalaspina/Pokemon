@@ -2,13 +2,8 @@ package com.girlsintech.pokemon.screens.listpage
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -17,23 +12,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material.icons.twotone.FilterList
-import androidx.compose.material.icons.twotone.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +32,6 @@ import com.girlsintech.pokemon.R
 import com.girlsintech.pokemon.screens.fontBasic
 import com.girlsintech.pokemon.ui.theme.BlackLight
 import com.girlsintech.pokemon.ui.theme.BluePokemon
-import com.girlsintech.pokemon.ui.theme.CardBackground
 import com.girlsintech.pokemon.util.parseGeneration
 import com.girlsintech.pokemon.util.parseType
 import com.girlsintech.pokemon.viewmodel.PokemonViewModel
@@ -104,7 +92,7 @@ fun PokemonListPage(
 
 
         Row {
-            Icon(Icons.TwoTone.ArrowBack,
+          /*  Icon(Icons.TwoTone.ArrowBack,
                 contentDescription = null,
                 tint = BluePokemon,
                 modifier = Modifier
@@ -113,7 +101,7 @@ fun PokemonListPage(
                     .clickable {
                         navController.popBackStack()
                     }
-            )
+            )*/
 
             Image(
                 modifier = Modifier.fillMaxSize(),
@@ -127,7 +115,21 @@ fun PokemonListPage(
             )
         }
 
+        Row {
+            Icon(Icons.TwoTone.ArrowBack,
+                contentDescription = null,
+                tint = BluePokemon,
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(top = 15.dp, start = 15.dp)
+                    .clickable {
+                        navController.popBackStack()
+                    }
+            )
+        }
+
         Column {
+
             Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),

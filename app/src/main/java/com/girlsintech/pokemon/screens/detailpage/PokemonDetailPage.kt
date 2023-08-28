@@ -253,7 +253,7 @@ fun PokemonDetailPage(
                         }
                     }
                     else -> {
-                        ConstraintLayout {
+                        ConstraintLayout (modifier = Modifier.fillMaxSize()){
                             val (icons, image, name, detail) = createRefs()
 
                             Column(modifier = Modifier
@@ -282,14 +282,13 @@ fun PokemonDetailPage(
                             Column(modifier = Modifier
                                 .constrainAs(image) {
                                     top.linkTo(name.bottom)
-                                    start.linkTo(parent.start, 20.dp)
+                                    start.linkTo(parent.start, 60.dp)
                                     bottom.linkTo(parent.bottom)
                                 }) {
                                 ImageBox(
                                     pokemon.img,
                                     modifier = Modifier
                                         .size(250.dp)
-                                        .offset(x = 40.dp),
                                 )
                             }
 
@@ -298,11 +297,11 @@ fun PokemonDetailPage(
                                 horizontalAlignment = Alignment.Start,
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .width(420.dp)
+                                    .requiredWidth(420.dp)
                                     .background(Color.White, RoundedCornerShape(10))
                                     .constrainAs(detail) {
                                         top.linkTo(parent.top, 55.dp)
-                                        start.linkTo(parent.start, 345.dp)
+                                        end.linkTo(parent.end, 55.dp)
                                     }
                             ) {
 
