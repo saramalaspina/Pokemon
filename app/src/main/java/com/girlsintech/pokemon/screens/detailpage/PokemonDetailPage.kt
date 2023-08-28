@@ -297,8 +297,8 @@ fun PokemonDetailPage(
                             Column(
                                 horizontalAlignment = Alignment.Start,
                                 modifier = Modifier
+                                    .fillMaxHeight()
                                     .width(420.dp)
-                                    .height(360.dp)
                                     .background(Color.White, RoundedCornerShape(10))
                                     .constrainAs(detail) {
                                         top.linkTo(parent.top, 55.dp)
@@ -327,13 +327,13 @@ fun PokemonDetailPage(
                                             ability1 = ability1,
                                             ability2 = ability2,
                                             ability3 = ability3,
-                                            20.dp
+                                            40.dp
                                         )
-                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo, 30.dp)
+                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo, 40.dp)
                                         2 -> PokemonEvolutionSection(
                                             viewModelDb = viewModelDb,
                                             evolution = evolutionChain!!,
-                                            20.dp
+                                            30.dp
                                         )
                                     }
                                 }

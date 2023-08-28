@@ -1,6 +1,7 @@
 package com.girlsintech.pokemon.util
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,11 +65,12 @@ fun Loading() {
             text = stringResource(id = R.string.loading),
             modifier = Modifier
                 .constrainAs(wp) {
-                    top.linkTo(pi.bottom)
+                    top.linkTo(pi.bottom, 5.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            fontFamily = fontBasic()
+            fontFamily = fontBasic(),
+            fontSize = 15.sp
         )
     }
 }
