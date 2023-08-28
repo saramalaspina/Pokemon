@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Pokémon</string>
+    <string name="app_name">Pokédex</string>
     <string name="start">Iniziamo!</string>
     <string name="normal">Normale</string>
     <string name="none_m">Nessuno</string>
