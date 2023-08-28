@@ -109,7 +109,7 @@ fun PokemonDetailPage(
             )
         }
 
-        //richiesta della della terza abilità nelle PokeAPI
+        //richiesta della terza abilità nelle PokeAPI
         if (numAbility > 2) {
             viewModel.getAbility(
                 pokemonInfo.abilities[2].ability.url,
