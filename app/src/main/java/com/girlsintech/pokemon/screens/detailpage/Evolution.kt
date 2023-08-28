@@ -60,7 +60,7 @@ fun PokemonEvolutionSection(
                 textAlign = TextAlign.Center,
                 fontFamily = fontBasic(),
                 fontStyle = FontStyle.Italic,
-                fontSize = 20.sp,
+                fontSize = 15.sp,
                 color = Color.DarkGray
             )
         }

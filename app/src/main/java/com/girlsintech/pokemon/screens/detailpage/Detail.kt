@@ -279,7 +279,8 @@ fun AbilityDialog(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(110.dp)
+              //  .height(110.dp)
+                .wrapContentHeight()
                 .fillMaxWidth()
                 .shadow(10.dp, RoundedCornerShape(10.dp))
                 .background(Color.White, RoundedCornerShape(10.dp))
@@ -288,7 +289,7 @@ fun AbilityDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .background(dominantColor.copy(0.5f), RoundedCornerShape(10.dp))
             ) {
                 //la descrizione viene mostrata nella lingua di default di sistema
@@ -297,13 +298,13 @@ fun AbilityDialog(
                         flavorEntry = it.flavor_text
                     }
                 }
-                Row (modifier = Modifier.padding(horizontal = 10.dp)) {
+                Row (modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp)) {
                     Text(
                         text = flavorEntry,
                         color = Color.Black,
                         fontFamily = fontBasic(),
                         textAlign = TextAlign.Center,
-                        fontSize = 15.sp,
+                        fontSize = 14.sp,
                         fontStyle = FontStyle.Italic
                     )
                 }
