@@ -51,7 +51,7 @@ fun NavigationBar(
                 text = stringResource(id = R.string.about),
                 fontFamily = fontBasic(),
                 color = if (selectedAbout) Color.Black else Color.Gray,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = if (selectedAbout) FontWeight.Bold else FontWeight(10)
             )
         }
@@ -68,7 +68,7 @@ fun NavigationBar(
                 text = stringResource(id = R.string.stats),
                 fontFamily = fontBasic(),
                 color = if (selectedStats) Color.Black else Color.Gray,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = if (selectedStats) FontWeight.Bold else FontWeight(10)
             )
         }
@@ -85,7 +85,7 @@ fun NavigationBar(
                 text = stringResource(id = R.string.evolutions),
                 fontFamily = fontBasic(),
                 color = if (selectedEvolution) Color.Black else Color.Gray,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = if (selectedEvolution) FontWeight.Bold else FontWeight(10)
             )
         }

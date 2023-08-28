@@ -148,7 +148,7 @@ fun FilterDialog(
                     Text(
                         text = stringResource(id = R.string.selection),
                         color = Color.Black,
-                        fontSize = 20.sp,
+                        fontSize = 15.sp,
                         fontFamily = fontBasic()
                     )
                 }

@@ -79,7 +79,7 @@ fun SearchBar(
                 color = Color.LightGray,
                 modifier = Modifier
                     .padding(horizontal = 50.dp, vertical = 12.dp),
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontStyle = FontStyle.Italic,
                 fontFamily = fontBasic()
             )

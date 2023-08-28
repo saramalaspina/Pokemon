@@ -245,7 +245,7 @@ fun SetAbility(
                 },
                 color = Color.Black,
                 fontStyle = FontStyle.Italic,
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 fontFamily = fontBasic(),
                 modifier = Modifier
                     .clickable {

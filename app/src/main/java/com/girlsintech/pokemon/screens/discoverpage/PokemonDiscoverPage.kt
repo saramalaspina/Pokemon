@@ -128,7 +128,7 @@ fun PokemonDiscoverPage(
                                     text = stringResource(id = R.string.discover_text),
                                     textAlign = TextAlign.Center,
                                     fontFamily = fontPokemon(),
-                                    fontSize = 25.sp,
+                                    fontSize = 20.sp,
                                     color = Color.White
                                 )
                             }
@@ -164,7 +164,7 @@ fun PokemonDiscoverPage(
                                 Text(
                                     text = stringResource(id = R.string.discover_text),
                                     fontFamily = fontPokemon(),
-                                    fontSize = 25.sp,
+                                    fontSize = 20.sp,
                                     color = Color.White
                                 )
                             }

@@ -95,7 +95,7 @@ fun PokemonItem(
                             ) else it.toString()
                         },
                         fontFamily = fontPokemon(),
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         color = Color.White
                     )
 
@@ -109,7 +109,7 @@ fun PokemonItem(
                             Text(
                                 text = parseType(type = it),
                                 fontFamily = fontPokemon(),
-                                fontSize = 15.sp,
+                                fontSize = 14.sp,
                                 color = Color.White
                             )
                         }

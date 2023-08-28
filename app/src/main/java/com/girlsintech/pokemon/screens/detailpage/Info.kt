@@ -39,7 +39,7 @@ fun TopBox(
                         Text(
                             text = "N° ${pokemonInfo.id}",
                             fontFamily = fontPokemon(),
-                            fontSize = 25.sp,
+                            fontSize = 20.sp,
                             color = Color.White
                         )
 
@@ -50,9 +50,11 @@ fun TopBox(
                                 ) else it.toString()
                             },
                             fontFamily = fontPokemon(),
-                            fontSize = 30.sp,
+                            fontSize = 20.sp,
                             color = Color.White
                         )
+
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -61,7 +63,7 @@ fun TopBox(
                                 Text(
                                     text = parseType(type = it.type.name),
                                     fontFamily = fontPokemon(),
-                                    fontSize = 20.sp,
+                                    fontSize = 16.sp,
                                     color = Color.White,
                                     modifier = Modifier
                                         .background(
@@ -84,7 +86,7 @@ fun TopBox(
                     Text(
                         text = "N° ${pokemonInfo.id}",
                         fontFamily = fontPokemon(),
-                        fontSize = 30.sp,
+                        fontSize = 20.sp,
                         color = Color.White
                     )
 
@@ -97,14 +99,14 @@ fun TopBox(
                             ) else it.toString()
                         },
                         fontFamily = fontPokemon(),
-                        fontSize = 30.sp,
+                        fontSize = 20.sp,
                         color = Color.White
                     )
 
                 }
             }
 
-            Spacer(modifier = Modifier .height(20.dp))
+            Spacer(modifier = Modifier .height(15.dp))
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -113,7 +115,7 @@ fun TopBox(
                     Text(
                         text = parseType(type = it.type.name),
                         fontFamily = fontPokemon(),
-                        fontSize = 20.sp,
+                        fontSize = 16.sp,
                         color = Color.White,
                         modifier = Modifier
                             .background(

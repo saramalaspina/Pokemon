@@ -39,7 +39,7 @@ fun Start(
                     .weight(1f)
                     .padding(10.dp),
                 color = BluePokemon,
-                fontSize = 30.sp,
+                fontSize = 25.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = fontPokemon()
             )
@@ -52,7 +52,7 @@ fun Start(
             Button(
                 modifier = Modifier
                     .wrapContentWidth()
-                    .width(250.dp),
+                    .width(220.dp),
                 onClick = onClickPokedex,
                 shape = RoundedCornerShape(30),
                 colors = ButtonDefaults.buttonColors(BluePokemon)
@@ -64,7 +64,7 @@ fun Start(
                             .weight(1f)
                             .padding(12.dp),
                         color = Color.White,
-                        fontSize = 25.sp,
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         fontFamily = fontPokemon()
                     )
@@ -84,7 +84,7 @@ fun Start(
             Button(
                 modifier = Modifier
                     .wrapContentWidth()
-                    .width(250.dp),
+                    .width(220.dp),
                 onClick = onClickDiscover,
                 shape = RoundedCornerShape(30),
                 colors = ButtonDefaults.buttonColors(Yellow)
@@ -96,7 +96,7 @@ fun Start(
                             .weight(1f)
                             .padding(12.dp),
                         color = Color.White,
-                        fontSize = 25.sp,
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         fontFamily = fontPokemon()
                     )

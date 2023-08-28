@@ -301,8 +301,8 @@ fun PokemonDetailPage(
                                     .height(350.dp)
                                     .background(Color.White, RoundedCornerShape(10))
                                     .constrainAs(detail) {
-                                        top.linkTo(parent.top, 80.dp)
-                                        start.linkTo(parent.start, 350.dp)
+                                        top.linkTo(parent.top, 55.dp)
+                                        start.linkTo(parent.start, 345.dp)
                                     }
                             ) {
 

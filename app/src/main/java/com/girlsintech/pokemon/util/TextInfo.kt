@@ -16,7 +16,7 @@ fun TextInfo(
 ){
     Text(
         text = text.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
-        fontSize = 15.sp,
+        fontSize = 14.sp,
         fontFamily = fontBasic(),
         color = color
     )

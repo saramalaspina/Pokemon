@@ -57,7 +57,7 @@ fun PokemonDetailStats(
         Text(
             text = statName,
             fontWeight = FontWeight.Bold,
-            fontSize = 15.sp,
+            fontSize = 14.sp,
             fontFamily = fontBasic()
         )
     }
@@ -85,7 +85,7 @@ fun PokemonDetailStats(
                 Text(
                     text = (curPercent.value * statMaxValue).toInt().toString(),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    fontSize = 14.sp,
                     fontFamily = fontBasic(),
                     modifier = Modifier.constrainAs(num){
                         top.linkTo(parent.top)

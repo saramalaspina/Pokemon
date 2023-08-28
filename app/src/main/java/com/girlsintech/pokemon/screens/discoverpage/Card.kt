@@ -127,7 +127,7 @@ fun DiscoveredPokemon(
                                 start.linkTo(parent.start)
                             },
                         color = Color.White,
-                        fontSize = 25.sp,
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         fontFamily = fontPokemon()
                     )

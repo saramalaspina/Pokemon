@@ -174,7 +174,7 @@ fun PokemonListPage(
                             .clickable {
                                 onlyFavorite = !onlyFavorite
                             }
-                            .size(35.dp),
+                            .size(33.dp),
                         contentDescription = null,
                         tint = if (onlyFavorite) Color.Red else Color.LightGray,
                     )
@@ -183,7 +183,7 @@ fun PokemonListPage(
                         text = stringResource(id = R.string.favorites),
                         color = BlackLight,
                         fontStyle = FontStyle.Italic,
-                        fontSize = 20.sp,
+                        fontSize = 16.sp,
                         fontFamily = fontBasic(),
                         textAlign = TextAlign.Center,
                     )
@@ -201,7 +201,7 @@ fun PokemonListPage(
                         imageVector = Icons.TwoTone.FilterList,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(30.dp)
+                            .size(28.dp)
                     )
 
                     Text(
@@ -211,7 +211,7 @@ fun PokemonListPage(
                             .clickable {
                                 isDialogShown = true
                             },
-                        fontSize = 20.sp,
+                        fontSize = 16.sp,
                         fontStyle = FontStyle.Italic,
                         fontFamily = fontBasic()
                     )
