@@ -296,7 +296,7 @@ fun AbilitySelection(
                     text = selection.ifBlank {
                         stringResource(id = R.string.search_ability)
                     },
-                    fontSize = 15.sp,
+                    fontSize = 14.sp,
                     fontFamily = fontBasic(),
                     color = Color.Black,
                     textAlign = TextAlign.Start
@@ -336,7 +336,7 @@ fun AbilitySelection(
                                 item.en
                             },
                             fontFamily = fontBasic(),
-                            fontSize = 15.sp,
+                            fontSize = 14.sp,
                             modifier = Modifier
                                 .padding(10.dp)
                                 .clickable(onClick = {
@@ -405,7 +405,7 @@ fun FilterSelection(
                 modifier = Modifier.width(150.dp),
                 fontFamily = fontBasic(),
                 color = Color.Black,
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.Start,
             )
             Icon(icon, contentDescription = null, tint = BlackLight)
@@ -429,7 +429,13 @@ fun FilterSelection(
                     }
                     onItemSelected(it)
                 }) {
-                    Text(text = it)
+                    Text(
+                        text = it,
+                        fontFamily = fontBasic(),
+                        color = Color.Black,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Start
+                    )
                 }
             }
         }

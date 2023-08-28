@@ -188,7 +188,12 @@ fun DiscoveredPokemon(
                                 ) {
                                     val delimType = ", "
                                     pokemon.type.split(delimType).forEach {
-                                        TextInfo(text = parseType(type = it), color = Color.White)
+                                        if(it.isNotBlank()) {
+                                            TextInfo(
+                                                text = parseType(type = it),
+                                                color = Color.White
+                                            )
+                                        }
                                     }
                                 }
                             }
