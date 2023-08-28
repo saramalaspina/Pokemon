@@ -288,7 +288,7 @@ fun PokemonDetailPage(
                                     ImageBox(
                                         pokemon.img,
                                         modifier = Modifier
-                                            .size(220.dp)
+                                            .size(230.dp)
                                     )
                                 }
 
@@ -297,11 +297,11 @@ fun PokemonDetailPage(
                                     horizontalAlignment = Alignment.Start,
                                     modifier = Modifier
                                         .fillMaxHeight()
-                                        .requiredWidth(410.dp)
+                                        .fillMaxWidth(0.5f)
                                         .background(Color.White, RoundedCornerShape(10))
                                         .constrainAs(detail) {
                                             top.linkTo(parent.top, 55.dp)
-                                            start.linkTo(parent.start, 360.dp)
+                                            start.linkTo(image.end, 40.dp)
                                         }
                                 ) {
 

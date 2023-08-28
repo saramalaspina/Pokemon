@@ -135,7 +135,7 @@ fun PokemonDiscoverPage(
 
                             Column(
                                 modifier = Modifier
-                                    .fillMaxSize(0.8f)
+                                    .fillMaxSize(0.5f)
                                     .padding(top = 330.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
@@ -145,7 +145,7 @@ fun PokemonDiscoverPage(
                             DiscoveredImage(
                                 url = pokemon!!.img,
                                 modifier = Modifier
-                                    .size(250.dp)
+                                    .size(240.dp)
                                     .offset(y = 180.dp))
                         }
                     }
@@ -171,7 +171,7 @@ fun PokemonDiscoverPage(
 
                             Column(
                                 modifier = Modifier
-                                    .fillMaxSize()
+                                    .fillMaxSize(0.5f)
                                     .padding(top = 70.dp),
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -181,8 +181,8 @@ fun PokemonDiscoverPage(
                             DiscoveredImage(
                                 url = pokemon!!.img,
                                 modifier = Modifier
-                                    .size(250.dp)
-                                    .offset(y = 130.dp, x = 150.dp)
+                                    .size(230.dp)
+                                    .offset(y = 115.dp, x = 150.dp)
                             )
                         }
                     }
