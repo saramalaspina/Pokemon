@@ -135,7 +135,7 @@ fun PokemonDiscoverPage(
 
                             Column(
                                 modifier = Modifier
-                                    .fillMaxSize()
+                                    .fillMaxSize(0.8f)
                                     .padding(top = 330.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top

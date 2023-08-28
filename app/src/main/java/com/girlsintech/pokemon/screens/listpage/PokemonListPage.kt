@@ -142,7 +142,8 @@ fun PokemonListPage(
                         Image(
                             painter = painterResource(id = R.drawable.pokemon_title),
                             contentDescription = null,
-                            alignment = Alignment.TopCenter
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
                         )
                     }
                     else -> {

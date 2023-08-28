@@ -253,7 +253,7 @@ fun PokemonDetailPage(
                         }
                     }
                     else -> {
-                        ConstraintLayout (modifier = Modifier.fillMaxSize()){
+                        ConstraintLayout (modifier = Modifier.fillMaxSize(0.8f)){
                             val (icons, image, name, detail) = createRefs()
 
                             Column(modifier = Modifier
@@ -288,7 +288,7 @@ fun PokemonDetailPage(
                                 ImageBox(
                                     pokemon.img,
                                     modifier = Modifier
-                                        .size(250.dp)
+                                        .size(240.dp)
                                 )
                             }
 

@@ -52,19 +52,19 @@ fun StartPage(
                         Image(painter = painterResource(id = R.drawable.pokemon_title),
                             contentDescription = "image",
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxWidth(0.7f)
                         )
-                        Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         Image(painter = painterResource(id = R.drawable.pokemon),
                             contentDescription = "image",
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxWidth(0.7f)
                         )
                     }
 
                     Column (modifier = Modifier
                         .constrainAs(button) {
-                            top.linkTo(images.bottom, 20.dp)
+                            top.linkTo(images.bottom, 40.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
@@ -100,7 +100,7 @@ fun StartPage(
                     contentScale = ContentScale.FillBounds
                 )
 
-                ConstraintLayout {
+                ConstraintLayout (modifier = Modifier.fillMaxWidth()){
                     val (images, button, icon) = createRefs()
 
                     Column (modifier = Modifier
@@ -110,12 +110,17 @@ fun StartPage(
                             bottom.linkTo(parent.bottom)
                         }
                     ){
-                        Image(painter = painterResource(id = R.drawable.pokemon_title),
-                            contentDescription = "image"
+                        Image(
+                            painter = painterResource(id = R.drawable.pokemon_title),
+                            contentDescription = "image",
+                            modifier = Modifier
+                                .requiredWidth(280.dp)
                         )
-                        Spacer(modifier = Modifier.height(0.dp))
-                        Image(painter = painterResource(id = R.drawable.pokemon),
-                            contentDescription = "image"
+                        Image(
+                            painter = painterResource(id = R.drawable.pokemon),
+                            contentDescription = "image",
+                            modifier = Modifier
+                                .requiredWidth(280.dp)
                         )
                     }
 
