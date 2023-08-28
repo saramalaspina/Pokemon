@@ -253,91 +253,94 @@ fun PokemonDetailPage(
                         }
                     }
                     else -> {
-                        ConstraintLayout (modifier = Modifier.fillMaxSize(0.8f)){
-                            val (icons, image, name, detail) = createRefs()
+                            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                                val (icons, image, name, detail) = createRefs()
 
-                            Column(modifier = Modifier
-                                .constrainAs(icons) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start, 5.dp)
-                                }) {
-                                TopIcons(
-                                    pokemon = pokemon,
-                                    viewModel = viewModelDb,
-                                    navController = navController
-                                )
-                            }
-
-                            Column(modifier = Modifier
-                                .constrainAs(name) {
-                                    top.linkTo(parent.top, 12.dp)
-                                    start.linkTo(parent.start, 80.dp)
-                                }) {
-                                TopBox(
-                                    pokemonInfo = pokemonInfo,
-                                    dominantColor,
-                                )
-                            }
-
-                            Column(modifier = Modifier
-                                .constrainAs(image) {
-                                    top.linkTo(name.bottom)
-                                    start.linkTo(parent.start, 60.dp)
-                                    bottom.linkTo(parent.bottom)
-                                }) {
-                                ImageBox(
-                                    pokemon.img,
-                                    modifier = Modifier
-                                        .size(240.dp)
-                                )
-                            }
-
-
-                            Column(
-                                horizontalAlignment = Alignment.Start,
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .requiredWidth(420.dp)
-                                    .background(Color.White, RoundedCornerShape(10))
-                                    .constrainAs(detail) {
-                                        top.linkTo(parent.top, 55.dp)
-                                        end.linkTo(parent.end, 55.dp)
-                                    }
-                            ) {
-
-                                Spacer(modifier = Modifier.height(25.dp))
-
-                                NavigationBar {
-                                    navState = it
+                                Column(modifier = Modifier
+                                    .constrainAs(icons) {
+                                        top.linkTo(parent.top)
+                                        start.linkTo(parent.start, 5.dp)
+                                    }) {
+                                    TopIcons(
+                                        pokemon = pokemon,
+                                        viewModel = viewModelDb,
+                                        navController = navController
+                                    )
                                 }
 
-                                Spacer(modifier = Modifier.height(25.dp))
+                                Column(modifier = Modifier
+                                    .constrainAs(name) {
+                                        top.linkTo(parent.top, 12.dp)
+                                        start.linkTo(parent.start, 80.dp)
+                                    }) {
+                                    TopBox(
+                                        pokemonInfo = pokemonInfo,
+                                        dominantColor,
+                                    )
+                                }
+
+                                Column(modifier = Modifier
+                                    .constrainAs(image) {
+                                        top.linkTo(name.bottom)
+                                        start.linkTo(parent.start, 60.dp)
+                                        bottom.linkTo(parent.bottom)
+                                    }) {
+                                    ImageBox(
+                                        pokemon.img,
+                                        modifier = Modifier
+                                            .size(220.dp)
+                                    )
+                                }
+
 
                                 Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                    horizontalAlignment = Alignment.Start,
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .requiredWidth(410.dp)
+                                        .background(Color.White, RoundedCornerShape(10))
+                                        .constrainAs(detail) {
+                                            top.linkTo(parent.top, 55.dp)
+                                            start.linkTo(parent.start, 360.dp)
+                                        }
                                 ) {
 
-                                    //a seconda della pagina richiesta nella navigation bar vengono mostrate informazioni diverse
-                                    when (navState) {
-                                        0 -> PokemonDetailSection(
-                                            dominantColor = dominantColor,
-                                            pokemonInfo = pokemonInfo,
-                                            pokemonSpecies = pokemonSpecies!!,
-                                            ability1 = ability1,
-                                            ability2 = ability2,
-                                            ability3 = ability3,
-                                            40.dp
-                                        )
-                                        1 -> PokemonStatSection(pokemonInfo = pokemonInfo, 40.dp)
-                                        2 -> PokemonEvolutionSection(
-                                            viewModelDb = viewModelDb,
-                                            evolution = evolutionChain!!,
-                                            30.dp
-                                        )
+                                    Spacer(modifier = Modifier.height(25.dp))
+
+                                    NavigationBar {
+                                        navState = it
+                                    }
+
+                                    Spacer(modifier = Modifier.height(25.dp))
+
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+
+                                        //a seconda della pagina richiesta nella navigation bar vengono mostrate informazioni diverse
+                                        when (navState) {
+                                            0 -> PokemonDetailSection(
+                                                dominantColor = dominantColor,
+                                                pokemonInfo = pokemonInfo,
+                                                pokemonSpecies = pokemonSpecies!!,
+                                                ability1 = ability1,
+                                                ability2 = ability2,
+                                                ability3 = ability3,
+                                                40.dp
+                                            )
+                                            1 -> PokemonStatSection(
+                                                pokemonInfo = pokemonInfo,
+                                                40.dp
+                                            )
+                                            2 -> PokemonEvolutionSection(
+                                                viewModelDb = viewModelDb,
+                                                evolution = evolutionChain!!,
+                                                30.dp
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
                     }
                 }
             }

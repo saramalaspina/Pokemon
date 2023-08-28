@@ -68,6 +68,7 @@ fun DiscoveredPokemon(
             elevation = 15.dp,
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
+                .padding(horizontal = 30.dp)
                 .constrainAs(card2) {
                     start.linkTo(card1.start, 6.dp)
                     top.linkTo(card1.top, 10.dp)
@@ -85,6 +86,7 @@ fun DiscoveredPokemon(
             elevation = 5.dp,
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
+                .padding(horizontal = 30.dp)
                 .constrainAs(card1) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
