@@ -338,6 +338,7 @@ fun AbilitySelection(
                             fontFamily = fontBasic(),
                             fontSize = 14.sp,
                             modifier = Modifier
+                                .fillMaxWidth()
                                 .padding(10.dp)
                                 .clickable(onClick = {
                                     selection = if (item.id == "0") {

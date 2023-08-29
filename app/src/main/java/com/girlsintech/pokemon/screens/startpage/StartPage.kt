@@ -85,7 +85,7 @@ fun StartPage(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.pokeball),
-                            modifier = Modifier.size(60.dp),
+                            modifier = Modifier.size(55.dp),
                             contentDescription = null
                         )
                     }
@@ -100,13 +100,13 @@ fun StartPage(
                     contentScale = ContentScale.FillBounds
                 )
 
-                ConstraintLayout (modifier = Modifier.fillMaxWidth()){
+                ConstraintLayout (modifier = Modifier.fillMaxWidth(0.5f)){
                     val (images, button, icon) = createRefs()
 
                     Column (modifier = Modifier
                         .constrainAs(images){
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 80.dp)
+                            start.linkTo(parent.start, 60.dp)
                             bottom.linkTo(parent.bottom)
                         }
                     ){
@@ -127,7 +127,7 @@ fun StartPage(
                     Column (modifier = Modifier
                         .constrainAs(button) {
                             top.linkTo(parent.top)
-                            start.linkTo(parent.start, 165.dp)
+                            start.linkTo(parent.start, 130.dp)
                             bottom.linkTo(parent.bottom)
                         }
                     )  {
@@ -142,7 +142,7 @@ fun StartPage(
                     )  {
                         Image(
                             painter = painterResource(id = R.drawable.pokeball),
-                            modifier = Modifier.size(60.dp),
+                            modifier = Modifier.size(55.dp),
                             contentDescription = null
                         )
                     }

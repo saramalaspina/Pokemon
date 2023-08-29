@@ -95,7 +95,7 @@ fun PokemonItem(
                             ) else it.toString()
                         },
                         fontFamily = fontPokemon(),
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         color = Color.White
                     )
 
@@ -124,7 +124,7 @@ fun PokemonItem(
                     contentDescription = null,
                     loading = {
                         CircularProgressIndicator(
-                            modifier = Modifier.requiredSize(30.dp),
+                            modifier = Modifier.requiredSize(25.dp),
                             color = BluePokemon,
                             strokeWidth = 2.dp
                         )
@@ -137,7 +137,7 @@ fun PokemonItem(
                             end.linkTo(icon.start, 15.dp)
                             bottom.linkTo(parent.bottom)
                         }
-                        .size(90.dp)
+                        .size(75.dp)
                 )
 
                 Icon(

@@ -136,7 +136,7 @@ fun PokemonDiscoverPage(
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize(0.5f)
-                                    .padding(top = 330.dp),
+                                    .padding(top = 300.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
@@ -146,7 +146,7 @@ fun PokemonDiscoverPage(
                                 url = pokemon!!.img,
                                 modifier = Modifier
                                     .size(240.dp)
-                                    .offset(y = 180.dp))
+                                    .offset(y = 150.dp))
                         }
                     }
                     else -> {
