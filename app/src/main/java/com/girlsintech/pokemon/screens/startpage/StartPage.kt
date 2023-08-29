@@ -64,7 +64,7 @@ fun StartPage(
 
                     Column (modifier = Modifier
                         .constrainAs(button) {
-                            top.linkTo(images.bottom, 60.dp)
+                            top.linkTo(images.bottom, 40.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
